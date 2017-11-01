@@ -1,0 +1,90 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% 	French, accents and font coding     	      %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[french]{babel}
+\AtBeginDocument{\renewcommand\labelitemi{$\bullet$}}
+\usepackage{enumitem} 
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}			% for theorem definitions
+\usepackage{bbm}
+\usepackage[top=2cm, bottom=2cm, left=1.5cm, right=1.5cm]{geometry}
+
+
+\usepackage{graphicx}			% for images and graphics
+\usepackage{stmaryrd}			% for \llbracket symbols [[ ]]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		 Theorems etc.                        %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{Thm}{Théorème}[section]
+\newtheorem{Cor}{Corollaire}[section]
+\newtheorem{Prop}{Proposition}[section]
+\newtheorem{Lem}{Lemme}[section]
+\theoremstyle{definition}
+\newtheorem{Def}{Définition}[section]
+\newtheorem{Ex}{Exemple}[section]
+\newtheorem{Exo}{Exercice}[section]
+\theoremstyle{remark}
+\newtheorem{Rque}{Remarque}[section]
+\theoremstyle{definition}
+\newtheorem{Algo}{Algorithme}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		 Theorems etc. with box                   %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{framed}
+
+\newenvironment{fThm}
+  {\begin{framed}\begin{Thm}}
+  {\end{Thm}\end{framed}}
+\newenvironment{fCor}
+  {\begin{framed}\begin{Cor}}
+  {\end{Cor}\end{framed}}
+\newenvironment{fProp}
+  {\begin{framed}\begin{Prop}}
+  {\end{Prop}\end{framed}}
+\newenvironment{fLem}
+  {\begin{framed}\begin{Lem}}
+  {\end{Lem}\end{framed}}
+\newenvironment{fDef}
+  {\begin{framed}\begin{Def}}
+  {\end{Def}\end{framed}}
+\newenvironment{fEx}
+  {\begin{framed}\begin{Ex}}
+  {\end{Ex}\end{framed}}
+\newenvironment{fExo}
+  {\begin{framed}\begin{Exo}}
+  {\end{Exo}\end{framed}}
+\newenvironment{fRque}
+  {\begin{framed}\begin{Rque}}
+  {\end{Rque}\end{framed}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		Hyperlinks                            %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%		For Algorithms
+%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[ruled, vlined, french, algosection]{algorithm2e}
+\SetKwBlock{KwInit}{Initialization :}{endInit}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		Code			 %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage[section]{minted}
+%\usemintedstyle{borland}
+%\usepackage{color}
+%\definecolor{bg}{rgb}{0.95,0.95,0.95}

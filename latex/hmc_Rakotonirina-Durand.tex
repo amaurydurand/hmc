@@ -1,0 +1,101 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{init}
+\usepackage{defs}
+\usepackage{color}
+\newcommand{\red}{\color{red}}
+\definecolor{gray}{rgb}{0.4, 0.4, 0.4}
+
+\title{Introduction aux méthodes de Monte Carlo par dynamique Hamiltonienne}
+\author{Shmuel RAKOTONIRINA-RICQUEBOURG, Amaury DURAND}
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Introduction}
+Ce rapport présente le travail effectué lors d'un projet du cours d'approfondissements en chaînes de Markov par Eric Moulines dans le cadre du master Mathématiques de l'aléatoires à l'université Paris-Sud. Le contenu présenté ci-dessous repose essentiellement sur \cite{Neal-hmc} et \cite{Douc-mc}. 
+
+Les méthodes de Monte Carlo par dynamique Hamiltonienne, plus communément appelées Hamiltonian Monte Carlo (HMC), font partie d'une grande famille de méthodes de simulation : les méthodes de Monte Carlo, et plus précisemment dans la famille des méthodes de Monte Carlo par chaînes de Markov (ou Monte Carlo Markov Chains). Ces méthodes se placent dans le cadre suivant :
+\begin{Def}[Carde général]
+  Soit $(\xset, \calX)$ un espace mesurable. Soit $\pi$ une loi de probabilité sur cet espace. On suppose que $\pi$ n'est connue qu'à un facteur de proportionnalité près i.e on connait $\lambda \pi$ où $\lambda \in \rset$ une constante. Le but est de pouvoir approcher $\pi f = \EE[f(X)]$ avec $X \sim \pi$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$.
+\end{Def}
+
+\subsection{Méthodes de Monte Carlo}
+
+La méthode de Monte Carlo la plus simple (appelée Monte Carlo naïf) est la suivante : supposons que l'on sait simuler des variables aléatoires de loi $\pi$ alors en tirant $n$ échantillons $X_1, \cdots, X_n \siid \pi$, la loi des grands nombre nous indique qu'une bonne approximation de $\pi f$ est $\frac{1}{n} \sum_{i=1}^n f(X_i)$. D'autres méthodes permettent d'atteindre le même but en ne sachant pas simuler de variables aléatoires de loi $\pi$. C'est le cas par exemple de l'échantillonnage d'importance qui consiste à simuler des variables i.i.d sous une loi différente de $\pi$.
+
+Dans ces deux cas, l'approximation de $\pi f$ repose sur une simulation de variables aléatoires i.i.d. Cette particularité permet alors de montrer des résultats de convergence notamment grâce à la loi des grands nombre. Les méthodes de Monte Carlo par chaînes de Markov ne reposent pas sur le caractère i.i.d des variables mais sur les propriétés des Chaînes de Markov. 
+
+\subsection{Monte Carlo Markov Chains (MCMC)}
+Les méthode MCMC se basent sur les notions de loi invariante, de réversibilité et d'ergodicité.
+\subsubsection{Loi invariante et réversibilité}
+On considère $P$ un noyau de Markov sur $\xset \times \calX$.
+\begin{Def}
+  Une loi de probabilité $\pi$ sur $(\xset, \calX)$ est dite
+  \begin{itemize}
+  \item $P$-invariante si $\pi P = \pi$
+  \item $P$-réversible si $\forall A,B \in \calX$, $\pi \otimes P (A \times B) = \pi \otimes P (B \times A)$
+\end{itemize}
+\end{Def}
+
+\begin{Prop}
+  Soit $\pi$ une loi de probabilité sur $(\xset, \calX)$ alors 
+  $$
+  \pi \text{ est } P\text{-reversible} \Rightarrow \pi \text{ est } P\text{-invariante}
+  $$
+\end{Prop}
+
+\subsubsection{Ergodicité}
+\begin{Def}[Système ergodique]
+  Soit $(\Omega, \calB, \PP)$ un espace de probabilité. Soit $T : (\Omega, \calB) \to (\Omega, \calB)$ une application mesurable. 
+  \begin{itemize}
+  \item On dit que $\PP$ est invariante pour $T$ si $\forall A \in \calB, \PP[T^{-1}(A)] = \PP[A]$. Dans ce cas, on dit que $(\Omega, \calB, \PP, T)$ est un système dynamique.
+  \item $A \in \calB$ est dit invariant pour $T$ si $A = T^{-1}(A)$.
+  \item Si pour tout $A$ invariant pour $T$ on a $\PP[A] \in \ens{0,1}$ alors on dit que $(\Omega, \calB, \PP, T)$ est un système ergodique. 
+  \end{itemize}
+\end{Def}
+
+\begin{Thm}\label{thm:ergodic}
+  Soit $P$ un noyau de Markov sur $\xset \times \calX$ et on se place sur l'espace canonique $(\xset^n, \calX^{\otimes n})$. On note $ \theta : \fundef{ \xset^\nset &\to& \xset^\nset \\ (\omega_t)_{t\in \nset} &\mapsto& (\omega_{t+1})_{t \in \nset}}$ et  $\forall k \in \nset^*, \theta_k = \theta_{k-1} \circ \theta$ avec $\theta_0 = Id$. On suppose
+  \begin{enumerate}
+  \item $P$ possède une loi invariante $\pi$
+  \item $(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi, \theta)$ est ergodique
+  \end{enumerate}
+  Alors pour toute v.a $Y \in L^1(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi)$, pour $\pi$-presque tout $x \in \xset$, 
+$$
+  \frac{1}{n} \sum_{k=0}^{n-1} Y \circ \theta_k \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \EE{\pi}[Y]
+  $$
+\end{Thm}
+
+\begin{Rque}
+  Considérons $(X_k)_{k \in \nset}$ la chaîne de markov canonique de noyau $P$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ alors en prenant $Y = f(X_0)$, on a $Y \circ \theta_k = f(X_k)$ et $\EE{\pi}[Y] = \EE{\pi}[f(X_0)] = \pi f$ donc le résultat du théorème \ref{thm:ergodic} se réécrit : pour $\pi$-presque tout $x \in \xset$, 
+$$
+  \frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f
+  $$
+  Ce qui montre que l'on peut avoir une bonne approximation de $\pi f$ en construisant une chaîne de Markov. De plus il est intéressant de constater que la convergence est $\PP_x$ presque sûre pour $\pi$-presque tout $x \in \xset$ ce qui signifie que quelque soit le point de départ, on estsûr d'avoir une bonne approximation de $\pi f$ si on attend suffisamment longtemps.
+\end{Rque}
+Les algorithmes MCMC sont des méthodes permettant de construire la chaîne de Markov $(X_k)_{k \in \nset}$ afin d'approcher $\pi f$ en calculant $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$. 
+
+\subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
+Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Métropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+
+On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$ telle que $\forall x \in \xset, q(x) = q(-x) $. La construction de la chaîne de Markov $(X_k)_{k \in \nset}$ se fait par les étapes suivantes :
+
+\begin{center}
+\begin{algorithm}[H]
+ \KwInit{$X_0 = x \in \xset$ arbitrary}
+ \Repeat{some condition}{
+   Propose a motion $Y_{k+1} = X_k + U_{k+1}$ with $(U_k)_{k \in \nset} \siid Q$ and $(U_k)_{k \in \nset} \indep (X_k)_{k \in \nset}$ \\
+   Compute $\alpha_{k+1} = \alpha(X_k, Y_{k+1})$  where $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$ \\
+   Set $X_{k+1} = \piecewise{ Y_{k+1} & \text{with probability } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$
+   }
+ \caption{Random Walk Metropolis}
+\end{algorithm}
+\end{center}
+
+Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \leq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible.
+
+\pagebreak
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
+
+

@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{Neal-hmc}
+Neal~Radford M.
+\newblock {MCMC} using {Hamiltonian} dynamics.
+\newblock {\em Handbook of Markov Chain Monte Carlo}, 54:113--162, 2010.
+
+\bibitem{Douc-mc}
+Douc Randal; Moulines Eric; Priouret Pierre;~Soulier Philippe.
+\newblock {\em Markov Chains}.
+\newblock 2017.
+
+\end{thebibliography}

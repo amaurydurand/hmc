@@ -1,0 +1,270 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		 latin abbreviations                  %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ie}{{\em i.e.,~}}
+\newcommand{\eg}{{\em e.g.,~}}
+\newcommand{\lcf}{{\em cf.~}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  		 Style math                         %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\nset}{\mathbb{N}}
+\newcommand{\zset}{\mathbb{Z}}
+\newcommand{\rset}{\mathbb{R}}
+\newcommand{\cset}{\mathbb{C}}
+\newcommand{\qset}{\mathbb{Q}}
+\newcommand{\kset}{\mathbb{K}}
+\newcommand{\tset}{\mathbb{T}}
+\newcommand{\xset}{\mathbb{X}}
+\newcommand{\yset}{\mathbb{Y}}
+\newcommand{\uset}{\mathbb{U}}
+\newcommand{\fset}{\mathbb{F}}
+\newcommand{\mset}{\mathbb{M}}
+
+\newcommand{\ps}{\text{ p.s. }}
+\newcommand{\geqrespleq}{\underset{\mbox{ (resp $\leq$) }}{\geq}}
+\newcommand{\leqrespgeq}{\underset{\mbox{ (resp $\geq$) }}{\leq}}
+
+
+
+\usepackage{xifthen}
+%\newcommand{\EE}[1][]{%
+%  \ifthenelse{\isempty{#1}}%
+%    {\mathbb{E}}% if #1 is empty
+%    {\mathbb{E}\left[#1\right]}% if #1 is not empty
+%}
+
+%\newcommand{\PP}[1][]{%
+%  \ifthenelse{\isempty{#1}}%
+%    {\mathbb{P}}% if #1 is empty
+%    {\mathbb{P}\left(#1\right)}% if #1 is not empty
+%}
+
+\newcommand{\law}[1][]{%
+  \ifthenelse{\isempty{#1}}%
+    {\calL}% if #1 is empty
+    {\calL \left(#1\right)}% if #1 is not empty
+}
+
+%\newcommand{\pp}[1][]{%
+%  \ifthenelse{\isempty{#1}}%
+%    {p}% if #1 is empty
+%    {p\left(#1\right)}% if #1 is not empty
+%}
+% 
+%\newcommand{\Cov}[1][]{%
+%  \ifthenelse{\isempty{#1}}%
+%    {\mathrm{Cov}}% if #1 is empty
+%    {\mathrm{Cov}\left(#1\right)}% if #1 is not empty
+%}
+% 
+%\newcommand{\Var}[1][]{%
+%  \ifthenelse{\isempty{#1}}%
+%    {\mathrm{Var}}% if #1 is empty
+%    {\mathrm{Var}\left(#1\right)}% if #1 is not empty
+%  }
+
+\usepackage{xparse}
+\DeclareDocumentCommand{\PP}{go}
+{\IfNoValueTF{#2}
+  {\IfNoValueTF{#1}
+    {\mathbb{P}}
+    {\mathbb{P}_{#1}}%
+  }
+  {\IfNoValueTF{#1}
+    {\mathbb{P}\left(#2\right)}
+    {\mathbb{P}_{#1}\left(#2\right)}%
+  }%
+}
+
+\DeclareDocumentCommand{\EE}{go}
+{\IfNoValueTF{#2}
+  {\IfNoValueTF{#1}
+    {\mathbb{E}}
+    {\mathbb{E}_{#1}}%
+  }
+  {\IfNoValueTF{#1}
+    {\mathbb{E}\left[#2\right]}
+    {\mathbb{E}_{#1}\left[#2\right]}%
+  }%
+}
+
+\DeclareDocumentCommand{\pp}{go}
+{\IfNoValueTF{#2}
+  {\IfNoValueTF{#1}
+    {p}
+    {p_{#1}}%
+  }
+  {\IfNoValueTF{#1}
+    {p\left(#2\right)}
+    {p_{#1}\left(#2\right)}%
+  }%
+}
+
+\DeclareDocumentCommand{\Cov}{go}
+{\IfNoValueTF{#2}
+  {\IfNoValueTF{#1}
+    {\mathrm{Cov}}
+    {\mathrm{Cov}_{#1}}%
+  }
+  {\IfNoValueTF{#1}
+    {\mathrm{Cov}\left(#2\right)}
+    {\mathrm{Cov}_{#1}\left(#2\right)}%
+  }%
+}
+
+\DeclareDocumentCommand{\Var}{go}
+{\IfNoValueTF{#2}
+  {\IfNoValueTF{#1}
+    {\mathrm{Var}}
+    {\mathrm{Var}_{#1}}%
+  }
+  {\IfNoValueTF{#1}
+    {\mathrm{Var}\left(#2\right)}
+    {\mathrm{Var}_{#1}\left(#2\right)}%
+  }%
+}
+
+
+
+\def\1{\mathbf 1}
+\def\ind{\mathbbm 1}
+\newcommand{\mb}{\mathbf}
+\newcommand{\ud}{\,\mathrm{d}} 
+\newcommand{\given}[1][{}]{\;\middle\vert\;{#1} }
+\def\indep{\perp\!\!\!\perp}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%        equality symbols                        %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\deq}{\stackrel{\rm def}{=}}
+\newcommand{\eqlaw}{\stackrel{\rm loi}{=}}
+\newcommand{\siid}{\stackrel{\rm iid}{\sim}}
+\newcommand{\cps}{\xrightarrow[n \to +\infty]{\ps}}
+\newcommand{\cprob}{\xrightarrow[n \to +\infty]{P}}
+\newcommand{\claw}{\xrightarrow[n \to +\infty]{\calL}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%        maths symbols                    	     %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsopn}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\argch}{argch}
+\DeclareMathOperator{\argsh}{argsh}
+\DeclareMathOperator{\argth}{argth}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Card}{Card}
+\DeclareMathOperator{\rg}{rg}
+\DeclareMathOperator{\tr}{tr}
+
+\DeclareMathOperator{\corr}{corr}
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\vect}{vect}
+
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator{\pred}{pred}
+\DeclareMathOperator{\Id}{Id}
+
+\renewcommand{\Re}{\mathop{\mathrm{Re}}}
+\newcommand{\argmin}{\mathop{\mathrm{arg\,min}}}
+\newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
+\newcommand{\spn}{\mathop{\mathrm{span}}}
+\def\rang{\mathop{\rm rang}\nolimits}
+\def\Ker{\mathop{\rm Ker}\nolimits}
+\def\Im{\mathop{\rm Im}\nolimits}
+\def\Vect{\mathop{\rm Vect}\nolimits}
+\def\proj{\mathop{\rm proj}\nolimits}
+
+
+
+
+\def\dim{\mathop{\rm dim}\nolimits}
+
+\def\dom{\mathop{\rm dom}\nolimits}
+\def\supp{\mathop{\rm supp}\nolimits}
+\def\relint{\mathop{\rm relint}\nolimits}
+\def\prox{\mathop{\rm prox}\nolimits}
+
+\def\bfr{\mathbf{r}}
+\def\bfx{\mathbf{x}}
+\def\bfX{\mathbf{X}}
+
+\def\bfy{\mathbf{y}}
+\def\bftheta{\boldsymbol{\theta}}
+
+
+\def\calA{\mathcal{A}}
+\def\calB{\mathcal{B}}
+\def\calC{\mathcal{C}}
+\def\calD{\mathcal{D}}
+\def\calE{\mathcal{E}}
+\def\calF{\mathcal{F}}
+\def\calG{\mathcal{G}}
+\def\calH{\mathcal{H}}
+\def\calI{\mathcal{I}}
+\def\calJ{\mathcal{J}}
+\def\calK{\mathcal{K}}
+\def\calL{\mathcal{L}}
+\def\calM{\mathcal{M}}
+\def\calN{\mathcal{N}}
+\def\calO{\mathcal{O}}
+\def\calP{\mathcal{P}}
+\def\calQ{\mathcal{Q}}
+\def\calR{\mathcal{R}}
+\def\calS{\mathcal{S}}
+\def\calT{\mathcal{T}}
+\def\calU{\mathcal{U}}
+\def\calV{\mathcal{V}}
+\def\calW{\mathcal{W}}
+\def\calX{\mathcal{X}}
+\def\calY{\mathcal{Y}}
+\def\calZ{\mathcal{Z}}
+
+\def\cH{\calH}
+\def\cN{\calN}
+
+
+\newcommand{\tnorm}[1]{{\left\vert\kern-0.25ex\left\vert\kern-0.25ex\left\vert #1 
+    \right\vert\kern-0.25ex\right\vert\kern-0.25ex\right\vert}} % triple norm
+
+\newcommand{\inner}[1]{{
+\left\langle #1 \right\rangle}} % inner product
+
+\newcommand{\norm}[1]{{
+\left\| #1 \right\|}} % norm
+
+\newcommand{\abs}[1]{{
+\left| #1 \right|}} % abs
+
+\newcommand{\piecewise}[1]{{
+    \left\lbrace \begin{array}{ll} #1 \end{array} \right. }} % for piecewise functions
+
+\newcommand{\fundef}[1]{{
+\begin{array}{lcl} #1 \end{array} }} % for functions definitions
+
+\newcommand{\seg}[1]{{\left[ #1 \right]}} % closed segment [ ]
+\newcommand{\osego}[1]{{\left] #1 \right[}} % open segment ] [
+\newcommand{\oseg}[1]{{\left] #1 \right]}} % semi-open segment ] ]
+\newcommand{\sego}[1]{{\left[ #1 \right[}} % semi-open segment [ [
+\newcommand{\iseg}[1]{{\left\llbracket #1 \right\rrbracket}} % integer segment
+
+\newcommand{\ens}[1]{{
+\left\lbrace #1 \right\rbrace }} % ensemble
+
+\newcommand{\floor}[1]{{
+\left\lfloor #1 \right\rfloor }} % floor
+
+\newcommand{\pivot}[3]{{
+    \left(
+      \begin{array}{#1|#2}
+        #3
+      \end{array}
+    \right)
+  }}
