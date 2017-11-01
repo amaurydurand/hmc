@@ -13,7 +13,8 @@
    (TeX-add-symbols
     "red")
    (LaTeX-add-labels
-    "thm:ergodic")
+    "thm:ergodic"
+    "eq:canonical-dist")
    (LaTeX-add-bibliographies
     "ref"))
  :latex)

@@ -5,3 +5,5 @@
 \contentsline {subsubsection}{\numberline {1.2.1}Loi invariante et r\IeC {\'e}versibilit\IeC {\'e}}{1}{subsubsection.1.2.1}
 \contentsline {subsubsection}{\numberline {1.2.2}Ergodicit\IeC {\'e}}{2}{subsubsection.1.2.2}
 \contentsline {subsubsection}{\numberline {1.2.3}Algorithme de Metropolis (Random Walk Metropolis)}{2}{subsubsection.1.2.3}
+\contentsline {section}{\numberline {2}Hamiltonan Monte Carlo}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Intuition}{3}{subsection.2.1}

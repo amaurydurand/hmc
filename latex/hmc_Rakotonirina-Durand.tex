@@ -75,7 +75,7 @@ $$
 Les algorithmes MCMC sont des méthodes permettant de construire la chaîne de Markov $(X_k)_{k \in \nset}$ afin d'approcher $\pi f$ en calculant $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$. 
 
 \subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
-Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Métropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Métropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$ est la mesure de Lebesgue. 
 
 On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$ telle que $\forall x \in \xset, q(x) = q(-x) $. La construction de la chaîne de Markov $(X_k)_{k \in \nset}$ se fait par les étapes suivantes :
 
@@ -91,7 +91,19 @@ On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On 
 \end{algorithm}
 \end{center}
 
-Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \leq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible.
+Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \leq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible. Remarquons enfin que le fait de faire un rapport permet de ne connaître $\pi$ qu'à une constante de proportionnalité près. 
+
+\section{Hamiltonan Monte Carlo}
+On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$ est la mesure de Lebesgue. 
+
+\subsection{Intuition}
+De même que pour l'algorithme de Métropolis, on veut construire une chaîne de Markov qui visite majoritairement les régions de forte probabilité. L'idée de la méthode Hamiltonian Monte Carlo est de considérer que les états $x \in \rset^d$ représentent des positions, d'introduire une variable de vitesse $v \in \rset^d$, une énergie potentielle $U(x)$ et une énergie cinétique $K(v)$. On considère alors que $h_\pi$ est de la forme
+\begin{equation}\label{eq:canonical-dist}
+\forall x \in \rset^d,  h_\pi(x) \propto \exp \left( -\frac{U(x)}{T} \right) 
+\end{equation}
+$T \in \rset^*$ s'appelle la température. Encore une fois on ne connaît $h_\pi$ qu'à une constante de proportionnalité près.
+
+En dimension 1, le problème a une interprétation physique très simple : générer la chaîne de Markov revient à simuler le mouvement d'un objet sur une rampe sans frottement. Comme l'énergie potentielle est proportionnelle à là hauteur, les creux de la rampe représentent les régions de faible énergie potentielle et donc de forte probabilité par \eqref{eq:canonical-dist}. Le rôle de la vitesse $v$ et de l'énergie cinétique $K(v)$ est de modéliser de fait que l'on peut remonter une pente après un creux (si l'énergie cinétique est assez grande).
 
 \pagebreak
 \bibliographystyle{plain}

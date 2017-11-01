@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.31)  1 NOV 2017 16:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.31)  1 NOV 2017 17:33
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1030,27 +1030,28 @@ LaTeX Font Info:    Try loading font information for U+stmry on input line 12.
 
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] (./hmc_Rakotonirina-Du
-rand.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 99.
- [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 99.
- (./hmc_Rakotonirina-Durand.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 99.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 99.
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] (./hmc_Rakotonirin
+a-Durand.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 111.
+ [4]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 111.
+
+(./hmc_Rakotonirina-Durand.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 111.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 111.
 Package rerunfilecheck Info: File `hmc_Rakotonirina-Durand.out' has not changed
 .
-(rerunfilecheck)             Checksum: F3B73DC89FB144A6940AC4FFADF78AAE;483.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 99.
+(rerunfilecheck)             Checksum: 4E289C65926DD048D4B9B92431E120DE;598.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 111.
  ) 
 Here is how much of TeX's memory you used:
- 16871 strings out of 494924
- 282723 string characters out of 6179708
- 366140 words of memory out of 5000000
- 19955 multiletter control sequences out of 15000+600000
+ 16879 strings out of 494924
+ 282818 string characters out of 6179708
+ 367175 words of memory out of 5000000
+ 19959 multiletter control sequences out of 15000+600000
  13771 words of font info for 54 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 40i,20n,45p,10425b,580s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,20n,45p,10425b,519s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
@@ -1068,10 +1069,10 @@ live/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on hmc_Rakotonirina-Durand.pdf (3 pages, 199927 bytes).
+Output written on hmc_Rakotonirina-Durand.pdf (4 pages, 204595 bytes).
 PDF statistics:
- 146 PDF objects out of 1000 (max. 8388607)
- 121 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 49 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 163 PDF objects out of 1000 (max. 8388607)
+ 137 compressed objects within 2 object streams
+ 28 named destinations out of 1000 (max. 500000)
+ 65 words of extra memory for PDF output out of 10000 (max. 10000000)
 
