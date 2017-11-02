@@ -37,73 +37,130 @@ On considère $P$ un noyau de Markov sur $\xset \times \calX$.
 \end{Def}
 
 \begin{Prop}
-  Soit $\pi$ une loi de probabilité sur $(\xset, \calX)$ alors 
-  $$
-  \pi \text{ est } P\text{-reversible} \Rightarrow \pi \text{ est } P\text{-invariante}
-  $$
+  Toute probabilité $P$-réversible est $P$-invariante.
+  % Soit $\pi$ une loi de probabilité sur $(\xset, \calX)$ alors 
+  % $$
+  % \pi \text{ est } P\text{-reversible} \Rightarrow \pi \text{ est } P\text{-invariante}
+  % $$
 \end{Prop}
 
 \subsubsection{Ergodicité}
-\begin{Def}[Système ergodique]
-  Soit $(\Omega, \calB, \PP)$ un espace de probabilité. Soit $T : (\Omega, \calB) \to (\Omega, \calB)$ une application mesurable. 
-  \begin{itemize}
-  \item On dit que $\PP$ est invariante pour $T$ si $\forall A \in \calB, \PP[T^{-1}(A)] = \PP[A]$. Dans ce cas, on dit que $(\Omega, \calB, \PP, T)$ est un système dynamique.
-  \item $A \in \calB$ est dit invariant pour $T$ si $A = T^{-1}(A)$.
-  \item Si pour tout $A$ invariant pour $T$ on a $\PP[A] \in \ens{0,1}$ alors on dit que $(\Omega, \calB, \PP, T)$ est un système ergodique. 
-  \end{itemize}
-\end{Def}
+% \begin{Def}[Système ergodique]
+%   Soit $(\Omega, \calB, \PP)$ un espace de probabilité. Soit $T : (\Omega, \calB) \to (\Omega, \calB)$ une application mesurable. 
+%   \begin{itemize}
+%   \item On dit que $\PP$ est invariante pour $T$ si $\forall A \in \calB, \PP[T^{-1}(A)] = \PP[A]$. Dans ce cas, on dit que $(\Omega, \calB, \PP, T)$ est un système dynamique.
+%   \item $A \in \calB$ est dit invariant pour $T$ si $A = T^{-1}(A)$.
+%   \item Si pour tout $A$ invariant pour $T$ on a $\PP[A] \in \ens{0,1}$ alors on dit que $(\Omega, \calB, \PP, T)$ est un système ergodique. 
+%   \end{itemize}
+% \end{Def}
+
+% \begin{Thm}\label{thm:ergodic}
+%   Soit $P$ un noyau de Markov sur $\xset \times \calX$ et on se place sur l'espace canonique $(\xset^n, \calX^{\otimes n})$. On note $ \theta : \fundef{ \xset^\nset &\to& \xset^\nset \\ (\omega_t)_{t\in \nset} &\mapsto& (\omega_{t+1})_{t \in \nset}}$ et  $\forall k \in \nset^*, \theta_k = \theta_{k-1} \circ \theta$ avec $\theta_0 = Id$. On suppose
+%   \begin{enumerate}
+%   \item $P$ possède une loi invariante $\pi$
+%   \item $(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi, \theta)$ est ergodique
+%   \end{enumerate}
+%   Alors pour toute v.a $Y \in L^1(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi)$, pour $\pi$-presque tout $x \in \xset$, 
+% $$
+%   \frac{1}{n} \sum_{k=0}^{n-1} Y \circ \theta_k \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \EE{\pi}[Y]
+%   $$
+% \end{Thm}
+
+% \begin{Rque}
+%   Considérons $(X_k)_{k \in \nset}$ la chaîne de Markov canonique de noyau $P$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ alors en prenant $Y = f(X_0)$, on a $Y \circ \theta_k = f(X_k)$ et $\EE{\pi}[Y] = \EE{\pi}[f(X_0)] = \pi f$ donc le résultat du théorème \ref{thm:ergodic} se réécrit : pour $\pi$-presque tout $x \in \xset$, 
+% $$
+%   \frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f
+%   $$
+%   Ce qui montre que l'on peut avoir une bonne approximation de $\pi f$ en construisant une chaîne de Markov. De plus il est intéressant de constater que la convergence est $\PP_x$ presque sûre pour $\pi$-presque tout $x \in \xset$ ce qui signifie que quelque soit le point de départ, on est sûr d'avoir une bonne approximation de $\pi f$ si on attend suffisamment longtemps.
+% \end{Rque}
 
 \begin{Thm}\label{thm:ergodic}
-  Soit $P$ un noyau de Markov sur $\xset \times \calX$ et on se place sur l'espace canonique $(\xset^n, \calX^{\otimes n})$. On note $ \theta : \fundef{ \xset^\nset &\to& \xset^\nset \\ (\omega_t)_{t\in \nset} &\mapsto& (\omega_{t+1})_{t \in \nset}}$ et  $\forall k \in \nset^*, \theta_k = \theta_{k-1} \circ \theta$ avec $\theta_0 = Id$. On suppose
-  \begin{enumerate}
-  \item $P$ possède une loi invariante $\pi$
-  \item $(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi, \theta)$ est ergodique
-  \end{enumerate}
-  Alors pour toute v.a $Y \in L^1(\xset^\nset, \calX^{\otimes \nset}, \PP_\pi)$, pour $\pi$-presque tout $x \in \xset$, 
-$$
-  \frac{1}{n} \sum_{k=0}^{n-1} Y \circ \theta_k \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \EE{\pi}[Y]
-  $$
+  Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ admettant une loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
+  $$\frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f$$
 \end{Thm}
 
-\begin{Rque}
-  Considérons $(X_k)_{k \in \nset}$ la chaîne de markov canonique de noyau $P$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ alors en prenant $Y = f(X_0)$, on a $Y \circ \theta_k = f(X_k)$ et $\EE{\pi}[Y] = \EE{\pi}[f(X_0)] = \pi f$ donc le résultat du théorème \ref{thm:ergodic} se réécrit : pour $\pi$-presque tout $x \in \xset$, 
-$$
-  \frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f
-  $$
-  Ce qui montre que l'on peut avoir une bonne approximation de $\pi f$ en construisant une chaîne de Markov. De plus il est intéressant de constater que la convergence est $\PP_x$ presque sûre pour $\pi$-presque tout $x \in \xset$ ce qui signifie que quelque soit le point de départ, on estsûr d'avoir une bonne approximation de $\pi f$ si on attend suffisamment longtemps.
-\end{Rque}
-Les algorithmes MCMC sont des méthodes permettant de construire la chaîne de Markov $(X_k)_{k \in \nset}$ afin d'approcher $\pi f$ en calculant $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$. 
+Les algorithmes MCMC visent à construire, à partir de $\pi$, une chaîne de Markov vérifiant les hypothèses de ce théorème afin d'approcher $\pi f$ par $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$.
 
-\subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
-Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Métropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$ est la mesure de Lebesgue. 
+% \subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
 
-On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$ telle que $\forall x \in \xset, q(x) = q(-x) $. La construction de la chaîne de Markov $(X_k)_{k \in \nset}$ se fait par les étapes suivantes :
+% Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Metropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+
+% On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ (appelée loi instrumentale) sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$ telle que $\forall x \in \xset, q(x) = q(-x) $. La construction de la chaîne de Markov se fait en proposant un mouvement (dont l'incrément suit $Q$), puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis}).
+
+% \begin{center}
+% \begin{algorithm}[H]
+%   $X_0 \leftarrow x \in \xset$ arbitraire\;
+%   $(U_k)_{k \in \nset} \siid Q$ \;
+%   \Repeat{une condition d'arrêt}{
+%     $Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcc*{Proposer un mouvement}
+%     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
+%     $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
+%     }
+%   \caption{Random Walk Metropolis}
+%   \label{algo:metropolis}
+% \end{algorithm}
+% \end{center}
+
+% Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
+
+% % Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible.
+
+\subsubsection{Algorithme de Metropolis-Hastings}
+
+L'algorithme HMC est une version améliorée de l'algorithme de Metropolis-Hastings. Nous allons donc d'abord définir ce dernier et nous l'utiliserons plus tard comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+
+On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un noyau markovien $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$. $Q$ est appelé noyau instrumental. La construction de la chaîne de Markov se fait en proposant un mouvement via $Q$, puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis-hastings}).
 
 \begin{center}
 \begin{algorithm}[H]
- \KwInit{$X_0 = x \in \xset$ arbitrary}
- \Repeat{some condition}{
-   Propose a motion $Y_{k+1} = X_k + U_{k+1}$ with $(U_k)_{k \in \nset} \siid Q$ and $(U_k)_{k \in \nset} \indep (X_k)_{k \in \nset}$ \\
-   Compute $\alpha_{k+1} = \alpha(X_k, Y_{k+1})$  where $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$ \\
-   Set $X_{k+1} = \piecewise{ Y_{k+1} & \text{with probability } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$
-   }
- \caption{Random Walk Metropolis}
+  $X_0 \leftarrow x \in \xset$ arbitraire\;
+  \Repeat{une condition d'arrêt}{
+    $Y_{k+1} \sim Q(X_k,\dot)$ \tcc*{Proposer un mouvement}
+    $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
+    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
+    }
+  \caption{Random Walk Metropolis}
+  \label{algo:metropolis-hastings}
 \end{algorithm}
 \end{center}
 
-Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \leq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible. Remarquons enfin que le fait de faire un rapport permet de ne connaître $\pi$ qu'à une constante de proportionnalité près. 
+Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
 
-\section{Hamiltonan Monte Carlo}
+\begin{Rque}
+  Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
+
+  Le choix de $Q$ est en fait une difficulté de l'algorithme, puisque le mouvement proposé doit permettre l'exploration de tout l'espace (afin de passer régulièrement par toutes les régions fortement chargées par $\pi$). Nous verrons que l'algorithme HMC résout ce problème en proposant le mouvement selon une \emph{dynamique hamiltonienne}.
+\end{Rque}
+
+\begin{Def}
+  On parle de \emph{Random-walk Metropolis} quand $Q$ est le noyau d'une marche aléatoire
+  $$Y_{k+1} \leftarrow X_k + U_{k+1}$$
+  avec $(U_k)_{k \in \nset}$ iid.
+\end{Def}
+
+\section{Hamiltonian Monte Carlo}
+
 On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$ est la mesure de Lebesgue. 
 
-\subsection{Intuition}
-De même que pour l'algorithme de Métropolis, on veut construire une chaîne de Markov qui visite majoritairement les régions de forte probabilité. L'idée de la méthode Hamiltonian Monte Carlo est de considérer que les états $x \in \rset^d$ représentent des positions, d'introduire une variable de vitesse $v \in \rset^d$, une énergie potentielle $U(x)$ et une énergie cinétique $K(v)$. On considère alors que $h_\pi$ est de la forme
-\begin{equation}\label{eq:canonical-dist}
-\forall x \in \rset^d,  h_\pi(x) \propto \exp \left( -\frac{U(x)}{T} \right) 
-\end{equation}
-$T \in \rset^*$ s'appelle la température. Encore une fois on ne connaît $h_\pi$ qu'à une constante de proportionnalité près.
+L'algorithme HMC fait partie des algorithmes MCMC. Il diffère de l'algorithme de Metropolis-Hastings en ce que le mouvement proposé ne sera pas tiré selon une chaîne de Markov de noyau $Q$ mais selon une \emph{dynamique hamiltonienne} associée à la loi à simuler.
 
-En dimension 1, le problème a une interprétation physique très simple : générer la chaîne de Markov revient à simuler le mouvement d'un objet sur une rampe sans frottement. Comme l'énergie potentielle est proportionnelle à là hauteur, les creux de la rampe représentent les régions de faible énergie potentielle et donc de forte probabilité par \eqref{eq:canonical-dist}. Le rôle de la vitesse $v$ et de l'énergie cinétique $K(v)$ est de modéliser de fait que l'on peut remonter une pente après un creux (si l'énergie cinétique est assez grande).
+\subsection{Principe général}
+
+La dynamique hamiltonienne décrit le mouvement d'un objet qui glisse sans frottement le long d'une surface ou d'une courbe. L'objet est décrit par sa position $x \in \rset^d$ et sa vitesse $v \in \rset^d$ et on lui associe des énergies potentielle $U(x)$ et cinétique $K(v)$. En physique, une énergie $E$ et une température $T$ est associée à une loi de probabilité par la loi de Boltzmann
+$$\forall x \in \rset^d,  p(x) \propto \exp \left( -\frac{E(x)}{T} \right)$$
+Ici on choisit donc l'énergie potentielle pour avoir
+\begin{equation}\label{eq:canonical-dist}
+\forall x \in \rset^d,  h_\pi(x) \propto \exp \left( -\frac{U(x)}{T} \right)
+\end{equation}
+
+En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa vitesse $v$ (et donc son énergie cinétique $K(v)$ est assez grande.
+
+L'algorithme HMC propose ses mouvements selon le principe suivant
+\begin{itemize}
+  \item Considérer un objet placé en $x = X_k$ de vitesse aléatoire $v$ (de loi à préciser)
+  \item Simulation la dynamique hamiltonienne (déterministe) de cet objet pendant une durée fixée, pour l'énergie potentielle $U$ donnée par \ref{eq:canonical-dist}
+  \item Considérer $Y_{k+1}$ la position de cet objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $U$
+\end{itemize}
 
 \pagebreak
 \bibliographystyle{plain}
