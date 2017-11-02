@@ -156,11 +156,30 @@ Ici on choisit donc l'énergie potentielle pour avoir
 En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa vitesse $v$ (et donc son énergie cinétique $K(v)$ est assez grande.
 
 L'algorithme HMC propose ses mouvements selon le principe suivant
-\begin{itemize}
+\begin{enumerate}
   \item Considérer un objet placé en $x = X_k$ de vitesse aléatoire $v$ (de loi à préciser)
   \item Simulation la dynamique hamiltonienne (déterministe) de cet objet pendant une durée fixée, pour l'énergie potentielle $U$ donnée par \ref{eq:canonical-dist}
   \item Considérer $Y_{k+1}$ la position de cet objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $U$
-\end{itemize}
+\end{enumerate}
+
+\subsection{Outils nécessaires}
+
+% On a besoin
+% % d'une simulation de dynamique hamiltonienne
+% % que l'algorithme ci-dessus "conserve la distribution"
+
+\subsection{Propriétés de l'algorithme}
+
+% Lister les propriétés et bénéfices de HMC en admettant qu'on a les outils de la subsection précédente
+
+\section{Dynamique hamiltonienne}
+
+% Donner rapidement les résultats déterministes de l'article sur l'hamiltonnien (2.1 et 2.2 de l'article), peut-être qu'on peut se contenter du cas U = -log(h_\pi) et K = \norm{v}/2 (T = 1, m = 1)
+% Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peute-être simplifiée (2.3 de l'article), éventuellement en quoi elle "préserve le volume"
+
+\section{Algorithme et simulations}
+
+% Rassembler les parties précédentes pour écrire tout l'algorithme HMC, et présenter/commenter les résultats des simulations
 
 \pagebreak
 \bibliographystyle{plain}
