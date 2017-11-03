@@ -2,15 +2,16 @@
 //Fonctions pour l'algorithme Random-walk Metropolis//
 //////////////////////////////////////////////////////
 
-function X = RWM(h,U,X0,N)
+function X = RWM(h,Delta,X0,N)
     //X = (X0, ..., XN) marche obtenue par Random-walk Metropolis
     //h proportionnel à la densité à simuler
-    //U N-échantillon de la loi instrumentale
+    //Delta N-échantillon de la loi instrumentale
     X = zeros(size(X0,1),N+1);
     X(:,1) = X0;
     for k = 1:N
-        Y = X(:,k) + U(k);
-        accepter = 1*(grand(1,1,'unf',0,1) < min(1,h(y) ./ h(X(:,k))));
+        Y = X(:,k) + Delta(:,k);
+//        accepter = 1*(grand(1,1,'unf',0,1) < min(1,h(Y) / h(X(:,k)))); //division par zéro ?
+        hx = h(X(:,k)); accepter = 1*(grand(1,1,'unf',0,1)*hx < min(hx,h(Y)));
         X(:,k+1) = accepter*Y + (1-accepter)*X(:,k);
     end
 endfunction
@@ -67,6 +68,6 @@ function X = HMC(U,dU,dt,L,X0,N)
     X = zeros(size(X0,1),N+1);
     X(:,1) = X0;
     for k = 1:N
-        X(:,k+1) = HMC_step(U,dU,dt,L,X(k,:));
+        X(:,k+1) = HMC_step(U,dU,dt,L,X(:,k));
     end
 endfunction
