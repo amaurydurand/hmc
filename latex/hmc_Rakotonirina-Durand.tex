@@ -117,14 +117,14 @@ On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On 
   \Repeat{une condition d'arrêt}{
     $Y_{k+1} \sim Q(X_k,\cdot)$ \tcc*{Proposer un mouvement}
     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
+    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
     }
   \caption{Metropolis-Hastings}
   \label{algo:metropolis-hastings}
 \end{algorithm}
 \end{center}
 
-Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
+Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1})q(Y_{k+1}, X_k) \geq h_\pi(X_k) q(X_k, Y_{k+1})$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})q(Y_{k+1},X_k)}{h_\pi(X_k)q(X_k,Y_{k+1})}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
 
 \begin{Rque}
   Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
@@ -141,11 +141,11 @@ Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins s
 \begin{center}
 \begin{algorithm}[H]
   $X_0 \leftarrow x \in \xset$ arbitraire\;
-  (U_k)_{k \in \nset} \siid Q$ \;
+  $(U_k)_{k \in \nset} \siid Q$ \;
   \Repeat{une condition d'arrêt}{
     $Y_{k+1} \sim X_k + U_{k+1}$ \tcc*{Proposer un mouvement}
     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
+    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
     }
   \caption{Random Walk Metropolis}
   \label{algo:metropolis}
@@ -158,21 +158,45 @@ On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$
 
 L'algorithme HMC fait partie des algorithmes MCMC. Il diffère de l'algorithme de Metropolis-Hastings en ce que le mouvement proposé ne sera pas tiré selon une chaîne de Markov de noyau $Q$ mais selon une \emph{dynamique hamiltonienne} associée à la loi à simuler.
 
+\subsection{Dynamique Hamiltonienne}
+Un système physique de position $x : \rset_+ \to \rset^d$ et de quantité de mouvement $p : \rset_+ \to \rset^d$ (toutes deux fonctions du temps $t$) est caractérise par des équations de mouvement de type $\forall t \geq 0, \forall i \in \iseg{1,d}$, 
+\begin{eqnarray*}
+  \frac{d x_i}{d t}(t) &=& \frac{\partial H}{\partial p_i} (q(t), p(t)) \\
+  \frac{d x_i}{d t} (t) &=& -\frac{\partial H}{\partial q_i} (q(t), p(t))
+\end{eqnarray*}
+où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it Hamiltonien} du système.
+
+Le Hamiltonien s'interprête comme une énergie sur $x$ et $p$. En général $H(x,p) = U(x) + K(p)$ où $U$ est l'énergie potentielle et $K$ l'énergie cinétique.
+
 \subsection{Principe général}
+La dynamique hamiltonienne décrit le mouvement d'un objet qui glisse sans frottement le long d'une surface ou d'une courbe. L'objet est décrit par sa position $x \in \rset^d$ et sa quantité de mouvement $p \in \rset^d$ et on lui associe des énergies potentielle $U(x)$ et cinétique $K(p)$.
 
-La dynamique hamiltonienne décrit le mouvement d'un objet qui glisse sans frottement le long d'une surface ou d'une courbe. L'objet est décrit par sa position $x \in \rset^d$ et sa vitesse $v \in \rset^d$ et on lui associe des énergies potentielle $U(x)$ et cinétique $K(v)$. En physique, une énergie $E$ et une température $T$ est associée à une loi de probabilité par la loi de Boltzmann
-$$\forall x \in \rset^d,  p(x) \propto \exp \left( -\frac{E(x)}{T} \right)$$
-Ici on choisit donc l'énergie potentielle pour avoir
+\begin{Def}[Distribution canonique]
+En physique, une énergie $E : \rset^n \to \rset$ et une température $T \in \rset$ sont associées à une loi de probabilité par la loi de Boltzmann (ou distribution canonique) de densité par rapport à la mesure de Lebesgue sur $\rset^n$,
+$$\forall x \in \rset^n,  p(x) \propto \exp \left( -\frac{E(x)}{T} \right)$$
+\end{Def}
+
+
+Dans le cas des HMC, on étend l'espace d'états $\xset = \rset^d$ à $\rset^d \times \rset^d$ et on va construire une chaîne de Markov $(X_k, P_k)_{k \in \nset}$ à valeurs dans ce nouvel espace avec $\forall k \in \nset, X_k \indep P_k$ et de loi invariante $\pi \otimes \nu$ où $\pi$ est une distribution canonique associée à l'énergie potentielle et $\nu$ est une distribution canonique associée à l'énérgie cinétique. Ainsi leurs densités $h_\pi$ et $h_\nu$ par rapport à la mesure de Lebesgue sur $\rset^d$ vérifient $\forall x \in \rset^d, \forall p \in \rset^d$,
+\begin{eqnarray*}
+  h_\pi(x) & \propto &  \exp \left( -\frac{U(x)}{T} \right) \\
+  h_\nu(p) & \propto &  \exp \left( -\frac{K(p)}{T} \right)
+\end{eqnarray*}
+
+Ce qui donne une loi jointe de densité $p$ telle que $\forall (x,p) \in \rset^d \times \rset^d$, 
 \begin{equation}\label{eq:canonical-dist}
-\forall x \in \rset^d,  h_\pi(x) \propto \exp \left( -\frac{U(x)}{T} \right)
+p(x,p) \propto \exp \left( -\frac{H(x,p)}{T} \right)
 \end{equation}
+où le Hamiltonien $H(x,p) = U(x) + K(p)$ est choisi.
 
-En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa vitesse $v$ (et donc son énergie cinétique $K(v)$ est assez grande.
+\begin{Rque}
+En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$ est assez grande.
+\end{Rque}
 
 L'algorithme HMC propose ses mouvements selon le principe suivant
 \begin{enumerate}
-  \item Considérer un objet placé en $x = X_k$ de vitesse aléatoire $v$ (de loi à préciser)
-  \item Simulation la dynamique hamiltonienne (déterministe) de cet objet pendant une durée fixée, pour l'énergie potentielle $U$ donnée par \ref{eq:canonical-dist}
+  \item Considérer un objet placé en $X_k$ de quantité de mouvement $P_k$
+  \item Simuler la dynamique hamiltonienne (déterministe) de cet objet pendant une durée fixée, pour l'énergie potentielle $U$ donnée par \eqref{eq:canonical-dist}
   \item Considérer $Y_{k+1}$ la position de cet objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $U$
 \end{enumerate}
 

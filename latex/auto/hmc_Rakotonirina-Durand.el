@@ -14,6 +14,8 @@
     "red")
    (LaTeX-add-labels
     "thm:ergodic"
+    "algo:metropolis-hastings"
+    "algo:metropolis"
     "eq:canonical-dist")
    (LaTeX-add-bibliographies
     "ref"))
