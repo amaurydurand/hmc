@@ -34,7 +34,7 @@ switch (d)
 		figure(1); clf;
 		subplot(2,2,1);
 		plot(X_th(1,:),X_th(2,:),"+b");
-		title([num2str(n) "-échantillon"]);
+		title([int2str(n) "-échantillon"]);
 		subplot(2,2,2);
 		plot(X_rwm(1,:),X_rwm(2,:),"+r");
 		title("Random-walk Metropolis");
