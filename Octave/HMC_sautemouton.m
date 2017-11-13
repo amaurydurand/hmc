@@ -11,7 +11,7 @@ function [x1,p1] = HMC_sautemouton(dU,dt,L,x0,p0)
 	x1 = x0;
 	p1 = p0;
 	
-	p1 = p1 - dt*dU(x1)/2; % demi-pas en p
+	p1 -= dt*dU(x1)/2; % demi-pas en p
 	for k = 1:L-1 % saute-mouton
 		x1 += dt*p1;
 		p1 -= dt*dU(x1);
