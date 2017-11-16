@@ -92,9 +92,9 @@ Les algorithmes MCMC visent à construire, à partir de $\pi$, une chaîne de Ma
 %   $X_0 \leftarrow x \in \xset$ arbitraire\;
 %   $(U_k)_{k \in \nset} \siid Q$ \;
 %   \Repeat{une condition d'arrêt}{
-%     $Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcc*{Proposer un mouvement}
+%     $Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
 %     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-%     $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
+%     $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
 %     }
 %   \caption{Random Walk Metropolis}
 %   \label{algo:metropolis}
@@ -113,12 +113,14 @@ On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On 
 
 \begin{center}
 \begin{algorithm}[H]
+  \KwData{$h_\pi$ proportionnel à la densité cible, $Q$ noyau markovien simulable}
   $X_0 \leftarrow x \in \xset$ arbitraire\;
   \Repeat{une condition d'arrêt}{
-    $Y_{k+1} \sim Q(X_k,\cdot)$ \tcc*{Proposer un mouvement}
+    $Y_{k+1} \sim Q(X_k,\cdot)$ \tcp*{Proposer un mouvement}
     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
-    }
+    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+  }
+  \KwRet{$(X_k)_k$}
   \caption{Metropolis-Hastings}
   \label{algo:metropolis-hastings}
 \end{algorithm}
@@ -140,13 +142,15 @@ Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins s
 
 \begin{center}
 \begin{algorithm}[H]
+  \KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
   $X_0 \leftarrow x \in \xset$ arbitraire\;
   $(U_k)_{k \in \nset} \siid Q$ \;
   \Repeat{une condition d'arrêt}{
-    $Y_{k+1} \sim X_k + U_{k+1}$ \tcc*{Proposer un mouvement}
+    $Y_{k+1} \sim X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcc*{Accepter ou rejeter le mouvement}
-    }
+    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+  }
+  \KwRet{$(X_k)_k$}
   \caption{Random Walk Metropolis}
   \label{algo:metropolis}
 \end{algorithm}
@@ -213,11 +217,52 @@ L'algorithme HMC propose ses mouvements selon le principe suivant
 \section{Dynamique hamiltonienne}
 
 % Donner rapidement les résultats déterministes de l'article sur l'hamiltonnien (2.1 et 2.2 de l'article), peut-être qu'on peut se contenter du cas U = -log(h_\pi) et K = \norm{v}/2 (T = 1, m = 1)
-% Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peute-être simplifiée (2.3 de l'article), éventuellement en quoi elle "préserve le volume"
+% Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peut-être simplifiée (2.3 de l'article), éventuellement en quoi elle "préserve le volume"
+
+\begin{center}
+\begin{algorithm}[H]
+  \KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+  $(x,p) \leftarrow (x_0,p_0)$\;
+  $p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+  \For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
+    $x \leftarrow x + \epsilon p$\;
+    $p \leftarrow p - \epsilon \nabla U(x)$\;
+  }
+  $x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
+  $p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+  \KwRet{$(x,p)$}
+  \caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
+  \label{algo:leapfrog}
+\end{algorithm}
+\end{center}
 
 \section{Algorithme et simulations}
 
 % Rassembler les parties précédentes pour écrire tout l'algorithme HMC, et présenter/commenter les résultats des simulations
+
+\begin{center}
+\begin{algorithm}[H]
+  \KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+  $X_0 \leftarrow x \in \xset$ arbitraire\;
+  \Repeat{une condition d'arrêt}{
+    $P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+    $(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+    $U_k \leftarrow U(X_k)$\;
+    $K_k \leftarrow \norm{P_k}^2/2$\;
+    $U_{prop} \leftarrow U(X_{prop})$\;
+    $K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+    \eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+      $X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+    }{
+      $X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+    }
+  }
+  \KwRet{$(X_k)_k$}
+  \caption{Hamiltonian Monte-Carlo}
+  \label{algo:HMC}
+\end{algorithm}
+\end{center}
+
 
 \pagebreak
 \bibliographystyle{plain}
