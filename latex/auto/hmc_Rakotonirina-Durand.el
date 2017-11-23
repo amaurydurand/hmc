@@ -16,7 +16,9 @@
     "thm:ergodic"
     "algo:metropolis-hastings"
     "algo:metropolis"
-    "eq:canonical-dist")
+    "eq:canonical-dist"
+    "algo:leapfrog"
+    "algo:HMC")
    (LaTeX-add-bibliographies
     "ref"))
  :latex)
