@@ -1,7 +1,6 @@
 #{
 TO DO :
-	- animate the leapfrog evolution
-	- randomize L
+	- animate the leapfrog evolution ?
 #}
 pkg load statistics
 clear all;

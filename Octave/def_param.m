@@ -11,10 +11,11 @@ d = 2; % dimension
 %X0 = 8*ones(d,1); % starting point
 X0 = zeros(d,1);
 
-Delta = normrnd(0,1,d,N); % RWM step
+Delta = normrnd(0,1,d,N); % RWM steps
 
 dt = 0.1; % leapfrog step
-L = 25; % number of leapfrog steps
+%L = 25*ones(1,N); % number of leapfrog steps
+L = ceil(25*rand(1,N));
 
 
 
@@ -45,9 +46,9 @@ switch (aimed_density)
 	case "gm" % gaussian mixture distribution
 		mu1 = 2*ones(d,1); w1 = 0.5;
 		mu2 = -2*ones(d,1); w2 = 1-w1;
-		sig1 = eye(d)*2;
+		sig1 = eye(d);
 		invsig1 = inv(sig1);
-		sig2 = eye(d)*2;
+		sig2 = eye(d);
 		invsig2 = inv(sig2);
 
 		f1 = @(x) exp(-sum((x-mu1).*(invsig1*(x-mu1)), axis=1)*0.5) / sqrt(2*pi*det(sig1))^d;
