@@ -1,24 +1,27 @@
 switch (d)
 	case 1
 		X_rwm = RWM(h,Delta,X0,N);
+		fprintf("RWM done\n"); fflush(stdout);
 		X_rwm = X_rwm(:,n0+1:N+1);
-		x = linspace(min(X_rwm),max(X_rwm));
+		
+		X_hmc = HMC(U,dU,dt,L,X0,N);
+		fprintf("HMC done\n"); fflush(stdout);
+		X_hmc = X_hmc(:,n0+1:N+1);
 		
 		figure(2); clf;
+		
 		subplot(1,2,1);
 		hold on;
+		x = linspace(min(X_rwm),max(X_rwm));
 		plot(x,h1(x),"r");
 		hist1(X_rwm);
 		title("Random-walk Metropolis");
 		legend("Theoretical density","Histogram of the walk");
 		hold off
 		
-		X_hmc = HMC(U,dU,dt,L,X0,N);
-		X_hmc = X_hmc(:,n0+1:N+1);
-		x = linspace(min(X_hmc),max(X_hmc));
-		
 		subplot(1,2,2);
 		hold on;
+		x = linspace(min(X_hmc),max(X_hmc));
 		plot(x,h1(x),"r");
 		hist1(X_hmc);
 		title("Hamiltonian Monte-Carlo");
@@ -26,8 +29,11 @@ switch (d)
 		hold off
 	case 2
 		X_rwm = RWM(h,Delta,X0,N);
+		fprintf("RWM done\n"); fflush(stdout);
 		X_rwm = X_rwm(:,n0+1:N+1);
+		
 		X_hmc = HMC(U,dU,dt,L,X0,N);
+		fprintf("HMC done\n"); fflush(stdout);
 		X_hmc = X_hmc(:,n0+1:N+1);
 		
 		figure(1); clf;
@@ -87,7 +93,7 @@ switch (d)
     pc_hmc_old = plot(X_hmc(1, 1), X_hmc(2, 1), 
                     'color', 'g', 'linewidth', 2);
     hold off
-    pause(0.1);
+    pause(0.1); drawnow;
     
     % other iterations
     for t = 2:n
@@ -127,6 +133,7 @@ switch (d)
       pc_rwm_old = pc_rwm;
       delete(pc_hmc_old)
       pc_hmc_old = pc_hmc;
+			drawnow;
     endfor
     
     

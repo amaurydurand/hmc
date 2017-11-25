@@ -1,6 +1,5 @@
 #{
 TO DO :
-	- aim at a non-gaussian density
 	- animate the leapfrog evolution
 	- randomize L
 #}

@@ -14,7 +14,7 @@ function X = HMC(U,dU,dt,L,X0,N)
 	X(:,1) = X0;
 	for k = 1:N % HMC step
 		Xk = X(:,k); Pk = stdnormal_rnd(size(Xk)); % at time k
-		[Xp,Pp] = HMC_sautemouton(dU,dt,L,Xk,Pk); % proposed
+		[Xp,Pp] = HMC_leapfrog(dU,dt,L,Xk,Pk); % proposed
 		% Pp = -Pp; % we don't oppose Pp because K is even
 		
 		% energies
