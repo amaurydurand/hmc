@@ -10,7 +10,7 @@ switch (d)
 		plot(x,h1(x),"r");
 		hist1(X_rwm);
 		title("Random-walk Metropolis");
-		legend("Densit� th�orique","Histogramme de la marche");
+		legend("Theoretical density","Histogram of the walk");
 		hold off
 		
 		X_hmc = HMC(U,dU,dt,L,X0,N);
@@ -22,7 +22,7 @@ switch (d)
 		plot(x,h1(x),"r");
 		hist1(X_hmc);
 		title("Hamiltonian Monte-Carlo");
-		legend("Densit� th�orique","Histogramme de la marche");
+		legend("Theoretical density","Histogram of the walk");
 		hold off
 	case 2
 		X_rwm = RWM(h,Delta,X0,N);
@@ -34,7 +34,7 @@ switch (d)
 		subplot(2,2,1);
 		plot(X_th(1,:),X_th(2,:),"+b");
     axis equal;
-		title([int2str(n) "-�chantillon"]);
+		title([int2str(n) "-sample"]);
 		subplot(2,2,2);
 		plot(X_rwm(1,:),X_rwm(2,:),"+r");
     axis equal;
@@ -114,7 +114,6 @@ switch (d)
       
       subplot(2,2,4)
       hold on
-      % first plot to define the line
       pc_hmc = plot(X_hmc(1, 1:t), X_hmc(2, 1:t), 
                       'color', 'g', 'linewidth', 2);
       hold off

@@ -1,8 +1,8 @@
 #{
-A FAIRE :
-	- prendre une densité cible non gaussienne
-	- animer une représentation du leapfrog
-	- randomiser L
+TO DO :
+	- aim at a non-gaussian density
+	- animate the leapfrog evolution
+	- randomize L
 #}
 pkg load statistics
 clear all;

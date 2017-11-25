@@ -1,12 +1,12 @@
 function hist1(X)
 %{
-Trace un histogramme de probabilité
+Plot an histogram with mass 1
 @param
-	X : échantillon
-	m : nombre de barres
+	X : sample
+	m : number of bin
 %}
 	m = ceil(length(X)^0.35);
 	[freq,val] = hist(X,m);
-	l = val(2)-val(1);
-	bar(val,freq/l/sum(freq),"hist");
+	w = val(2)-val(1);
+	bar(val,freq/w/sum(freq),"hist");
 endfunction

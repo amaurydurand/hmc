@@ -1,20 +1,20 @@
 %% Numerical parameters
 
-n = 1000; % nombre de donn�es � garder
-n0 = 100; % oublier les donn�es jusqu'� n0-1
+n = 1000; % number of kept (plotted) data
+n0 = 100; % number of first forgotten data
 % n = 500;
 % n0 = 0;
-N = n+n0-1; % nombre de donn�es � simuler
+N = n+n0-1; % number of simulated data
 
 d = 1; % dimension
 
-X0 = 8*ones(d,1); % point initial
+X0 = 8*ones(d,1); % starting point
 %X0 = zeros(d,1);
 
-Delta = normrnd(0,1,d,N); % pas pour RWM
+Delta = normrnd(0,1,d,N); % RWM step
 
-dt = 0.1; % pas pour leapfrog
-L = 100; % nombre de pas pour leapfrog
+dt = 0.1; % leapfrog step
+L = 100; % number of leapfrog steps
 
 
 
@@ -37,6 +37,6 @@ U = @(x) sum((x-mu).*(invsig*(x-mu))*0.5, axis=1);
 dU = @(x) invsig * (x-mu);
 
 
-X_th = mvnrnd(mu,sig, 500)'; % vraies valeurs simulees
+X_th = mvnrnd(mu,sig, 500)'; % exact sample
 
-% autres cas
+% other densities

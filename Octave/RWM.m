@@ -1,10 +1,10 @@
 function X = RWM(h,Delta,X0,N)
 %{
 @param
-	h : proportionnel à la densité à simuler
-	Delta : N-échantillon de la loi instrumentale
-	X0 : origine
-	N : nombre de pas
+	h : proportionnal to the aimed density
+	Delta : N-sample of the instrumental law
+	X0 : starting point
+	N : number of steps
 @return
 	X : (X0,...,XN) random-walk Metropolis
 %}
