@@ -1,26 +1,26 @@
 switch (d)
 	case 1
-		x = linspace(-5,5);
-		y = h1(x);
-		
 		X_rwm = RWM(h,Delta,X0,N);
 		X_rwm = X_rwm(:,n0+1:N+1);
+		x = linspace(min(X_rwm),max(X_rwm));
 		
 		figure(2); clf;
-		hold on
-		plot(x,y,"r");
-		hist(X_rwm,ceil(n^0.35),1);
+		subplot(1,2,1);
+		hold on;
+		plot(x,h1(x),"r");
+		hist1(X_rwm);
 		title("Random-walk Metropolis");
 		legend("Densit� th�orique","Histogramme de la marche");
 		hold off
 		
 		X_hmc = HMC(U,dU,dt,L,X0,N);
 		X_hmc = X_hmc(:,n0+1:N+1);
+		x = linspace(min(X_hmc),max(X_hmc));
 		
-		figure(3); clf;
-		hold on
-		plot(x,y,"r");
-		hist(X_hmc,ceil(n^0.35),1);
+		subplot(1,2,2);
+		hold on;
+		plot(x,h1(x),"r");
+		hist1(X_hmc);
 		title("Hamiltonian Monte-Carlo");
 		legend("Densit� th�orique","Histogramme de la marche");
 		hold off
@@ -45,8 +45,8 @@ switch (d)
 		title("Hamiltonian Monte-Carlo");
     
     figure(2); clf;
-    x = linspace(-10,10);
-		y = linspace(-10,10);
+    x = linspace(-10,10,50);
+		y = linspace(-10,10,50);
     [xx, yy] = meshgrid(x,y);
     F = reshape(-log(h([xx(:) yy(:)]')), length(y), length(x));
 
@@ -56,7 +56,7 @@ switch (d)
     axis([min(x) max(x) min(y) max(y) min(F(:)) max(F(:))])
     % first plot to define the line
     p_rwm_old = plot3(X_rwm(1, 1), X_rwm(2, 1), 
-                  -log(h2(X_rwm(:, 1))),
+                  -log(h1(X_rwm(:, 1))),
                   'color', 'r', 'linewidth', 2);              
     view([20, 56])
     hold off
@@ -67,7 +67,7 @@ switch (d)
     axis([min(x) max(x) min(y) max(y) min(F(:)) max(F(:))])
     % first plot to define the line
     p_hmc_old = plot3(X_hmc(1, 1), X_hmc(2, 1), 
-                    -log(h2(X_hmc(:, 1))),
+                    -log(h1(X_hmc(:, 1))),
                     'color', 'g', 'linewidth', 2);
     view([20, 56])
     hold off
@@ -95,13 +95,13 @@ switch (d)
       title(sprintf('Random Walk Metropolis, t = %d', t));
       hold on
       p_rwm = plot3(X_rwm(1, 1:t), X_rwm(2, 1:t), 
-                    -log(h2(X_rwm(:, 1:t))),
+                    -log(h1(X_rwm(:, 1:t))),
                     'color', 'r', 'linewidth', 2);              
       hold off
       subplot(2,2,2)
       hold on
       p_hmc = plot3(X_hmc(1, 1:t), X_hmc(2, 1:t), 
-                      -log(h2(X_hmc(:, 1:t))),
+                      -log(h1(X_hmc(:, 1:t))),
                       'color', 'g', 'linewidth', 2);
       hold off
       title(sprintf('Hamiltonian Monte Carlo, t = %d', t));

@@ -1,7 +1,8 @@
 #{
-PROBLEMES :
--	L'aire d'un histogramme de hist ne fait pas 1
-	C'est la somme des hauteurs des barres qui vaut 1
+A FAIRE :
+	- prendre une densité cible non gaussienne
+	- animer une représentation du leapfrog
+	- randomiser L
 #}
 pkg load statistics
 clear all;
