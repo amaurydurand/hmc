@@ -116,18 +116,18 @@ switch (d)
       hold on
       % first plot to define the line
       pc_hmc = plot(X_hmc(1, 1:t), X_hmc(2, 1:t), 
-                      'color', 'g', 'linewidth', 2);
+                    'color', 'g', 'linewidth', 2);
       hold off
       
-      pause(0.05);      
-      delete(p_rwm_old)
-      p_rwm_old = p_rwm;
-      delete(p_hmc_old)
-      p_hmc_old = p_hmc;
-      delete(pc_rwm_old)
-      pc_rwm_old = pc_rwm;
-      delete(pc_hmc_old)
-      pc_hmc_old = pc_hmc;
+      pause(0.05);
+      %delete(p_rwm_old)
+      %p_rwm_old = p_rwm;
+      %delete(p_hmc_old)
+      %p_hmc_old = p_hmc;
+      %delete(pc_rwm_old)
+      %pc_rwm_old = pc_rwm;
+      %delete(pc_hmc_old)
+      %pc_hmc_old = pc_hmc;
     endfor
     
     
