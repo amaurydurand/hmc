@@ -209,7 +209,7 @@ h_{\widetilde{\pi}}(x,p) \propto \exp \left( -\frac{H(x,p)}{T} \right)
 où le Hamiltonien est défini par $H : (x,p) \mapsto U(x) + K(p)$.
 
 \begin{Rque}
-En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$ est assez grande.
+En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$) est assez grande.
 \end{Rque}
 
 L'algorithme HMC propose ses mouvements selon le principe suivant : 
@@ -220,9 +220,9 @@ L'algorithme HMC propose ses mouvements selon le principe suivant :
 \item Considérer $Z_{k+1}^{\rm prop}$ l'état de l'objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $H$. 
 \end{enumerate}
 
-Il est important de noter que le HMC n'est pas une méthode de Métropolis-Hastings car, bien que le principe soit similaire (proposer un mouvement et le choisir selon une fonction de rejet dépendant de la loi cible), le HMC tire une nouvelle quantité de mouvement à chaque étape, ce qui le rend différent d'une méthode Métropolis-Hastings.
+Il est important de noter que le HMC n'est pas une méthode de Métropolis-Hastings car, bien que le principe soit similaire (proposer un mouvement et le choisir selon une fonction de rejet dépendant de la loi cible), le HMC tire une nouvelle quantité de mouvement à chaque étape.
 
-Plusieurs problématiques sont alors soulevées : la question la plus importante est de savoir si la loi $\widetilde{\pi}$ est bien invariante. De plus la forme de loi que l'on considère impose des conditions sur les lois $\pi$ et $\nu$, notamment des conditions de régularité de leurs densités (on doit pouvoir dériver le Hamiltonien). Enfin, comment simuler la dynamique hamiltonienne et quelles sont les différences entre le cadre idéal où le mouvement proposé est exactement celui décrit par les équations \eqref{eq:hamiltonian-dyn} et le cadre pratique où l'on doit discrétiser ces équations ?
+Plusieurs problématiques sont alors soulevées : les questions les plus importantes sont de savoir si la loi $\widetilde{\pi}$ est bien invariante et si l'algorithme converge vers cette loi. Nous ne nous intéresserons ici qu'à la question de l'invariance sans résoudre la question de la convergence. De plus, la forme de loi que l'on considère impose des conditions sur les lois $\pi$ et $\nu$, notamment des conditions de régularité de leurs densités (on doit pouvoir dériver le Hamiltonien). Enfin, comment simuler la dynamique hamiltonienne et quelles sont les différences entre le cadre idéal où le mouvement proposé est exactement celui décrit par les équations \eqref{eq:hamiltonian-dyn} et le cadre pratique où l'on doit discrétiser ces équations ?
 
 \paragraph{Hypothèses:}
 Afin de pouvoir modéliser le problème par un HMC, on suppose
@@ -248,23 +248,23 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 \subsection{Propriétés de la dynamique hamiltonienne}
 \begin{Prop}[conservation du hamiltonien]\label{prop:conservation}
-  Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors $\forall t \in \rset_+$
+  Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors
   $$
-  (H \circ z)'(t) = 0
+  \forall t \in \rset_+, (H \circ z)'(t) = 0.
   $$
 \end{Prop}
 
 \begin{proof}
-  Remarquons tout d'abord que la matrice $J$ définie dans la remarque \ref{rque:edo} vérifie $\forall u \in \rset^{2d}, \inner{u, Ju} = 0$. Ainsi, si $z$ est solution de \eqref{eq:edo}, $\forall t \in \rset_+$, 
+  Remarquons tout d'abord que la matrice $J$ définie dans la remarque \ref{rque:edo} vérifie $\forall u \in \rset^{2d}, \inner{u, Ju} = 0$. Ainsi, si $z$ est solution de \eqref{eq:edo},
   $$
-    (H \circ z)'(t) = \inner{\nabla H (z(t)), z'(t)} = \inner{\nabla H (z(t)), J \nabla H(z(t))} = 0
+    \forall t \in \rset_+, (H \circ z)'(t) = \inner{\nabla H (z(t)), z'(t)} = \inner{\nabla H (z(t)), J \nabla H(z(t))} = 0.
   $$
 \end{proof}
 
 \begin{Def}[flot hamiltonien]
-  On définit le flot du hamiltonien par $\forall t \in \rset_+$,
+  On définit le flot du hamiltonien par
   $$
-  \phi_t : \fundef{
+  \forall t \in \rset_+, \phi_t : \fundef{
     \rset^{2d} & \to & \rset^{2d} \\
     z_0 = (x_0, p_0) &\mapsto & \phi_t(z_0) = (\phi_t^{(1)}(z_0), \phi_t^{(2)}(z_0))
     }
@@ -276,9 +276,9 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
   Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$. Alors $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_{-}$
 \end{Lem}
 \begin{proof}
-  On peut écrire $\bar{z} = u \circ z \circ v$ avec $u : (x,p) \mapsto (x, -p)$ et $v : t \mapsto -t$. Alors $\forall t \in \rset_{-}$, (en notant $\frac{\partial u}{\partial z}$ la matrice jacobienne de $u$). 
+  On peut écrire $\bar{z} = u \circ z \circ v$ avec $u : (x,p) \mapsto (x, -p)$ et $v : t \mapsto -t$. Alors en notant $\frac{\partial u}{\partial z}$ la matrice jacobienne de $u$, 
   $$
-  \bar{z'}(t) = - (u \circ z)'(-t) = - \frac{\partial u}{\partial z}(z(-t)) z'(-t) = -
+  \forall t \in \rset_-, \bar{z'}(t) = - (u \circ z)'(-t) = - \frac{\partial u}{\partial z}(z(-t)) z'(-t) = -
   \begin{bmatrix}
     I_{d} & 0_{d} \\
     0_{d} & - I_{d}
@@ -288,7 +288,7 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
     I_{d} & 0_{d} \\
     0_{d} & - I_{d}
   \end{bmatrix}
-  \nabla H(z(-t))
+  \nabla H(z(-t)).
   $$
   {\red je n'arrive pas à aller plus loin, il faudrait que $\nabla H$ soit impaire en $p$ pour bien avoir $\begin{bmatrix}
     I_{d} & 0_{d} \\
@@ -316,9 +316,8 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 
 \begin{Prop}[conservation du volume]\label{prop:vol}
-  $\forall t \in \rset_+, \forall z \in \rset^{2d}$,
   $$
-  \det \left( \frac{\partial \phi_t}{\partial z}(z) \right) = 1
+  \forall t \in \rset_+, \forall z \in \rset^{2d}, \det \left( \frac{\partial \phi_t}{\partial z}(z) \right) = 1
   $$
 \end{Prop}
 
@@ -366,14 +365,14 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 \end{center}
 
 \begin{Def}[semi-groupe Markovien]
-  Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+$, $P_{t+s} = P_t P_s$
+  Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, P_{t+s} = P_t P_s$
 \end{Def}
 
 \begin{Prop}[invariance de la loi]
   On se place sous les hypothèses \eqref{eq:hyp}. Alors
 
   \begin{enumerate}
-  \item Pour tout $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ avec
+  \item Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ avec
   $$
   Q : \fundef{
     \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
@@ -386,19 +385,19 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
     (z, A) & \mapsto & \delta_{\phi_t(z)}(A) = \ind_A(\phi_t(z))
     }
   $$
-\item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien
+\item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien.
 \item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QP_t$-invariante. 
   \end{enumerate}
 \end{Prop}
 \begin{proof}
 \begin{enumerate}
-\item On note $(\calF_k)_{k \in \nset} = (\sigma(Z_j, j\leq k))_{k \in \nset}$ la filtration canonique associée à $Z$. Soit $A \in \calB(\rset^{2d})$ alors $\PP[Z_{k+1} \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}]$. Comme $\tilde{P}_k \indep \calF_k$, on a donc $\PP[Z_{k+1} \in A \given{\calF_k}] = \hat{F}(X_k)$ où $\forall x \in \rset^d, \hat{F}(x) = \PP[\phi_t(x, \tilde{P}_1) \in A]$. Ainsi $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $N$ tel que $\forall (x,p) \in \rset^{2d}, \forall A \in \calB(\rset^{2d})$,
+\item On note $(\calF_k)_{k \in \nset} = (\sigma(Z_j, j\leq k))_{k \in \nset}$ la filtration canonique associée à $Z$. Soit $A \in \calB(\rset^{2d})$ alors $\PP[Z_{k+1} \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}]$. Comme $\tilde{P}_k \indep \calF_k$, on a donc $\PP[Z_{k+1} \in A \given{\calF_k}] = \hat{F}(X_k)$ où $\forall x \in \rset^d, \hat{F}(x) = \PP[\phi_t(x, \tilde{P}_1) \in A]$. Ainsi $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $N$ tel que
   $$
-  N((x,p), A) = \PP[\phi_t(x, \tilde{P}_1) \in A] = \int \ind_A(\phi_t(x, p_1)) \nu(dp_1)
+  \forall (x,p) \in \rset^{2d}, \forall A \in \calB(\rset^{2d}), N((x,p), A) = \PP[\phi_t(x, \tilde{P}_1) \in A] = \int \ind_A(\phi_t(x, p_1)) \nu(dp_1).
   $$
   Or
   $$
-  Q P_t((x,p),A) = \int Q((x,p), dx_1dp_1) P_r((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1)
+  Q P_t((x,p),A) = \int Q((x,p), dx_1dp_1) P_r((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1).
   $$
   Donc $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $QP_t$.
 
@@ -407,19 +406,19 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
   P_t P_s (z, A) = \int P_t(z, dz_1) P_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = P_{s+t} = P_{t+s}
   $$
 
-\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariantte). Soit $A \in \calB(\rset^{2d})$, alors
+\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariante). Soit $A \in \calB(\rset^{2d})$, alors
   $$
   \widetilde{\pi} Q (A) = \int \pi(dx) \nu(dp) \delta_x(dx_1) \nu(dp_1) \ind_A(x_1, p_1) = \int \pi(dx) \nu(dp_1) \ind_A(x, p_1) = \int \widetilde{\pi}(dxdp_1) \ind_A(x, p_1) = \widetilde{\pi}(A) 
   $$
 
-  Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$ alors
+  Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$, alors
   \begin{align*}
     \widetilde{\pi} P_t (A)
     &= \int \widetilde{\pi}(dz) P_t(z, A) \\
     &\propto \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
     &\overset{(*)}{=} \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy \\
     &\overset{(**)}{=} \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
-    &= \widetilde{\pi}(A)
+    &= \widetilde{\pi}(A).
   \end{align*}
   $(*)$ : en faisant le changement de variable $y = \phi_t(z)$ comme $\phi_t$ est un $\calC^1$ difféomorphisme (proposition \ref{prop:rev}) de jacobien égal à $1$ (proposition \ref{prop:vol}) \\
   $(**)$ : par la proposition \ref{prop:conservation} {\red par évident a priori}
