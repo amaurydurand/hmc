@@ -170,7 +170,7 @@ Un système physique de position $x : \rset_+ \to \rset^d$ et de quantité de mo
      p_i' (t) &= -\frac{\partial H}{\partial x_i} (x(t), p(t))
   \end{aligned}
 \end{equation}
-où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it Hamiltonien} du système.
+où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it hamiltonien} du système.
 
 Le Hamiltonien s'interprète comme une énergie sur $x$ et $p$. En général $H(x,p) = U(x) + K(p)$ où $U$ est l'énergie potentielle et $K$ l'énergie cinétique.
 
@@ -184,7 +184,8 @@ Le Hamiltonien s'interprète comme une énergie sur $x$ et $p$. En général $H(
   $J = \begin{bmatrix}
     0_{d} & I_{d} \\
     -I_{d} & 0_{d}
-  \end{bmatrix}$
+  \end{bmatrix}$.
+  Une solution de \eqref{eq:edo} est dite solution du hamiltonien $H$.
 \end{Rque}
 
 \subsubsection{Principe général}
@@ -229,13 +230,14 @@ Afin de pouvoir modéliser le problème par un HMC, on suppose
 \begin{equation}\label{eq:hyp}
   \begin{aligned}
     &\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
-    &\mbox{$\ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$ où $k \geq 1$}
+    &\mbox{$\ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$ où $k \geq 1$}\\
+    &\mbox{$h_\nu$ est paire}
   \end{aligned}
   \tag{H}
 \end{equation}
 
 \begin{Rque}
-  La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La seconde permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. 
+  La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. La troisième permettra d'avoir une propriété de réversibilité (proposition \ref{prop:rev}.
 \end{Rque}
 
 Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
@@ -248,10 +250,7 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 \subsection{Propriétés de la dynamique hamiltonienne}
 \begin{Prop}[conservation du hamiltonien]\label{prop:conservation}
-  Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors
-  $$
-  \forall t \in \rset_+, (H \circ z)'(t) = 0.
-  $$
+  Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors $H \circ z$ est constant.
 \end{Prop}
 
 \begin{proof}
@@ -271,47 +270,67 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
   $$
   où $\phi_t(z_0)$ est l'unique solution de \eqref{eq:edo} avec condition initiale $z(0) = z_0$.
 \end{Def}
+
+\begin{Pte}
+  Par unicité de la solution de \eqref{eq:edo}, on a
+  $$
+  \forall t, s \in \rset_+, \phi_{t+s} = \phi_t \circ \phi_s.
+  $$
+\end{Pte}
   
 \begin{Lem}\label{lem:sol-inverse}
-  Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$. Alors $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_{-}$
+  Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} = (\bar x, \bar p) : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$ et $\bar H : \fundef{\rset^{2d} & \to & \rset^{2d} \\ (x,p) & \mapsto & H(x,-p)}$. Alors $\bar{z}$ est solution du hamiltonien $\bar H$ sur $\rset_{-}$ (avec d'autres conditions initiales).
 \end{Lem}
 \begin{proof}
-  On peut écrire $\bar{z} = u \circ z \circ v$ avec $u : (x,p) \mapsto (x, -p)$ et $v : t \mapsto -t$. Alors en notant $\frac{\partial u}{\partial z}$ la matrice jacobienne de $u$, 
+  D'une part,
   $$
-  \forall t \in \rset_-, \bar{z'}(t) = - (u \circ z)'(-t) = - \frac{\partial u}{\partial z}(z(-t)) z'(-t) = -
-  \begin{bmatrix}
-    I_{d} & 0_{d} \\
-    0_{d} & - I_{d}
-  \end{bmatrix}
-  J \nabla H(z(-t))
-  = J  \begin{bmatrix}
-    I_{d} & 0_{d} \\
-    0_{d} & - I_{d}
-  \end{bmatrix}
-  \nabla H(z(-t)).
+  \forall t \in \rset_-, \bar x'(t) = - x'(-t) = - \frac{\partial H}{\partial p}(x(-t),p(-t)) = - \frac{\partial H}{\partial p}(\bar x(t), - \bar p(t)) = \frac{\partial{\bar H}}{\partial p}(\bar x(t), \bar p(t))
   $$
-  {\red je n'arrive pas à aller plus loin, il faudrait que $\nabla H$ soit impaire en $p$ pour bien avoir $\begin{bmatrix}
-    I_{d} & 0_{d} \\
-    0_{d} & - I_{d}
-  \end{bmatrix}
-  \nabla H(z(-t)) = \nabla H(\bar{z}(-t))$ ce qui est vrai si $H(x,p) = U(x) + K(p)$ avec $K$ paire}
+  et d'autre part,
+  $$
+  \forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
+  $$
 \end{proof}
 
+\begin{Rque}\label{rque:Hbar}
+  Sous les hypothèses \eqref{eq:hyp}, la parité de $h_\nu$ donne la parité de $K$. Comme $H(x,p) = U(x)+K(p)$, on en déduit $H = \bar H$.
+\end{Rque}
 
 \begin{Prop}[réversibilité]\label{prop:rev}
-  On se place les hypothèses \eqref{eq:hyp}. Alors $\forall t \in \rset_+, \phi_t$ est un $\calC^k$-différomorphisme et
+  On se place les hypothèses \eqref{eq:hyp}. Alors pour $t \in \rset_+$, $\phi_t$ est un $\calC^k$-différomorphisme et
   $$
   \phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
   $$
-  De plus $\forall t, s \in \rset_+,$ $\phi_{t+s} = \phi_t \circ \phi_s$ 
 \end{Prop}
 \begin{proof}
+  $\phi_t$ est $\calC^k$ comme flot d'une équation différentielle $\calC^k$. Si on admet la formule de l'inverse, on y lit que $\phi_t^{-1}$ est $\calC^k$. Il suffit donc de montrer cette formule.
+
+  Fixons $t \in \rset_+$ et $(x_0,p_0) \in \rset^{2d}$. Notons $z=(x,p)$ la solution sur $\rset_+$ du hamiltonien avec $z(0) = (x_0,p_0)$ et notons
+  $$
+  \bar \phi_t : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
+  $$
+  Alors
   \begin{itemize}
-  \item 
-  \item 
-  \item
-  \item 
+    \item D'une part,
+      $$
+      \bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) = (\bar z(0), - \bar z(0)).
+      $$
+      Par lemme \ref{lem:sol-inverse} et remarque \ref{rque:Hbar}, $\bar z$ est solution sur $\rset_-$ du hamiltonien avec $\bar z(0) = (x_0,-p_0)$ donc
+      $$
+      \phi_t^{(1)}(\bar z(-t)) = x_0, \phi_t^{(2)}(\bar z(-t)) = -p_0
+      $$
+      ce qui donne que $\bar \phi_t(\phi_t(x_0,p_0)) = (x_0,p_0)$.
+
+    \item D'autre part,
+      $$
+      \bar \phi_t(x_0,-p_0) = (\phi_t^{(1)}(x_0, p_0), - \phi_t^{(2)}(x_0, p_0)) = (x(t),-p(t)) = \bar z(-t)
+      $$
+      donc
+      $$
+      \phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = (x_0,-p_0).
+      $$
   \end{itemize}
+  Ceci étant vrai pour tout $(x_0,p_0)$, on a donc $\bar \phi_t = \phi_t^{-1}$.
 \end{proof}
 
 
