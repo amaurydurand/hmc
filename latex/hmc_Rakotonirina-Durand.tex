@@ -15,7 +15,7 @@ Ce rapport présente le travail effectué lors d'un projet du cours d'approfondi
 
 Les méthodes de Monte Carlo par dynamique Hamiltonienne, plus communément appelées Hamiltonian Monte Carlo (HMC), font partie d'une grande famille de méthodes de simulation : les méthodes de Monte Carlo, et plus précisemment dans la famille des méthodes de Monte Carlo par chaînes de Markov (ou Monte Carlo Markov Chains). Ces méthodes se placent dans le cadre suivant :
 \begin{Def}[Carde général]
-  Soit $(\xset, \calX)$ un espace mesurable. Soit $\pi$ une loi de probabilité sur cet espace. On suppose que $\pi$ n'est connue qu'à un facteur de proportionnalité près i.e on connait $\lambda \pi$ où $\lambda \in \rset$ une constante. Le but est de pouvoir approcher $\pi f = \EE[f(X)]$ avec $X \sim \pi$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$.
+	Soit $(\xset, \calX)$ un espace mesurable. Soit $\pi$ une loi de probabilité sur cet espace. On suppose que $\pi$ n'est connue qu'à un facteur de proportionnalité près i.e on connait $\lambda \pi$ où $\lambda \in \rset$ une constante. Le but est de pouvoir approcher $\pi f = \EE[f(X)]$ avec $X \sim \pi$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$.
 \end{Def}
 
 \subsection{Méthodes de Monte Carlo}
@@ -25,26 +25,30 @@ La méthode de Monte Carlo la plus simple (appelée Monte Carlo naïf) est la su
 Dans ces deux cas, l'approximation de $\pi f$ repose sur une simulation de variables aléatoires i.i.d. Cette particularité permet alors de montrer des résultats de convergence notamment grâce à la loi des grands nombre. Les méthodes de Monte Carlo par chaînes de Markov ne reposent pas sur le caractère i.i.d des variables mais sur les propriétés des Chaînes de Markov. 
 
 \subsection{Monte Carlo Markov Chains (MCMC)}
+
 Les méthode MCMC se basent sur les notions de loi invariante, de réversibilité et d'ergodicité.
+
 \subsubsection{Loi invariante et réversibilité}
+
 On considère $P$ un noyau de Markov sur $\xset \times \calX$.
 \begin{Def}
-  Une loi de probabilité $\pi$ sur $(\xset, \calX)$ est dite
-  \begin{itemize}
-  \item $P$-invariante si $\pi P = \pi$
-  \item $P$-réversible si $\forall A,B \in \calX$, $\pi \otimes P (A \times B) = \pi \otimes P (B \times A)$
-\end{itemize}
+	Une loi de probabilité $\pi$ sur $(\xset, \calX)$ est dite
+	\begin{itemize}
+		\item $P$-invariante si $\pi P = \pi$
+		\item $P$-réversible si $\forall A,B \in \calX$, $\pi \otimes P (A \times B) = \pi \otimes P (B \times A)$
+	\end{itemize}
 \end{Def}
 
 \begin{Prop}
-  Toute probabilité $P$-réversible est $P$-invariante.
-  % Soit $\pi$ une loi de probabilité sur $(\xset, \calX)$ alors 
-  % $$
-  % \pi \text{ est } P\text{-reversible} \Rightarrow \pi \text{ est } P\text{-invariante}
-  % $$
+	Toute probabilité $P$-réversible est $P$-invariante.
+	% Soit $\pi$ une loi de probabilité sur $(\xset, \calX)$ alors 
+	% $$
+	% \pi \text{ est } P\text{-reversible} \Rightarrow \pi \text{ est } P\text{-invariante}
+	% $$
 \end{Prop}
 
 \subsubsection{Ergodicité}
+
 % \begin{Def}[Système ergodique]
 %   Soit $(\Omega, \calB, \PP)$ un espace de probabilité. Soit $T : (\Omega, \calB) \to (\Omega, \calB)$ une application mesurable. 
 %   \begin{itemize}
@@ -75,8 +79,8 @@ On considère $P$ un noyau de Markov sur $\xset \times \calX$.
 % \end{Rque}
 
 \begin{Thm}\label{thm:ergodic}
-  Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ admettant une loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
-  $$\frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f$$
+	Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ admettant une loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
+	$$\frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f$$
 \end{Thm}
 
 Les algorithmes MCMC visent à construire, à partir de $\pi$, une chaîne de Markov vérifiant les hypothèses de ce théorème afin d'approcher $\pi f$ par $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$.
@@ -112,48 +116,48 @@ L'algorithme HMC est une version améliorée de l'algorithme de Metropolis-Hasti
 On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un noyau markovien $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$. $Q$ est appelé noyau instrumental. La construction de la chaîne de Markov se fait en proposant un mouvement via $Q$, puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis-hastings}).
 
 \begin{center}
-\begin{algorithm}[H]
-  \KwData{$h_\pi$ proportionnel à la densité cible, $Q$ noyau markovien simulable}
-  $X_0 \leftarrow x \in \xset$ arbitraire\;
-  \Repeat{une condition d'arrêt}{
-    $Y_{k+1} \sim Q(X_k,\cdot)$ \tcp*{Proposer un mouvement}
-    $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
-  }
-  \KwRet{$(X_k)_k$}
-  \caption{Metropolis-Hastings}
-  \label{algo:metropolis-hastings}
-\end{algorithm}
+	\begin{algorithm}[H]
+		\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ noyau markovien simulable}
+		$X_0 \leftarrow x \in \xset$ arbitraire\;
+		\Repeat{une condition d'arrêt}{
+		$Y_{k+1} \sim Q(X_k,\cdot)$ \tcp*{Proposer un mouvement}
+		$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
+		$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+		}
+		\KwRet{$(X_k)_k$}
+		\caption{Metropolis-Hastings}
+		\label{algo:metropolis-hastings}
+	\end{algorithm}
 \end{center}
 
 Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1})q(Y_{k+1}, X_k) \geq h_\pi(X_k) q(X_k, Y_{k+1})$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})q(Y_{k+1},X_k)}{h_\pi(X_k)q(X_k,Y_{k+1})}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
 
 \begin{Rque}
-  Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
+	Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
 
-  Le choix de $Q$ est en fait une difficulté de l'algorithme, puisque le mouvement proposé doit permettre l'exploration de tout l'espace (afin de passer régulièrement par toutes les régions fortement chargées par $\pi$). Nous verrons que l'algorithme HMC résout ce problème en proposant le mouvement selon une \emph{dynamique hamiltonienne}.
+	Le choix de $Q$ est en fait une difficulté de l'algorithme, puisque le mouvement proposé doit permettre l'exploration de tout l'espace (afin de passer régulièrement par toutes les régions fortement chargées par $\pi$). Nous verrons que l'algorithme HMC résout ce problème en proposant le mouvement selon une \emph{dynamique hamiltonienne}.
 \end{Rque}
 
 \begin{Def}
-  On parle de \emph{Random-walk Metropolis} quand $Q$ est le noyau d'une marche aléatoire
-  $$Y_{k+1} \leftarrow X_k + U_{k+1}$$
-  avec $(U_k)_{k \in \nset}$ iid. On supposera que $Q$ admet une densité $q$ par rapport à $\mu$ avec $q(x) = q(-x)$.
+	On parle de \emph{Random-walk Metropolis} quand $Q$ est le noyau d'une marche aléatoire
+	$$Y_{k+1} \leftarrow X_k + U_{k+1}$$
+	avec $(U_k)_{k \in \nset}$ iid. On supposera que $Q$ admet une densité $q$ par rapport à $\mu$ avec $q(x) = q(-x)$.
 \end{Def}
 
 \begin{center}
-\begin{algorithm}[H]
-  \KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
-  $X_0 \leftarrow x \in \xset$ arbitraire\;
-  $(U_k)_{k \in \nset} \siid Q$ \;
-  \Repeat{une condition d'arrêt}{
-    $Y_{k+1} \sim X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
-    $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-    $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
-  }
-  \KwRet{$(X_k)_k$}
-  \caption{Random Walk Metropolis}
-  \label{algo:metropolis}
-\end{algorithm}
+	\begin{algorithm}[H]
+		\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
+		$X_0 \leftarrow x \in \xset$ arbitraire\;
+		$(U_k)_{k \in \nset} \siid Q$ \;
+		\Repeat{une condition d'arrêt}{
+		$Y_{k+1} \sim X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
+		$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
+		$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+		}
+		\KwRet{$(X_k)_k$}
+		\caption{Random Walk Metropolis}
+		\label{algo:metropolis}
+	\end{algorithm}
 \end{center}
 
 \subsection{Principe du Hamiltonian Monte Carlo}
@@ -163,62 +167,64 @@ On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$
 L'algorithme HMC fait partie des algorithmes MCMC, le but est en effet de construire une chaîne de Markov de loi invariante la loi à simuler. Il diffère néanmoins de l'algorithme de Metropolis-Hastings notamment par le fait que le mouvement proposé suit une \emph{dynamique hamiltonienne} associée à la loi à simuler.
 
 \subsubsection{Dynamique Hamiltonienne}
+
 Un système physique de position $x : \rset_+ \to \rset^d$ et de quantité de mouvement $p : \rset_+ \to \rset^d$ (toutes deux fonctions du temps $t$) est caractérisé par des équations de mouvement de type $\forall t \geq 0, \forall i \in \iseg{1,d}$, 
 \begin{equation}\label{eq:hamiltonian-dyn}
-  \begin{aligned}
-     x_i'(t) &= \frac{\partial H}{\partial p_i} (x(t), p(t)) \\
-     p_i' (t) &= -\frac{\partial H}{\partial x_i} (x(t), p(t))
-  \end{aligned}
+	\begin{aligned}
+		x_i'(t) &= \frac{\partial H}{\partial p_i} (x(t), p(t)) \\
+		p_i' (t) &= -\frac{\partial H}{\partial x_i} (x(t), p(t))
+	\end{aligned}
 \end{equation}
 où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it hamiltonien} du système.
 
 Le Hamiltonien s'interprète comme une énergie sur $x$ et $p$. En général $H(x,p) = U(x) + K(p)$ où $U$ est l'énergie potentielle et $K$ l'énergie cinétique.
 
 \begin{Rque}\label{rque:edo}
-  Les équations \eqref{eq:hamiltonian-dyn} se réécrivent comme une équation différentielle ordinaire d'ordre 1 :
-  \begin{equation}\label{eq:edo}
-    \forall t \geq 0, \quad z'(t) = F(z(t))
-    \tag{EDO}
-  \end{equation}
-  avec $z : \fundef{ \rset_+ & \to & \rset^{2d} \\ t & \mapsto & [x_1(t), \cdots, x_d(t), p_1(t), \cdots, p_d(t)]^\top}$ et $\forall z \in \rset^{2d}, F(z) = J \nabla H (z)$ où
-  $J = \begin{bmatrix}
-    0_{d} & I_{d} \\
-    -I_{d} & 0_{d}
-  \end{bmatrix}$.
-  Une solution de \eqref{eq:edo} est dite solution du hamiltonien $H$.
+	Les équations \eqref{eq:hamiltonian-dyn} se réécrivent comme une équation différentielle ordinaire d'ordre 1 :
+	\begin{equation}\label{eq:edo}
+		\forall t \geq 0, \quad z'(t) = F(z(t))
+		\tag{EDO}
+	\end{equation}
+	avec $z : \fundef{ \rset_+ & \to & \rset^{2d} \\ t & \mapsto & [x_1(t), \cdots, x_d(t), p_1(t), \cdots, p_d(t)]^\top}$ et $\forall z \in \rset^{2d}, F(z) = J \nabla H (z)$ où
+	$J = \begin{bmatrix}
+		0_{d} & I_{d} \\
+		-I_{d} & 0_{d}
+	\end{bmatrix}$.
+	Une solution de \eqref{eq:edo} est dite solution du hamiltonien $H$.
 \end{Rque}
 
 \subsubsection{Principe général}
+
 La dynamique hamiltonienne décrit le mouvement d'un objet qui glisse sans frottement le long d'une surface ou d'une courbe. L'objet est décrit par sa position $x \in \rset^d$ et sa quantité de mouvement $p \in \rset^d$ et on lui associe des énergies potentielle $U(x)$ et cinétique $K(p)$.
 
 \begin{Def}[Distribution canonique]
-  En physique, une énergie $E : \rset^n \to \rset$ et une température $T > 0$ sont associées à une loi de probabilité par la loi de Boltzmann (ou distribution canonique) de densité par rapport à la mesure de Lebesgue sur $\rset^n$,
-  $$\forall x \in \rset^n,  \quad p(x) \propto \exp \left( -\frac{E(x)}{T} \right)$$
+	En physique, une énergie $E : \rset^n \to \rset$ et une température $T > 0$ sont associées à une loi de probabilité par la loi de Boltzmann (ou distribution canonique) de densité par rapport à la mesure de Lebesgue sur $\rset^n$,
+	$$\forall x \in \rset^n,  \quad p(x) \propto \exp \left( -\frac{E(x)}{T} \right)$$
 \end{Def}
 
 
 Dans le cas des HMC, on étend l'espace d'états $\xset = \rset^d$ à $\rset^d \times \rset^d$ et on va construire une chaîne de Markov $(Z_k = (X_k, P_k))_{k \in \nset}$ à valeurs dans ce nouvel espace avec $\forall k \in \nset, X_k \indep P_k$ et de loi invariante $\widetilde{\pi} = \pi \otimes \nu$ où $\pi$ est une distribution canonique associée à l'énergie potentielle et $\nu$ est une distribution canonique associée à l'énérgie cinétique. Ainsi leurs densités $h_\pi$ et $h_\nu$ par rapport à la mesure de Lebesgue sur $\rset^d$ vérifient $\forall x \in \rset^d, \forall p \in \rset^d$,
 \begin{align*}
-  h_\pi(x) & \propto  \exp \left( -\frac{U(x)}{T} \right) \\
-  h_\nu(p) & \propto  \exp \left( -\frac{K(p)}{T} \right)
+	h_\pi(x) & \propto  \exp \left( -\frac{U(x)}{T} \right) \\
+	h_\nu(p) & \propto  \exp \left( -\frac{K(p)}{T} \right)
 \end{align*}
 
 Ce qui donne une loi jointe de densité $h_{\widetilde{\pi}}$ telle que $\forall (x,p) \in \rset^d \times \rset^d$, 
 \begin{equation} \label{eq:canonical-dist}
-h_{\widetilde{\pi}}(x,p) \propto \exp \left( -\frac{H(x,p)}{T} \right)
+	h_{\widetilde{\pi}}(x,p) \propto \exp \left( -\frac{H(x,p)}{T} \right)
 \end{equation}
 où le Hamiltonien est défini par $H : (x,p) \mapsto U(x) + K(p)$.
 
 \begin{Rque}
-En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$) est assez grande.
+	En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$) est assez grande.
 \end{Rque}
 
 L'algorithme HMC propose ses mouvements selon le principe suivant : 
 \begin{enumerate}
-\item Considérer un objet placé en $X_k$ de quantité de mouvement $P_k$. Cela correspond à l'état $Z_k = (X_k, P_k)$ de l'objet à l'instant $k$.
-\item Tirer une nouvelle quantité de mouvement $\tilde{P}_k \sim \nu$ indépendante de la chaîne et considérer le nouvel état $\tilde{Z}_k = (X_k, \tilde{P}_k)$. 
-\item A partir de l'état $\tilde{Z}_k$, simuler la dynamique hamiltonienne (déterministe) de l'objet pendant une durée fixée.
-\item Considérer $Z_{k+1}^{\rm prop}$ l'état de l'objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $H$. 
+	\item Considérer un objet placé en $X_k$ de quantité de mouvement $P_k$. Cela correspond à l'état $Z_k = (X_k, P_k)$ de l'objet à l'instant $k$.
+	\item Tirer une nouvelle quantité de mouvement $\tilde{P}_k \sim \nu$ indépendante de la chaîne et considérer le nouvel état $\tilde{Z}_k = (X_k, \tilde{P}_k)$. 
+	\item A partir de l'état $\tilde{Z}_k$, simuler la dynamique hamiltonienne (déterministe) de l'objet pendant une durée fixée.
+	\item Considérer $Z_{k+1}^{\rm prop}$ l'état de l'objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $H$. 
 \end{enumerate}
 
 Il est important de noter que le HMC n'est pas une méthode de Métropolis-Hastings car, bien que le principe soit similaire (proposer un mouvement et le choisir selon une fonction de rejet dépendant de la loi cible), le HMC tire une nouvelle quantité de mouvement à chaque étape.
@@ -228,16 +234,16 @@ Plusieurs problématiques sont alors soulevées : les questions les plus importa
 \paragraph{Hypothèses:}
 Afin de pouvoir modéliser le problème par un HMC, on suppose
 \begin{equation}\label{eq:hyp}
-  \begin{aligned}
-    &\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
-    &\mbox{$\ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$ où $k \geq 1$}\\
-    &\mbox{$h_\nu$ est paire}
-  \end{aligned}
-  \tag{H}
+	\begin{aligned}
+		&\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
+		&\mbox{$\ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$ où $k \geq 1$}\\
+		&\mbox{$h_\nu$ est paire}
+	\end{aligned}
+	\tag{H}
 \end{equation}
 
 \begin{Rque}
-  La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. La troisième permettra d'avoir une propriété de réversibilité (proposition \ref{prop:rev}.
+	La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. La troisième permettra d'avoir une propriété de réversibilité (proposition \ref{prop:rev}.
 \end{Rque}
 
 Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
@@ -250,94 +256,94 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 \subsection{Propriétés de la dynamique hamiltonienne}
 \begin{Prop}[conservation du hamiltonien]\label{prop:conservation}
-  Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors $H \circ z$ est constant.
+	Le hamiltonien est conservé sur la trajectoire i.e si $z$ est solution de \eqref{eq:edo} alors $H \circ z$ est constant.
 \end{Prop}
 
 \begin{proof}
-  Remarquons tout d'abord que la matrice $J$ définie dans la remarque \ref{rque:edo} vérifie $\forall u \in \rset^{2d}, \inner{u, Ju} = 0$. Ainsi, si $z$ est solution de \eqref{eq:edo},
-  $$
-    \forall t \in \rset_+, (H \circ z)'(t) = \inner{\nabla H (z(t)), z'(t)} = \inner{\nabla H (z(t)), J \nabla H(z(t))} = 0.
-  $$
+	Remarquons tout d'abord que la matrice $J$ définie dans la remarque \ref{rque:edo} vérifie $\forall u \in \rset^{2d}, \inner{u, Ju} = 0$. Ainsi, si $z$ est solution de \eqref{eq:edo},
+	$$
+	\forall t \in \rset_+, (H \circ z)'(t) = \inner{\nabla H (z(t)), z'(t)} = \inner{\nabla H (z(t)), J \nabla H(z(t))} = 0.
+	$$
 \end{proof}
 
 \begin{Def}[flot hamiltonien]
-  On définit le flot du hamiltonien par
-  $$
-  \forall t \in \rset_+, \phi_t : \fundef{
-    \rset^{2d} & \to & \rset^{2d} \\
-    z_0 = (x_0, p_0) &\mapsto & \phi_t(z_0) = (\phi_t^{(1)}(z_0), \phi_t^{(2)}(z_0))
-    }
-  $$
-  où $\phi_t(z_0)$ est l'unique solution de \eqref{eq:edo} avec condition initiale $z(0) = z_0$.
+	On définit le flot du hamiltonien par
+	$$
+	\forall t \in \rset_+, \phi_t : \fundef{
+		\rset^{2d} & \to & \rset^{2d} \\
+		z_0 = (x_0, p_0) &\mapsto & \phi_t(z_0) = (\phi_t^{(1)}(z_0), \phi_t^{(2)}(z_0))
+	}
+	$$
+	où $\phi_t(z_0)$ est l'unique solution de \eqref{eq:edo} avec condition initiale $z(0) = z_0$.
 \end{Def}
 
 \begin{Pte}
-  Par unicité de la solution de \eqref{eq:edo}, on a
-  $$
-  \forall t, s \in \rset_+, \phi_{t+s} = \phi_t \circ \phi_s.
-  $$
+	Par unicité de la solution de \eqref{eq:edo}, on a
+	$$
+	\forall t, s \in \rset_+, \phi_{t+s} = \phi_t \circ \phi_s.
+	$$
 \end{Pte}
-  
+
 \begin{Lem}\label{lem:sol-inverse}
-  Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} = (\bar x, \bar p) : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$ et $\bar H : \fundef{\rset^{2d} & \to & \rset^{2d} \\ (x,p) & \mapsto & H(x,-p)}$. Alors $\bar{z}$ est solution du hamiltonien $\bar H$ sur $\rset_{-}$ (avec d'autres conditions initiales).
+	Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} = (\bar x, \bar p) : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$ et $\bar H : \fundef{\rset^{2d} & \to & \rset^{2d} \\ (x,p) & \mapsto & H(x,-p)}$. Alors $\bar{z}$ est solution du hamiltonien $\bar H$ sur $\rset_{-}$ (avec d'autres conditions initiales).
 \end{Lem}
 \begin{proof}
-  D'une part,
-  $$
-  \forall t \in \rset_-, \bar x'(t) = - x'(-t) = - \frac{\partial H}{\partial p}(x(-t),p(-t)) = - \frac{\partial H}{\partial p}(\bar x(t), - \bar p(t)) = \frac{\partial{\bar H}}{\partial p}(\bar x(t), \bar p(t))
-  $$
-  et d'autre part,
-  $$
-  \forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
-  $$
+	D'une part,
+	$$
+	\forall t \in \rset_-, \bar x'(t) = - x'(-t) = - \frac{\partial H}{\partial p}(x(-t),p(-t)) = - \frac{\partial H}{\partial p}(\bar x(t), - \bar p(t)) = \frac{\partial{\bar H}}{\partial p}(\bar x(t), \bar p(t))
+	$$
+	et d'autre part,
+	$$
+	\forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
+	$$
 \end{proof}
 
 \begin{Rque}\label{rque:Hbar}
-  Sous les hypothèses \eqref{eq:hyp}, la parité de $h_\nu$ donne la parité de $K$. Comme $H(x,p) = U(x)+K(p)$, on en déduit $H = \bar H$.
+	Sous les hypothèses \eqref{eq:hyp}, la parité de $h_\nu$ donne la parité de $K$. Comme $H(x,p) = U(x)+K(p)$, on en déduit $H = \bar H$.
 \end{Rque}
 
 \begin{Prop}[réversibilité]\label{prop:rev}
-  On se place les hypothèses \eqref{eq:hyp}. Alors pour $t \in \rset_+$, $\phi_t$ est un $\calC^k$-différomorphisme et
-  $$
-  \phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
-  $$
+	On se place les hypothèses \eqref{eq:hyp}. Alors pour $t \in \rset_+$, $\phi_t$ est un $\calC^k$-différomorphisme et
+	$$
+	\phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
+	$$
 \end{Prop}
 \begin{proof}
-  $\phi_t$ est $\calC^k$ comme flot d'une équation différentielle $\calC^k$. Si on admet la formule de l'inverse, on y lit que $\phi_t^{-1}$ est $\calC^k$. Il suffit donc de montrer cette formule.
+	$\phi_t$ est $\calC^k$ comme flot d'une équation différentielle $\calC^k$. Si on admet la formule de l'inverse, on y lit que $\phi_t^{-1}$ est $\calC^k$. Il suffit donc de montrer cette formule.
 
-  Fixons $t \in \rset_+$ et $(x_0,p_0) \in \rset^{2d}$. Notons $z=(x,p)$ la solution sur $\rset_+$ du hamiltonien avec $z(0) = (x_0,p_0)$ et notons
-  $$
-  \bar \phi_t : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
-  $$
-  Alors
-  \begin{itemize}
-    \item D'une part,
-      $$
-      \bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) = (\bar z(0), - \bar z(0)).
-      $$
-      Par lemme \ref{lem:sol-inverse} et remarque \ref{rque:Hbar}, $\bar z$ est solution sur $\rset_-$ du hamiltonien avec $\bar z(0) = (x_0,-p_0)$ donc
-      $$
-      \phi_t^{(1)}(\bar z(-t)) = x_0, \phi_t^{(2)}(\bar z(-t)) = -p_0
-      $$
-      ce qui donne que $\bar \phi_t(\phi_t(x_0,p_0)) = (x_0,p_0)$.
+	Fixons $t \in \rset_+$ et $(x_0,p_0) \in \rset^{2d}$. Notons $z=(x,p)$ la solution sur $\rset_+$ du hamiltonien avec $z(0) = (x_0,p_0)$ et notons
+	$$
+	\bar \phi_t : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
+	$$
+	Alors
+	\begin{itemize}
+		\item D'une part,
+		$$
+		\bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) = (\bar z(0), - \bar z(0)).
+		$$
+		Par lemme \ref{lem:sol-inverse} et remarque \ref{rque:Hbar}, $\bar z$ est solution sur $\rset_-$ du hamiltonien avec $\bar z(0) = (x_0,-p_0)$ donc
+		$$
+		\phi_t^{(1)}(\bar z(-t)) = x_0, \phi_t^{(2)}(\bar z(-t)) = -p_0
+		$$
+		ce qui donne que $\bar \phi_t(\phi_t(x_0,p_0)) = (x_0,p_0)$.
 
-    \item D'autre part,
-      $$
-      \bar \phi_t(x_0,-p_0) = (\phi_t^{(1)}(x_0, p_0), - \phi_t^{(2)}(x_0, p_0)) = (x(t),-p(t)) = \bar z(-t)
-      $$
-      donc
-      $$
-      \phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = (x_0,-p_0).
-      $$
-  \end{itemize}
-  Ceci étant vrai pour tout $(x_0,p_0)$, on a donc $\bar \phi_t = \phi_t^{-1}$.
+		\item D'autre part,
+		$$
+		\bar \phi_t(x_0,-p_0) = (\phi_t^{(1)}(x_0, p_0), - \phi_t^{(2)}(x_0, p_0)) = (x(t),-p(t)) = \bar z(-t)
+		$$
+		donc
+		$$
+		\phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = (x_0,-p_0).
+		$$
+	\end{itemize}
+	Ceci étant vrai pour tout $(x_0,p_0)$, on a donc $\bar \phi_t = \phi_t^{-1}$.
 \end{proof}
 
 
 \begin{Prop}[conservation du volume]\label{prop:vol}
-  $$
-  \forall t \in \rset_+, \forall z \in \rset^{2d}, \det \left( \frac{\partial \phi_t}{\partial z}(z) \right) = 1
-  $$
+	$$
+	\forall t \in \rset_+, \forall z \in \rset^{2d}, \det \left( \frac{\partial \phi_t}{\partial z}(z) \right) = 1
+	$$
 \end{Prop}
 
 \subsection{Discrétisation des équations}
@@ -347,126 +353,128 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 
 \begin{center}
-\begin{algorithm}[H]
-  \KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
-  $(x,p) \leftarrow (x_0,p_0)$\;
-  $p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
-  \For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
-    $x \leftarrow x + \epsilon p$\;
-    $p \leftarrow p - \epsilon \nabla U(x)$\;
-  }
-  $x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
-  $p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
-  \KwRet{$(x,p)$}
-  \caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
-  \label{algo:leapfrog}
-\end{algorithm}
+	\begin{algorithm}[H]
+		\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+		$(x,p) \leftarrow (x_0,p_0)$\;
+		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+		\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
+		$x \leftarrow x + \epsilon p$\;
+		$p \leftarrow p - \epsilon \nabla U(x)$\;
+		}
+		$x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
+		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+		\KwRet{$(x,p)$}
+		\caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
+		\label{algo:leapfrog}
+	\end{algorithm}
 \end{center}
 
 \section{Hamiltonian Monte-Carlo}
 
 \subsection{Cas idéal : solution exacte de la dynamique hamiltonienne}
+
 Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hamiltonienne, i.e. si l'on connait le flot $\phi_t$ pour tout $t \in \rset_+$, la stratégie proposée est de suivre le flot à chaque étape après avoir tiré aléatoirement une quantité de mouvement.
 
 \begin{center}
-\begin{algorithm}[H]
-  \KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
-  $X_0 \leftarrow x \in \xset$ arbitraire\;
-  \Repeat{une condition d'arrêt}{
-    $\tilde{P}_k \siid \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
-    $\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
-    $Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
-    }
-  \KwRet{$(X_k)_k$}
-  \caption{Hamiltonian Monte-Carlo, cas idéal}
-  \label{algo:HMC-ideal}
-\end{algorithm}
+	\begin{algorithm}[H]
+		\KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
+		$X_0 \leftarrow x \in \xset$ arbitraire\;
+		\Repeat{une condition d'arrêt}{
+		$\tilde{P}_k \siid \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
+		$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
+		$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
+		}
+		\KwRet{$(X_k)_k$}
+		\caption{Hamiltonian Monte-Carlo, cas idéal}
+		\label{algo:HMC-ideal}
+	\end{algorithm}
 \end{center}
 
 \begin{Def}[semi-groupe Markovien]
-  Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, P_{t+s} = P_t P_s$
+	Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, P_{t+s} = P_t P_s$
 \end{Def}
 
 \begin{Prop}[invariance de la loi]
-  On se place sous les hypothèses \eqref{eq:hyp}. Alors
+	On se place sous les hypothèses \eqref{eq:hyp}. Alors
 
-  \begin{enumerate}
-  \item Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ avec
-  $$
-  Q : \fundef{
-    \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
-    ((x,p), A) & \mapsto & \delta_x \otimes \nu(A)
-    }
-  $$
-  $$
-  P_t : \fundef{
-    \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
-    (z, A) & \mapsto & \delta_{\phi_t(z)}(A) = \ind_A(\phi_t(z))
-    }
-  $$
-\item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien.
-\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QP_t$-invariante. 
-  \end{enumerate}
+	\begin{enumerate}
+		\item Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ avec
+		$$
+		Q : \fundef{
+		\rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
+		((x,p), A) & \mapsto & \delta_x \otimes \nu(A)
+		}
+		$$
+		$$
+		P_t : \fundef{
+		\rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
+		(z, A) & \mapsto & \delta_{\phi_t(z)}(A) = \ind_A(\phi_t(z))
+		}
+		$$
+		\item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien.
+		\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QP_t$-invariante. 
+	\end{enumerate}
 \end{Prop}
 \begin{proof}
-\begin{enumerate}
-\item On note $(\calF_k)_{k \in \nset} = (\sigma(Z_j, j\leq k))_{k \in \nset}$ la filtration canonique associée à $Z$. Soit $A \in \calB(\rset^{2d})$ alors $\PP[Z_{k+1} \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}]$. Comme $\tilde{P}_k \indep \calF_k$, on a donc $\PP[Z_{k+1} \in A \given{\calF_k}] = \hat{F}(X_k)$ où $\forall x \in \rset^d, \hat{F}(x) = \PP[\phi_t(x, \tilde{P}_1) \in A]$. Ainsi $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $N$ tel que
-  $$
-  \forall (x,p) \in \rset^{2d}, \forall A \in \calB(\rset^{2d}), N((x,p), A) = \PP[\phi_t(x, \tilde{P}_1) \in A] = \int \ind_A(\phi_t(x, p_1)) \nu(dp_1).
-  $$
-  Or
-  $$
-  Q P_t((x,p),A) = \int Q((x,p), dx_1dp_1) P_r((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1).
-  $$
-  Donc $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $QP_t$.
+	\begin{enumerate}
+		\item On note $(\calF_k)_{k \in \nset} = (\sigma(Z_j, j\leq k))_{k \in \nset}$ la filtration canonique associée à $Z$. Soit $A \in \calB(\rset^{2d})$ alors $\PP[Z_{k+1} \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}] = \PP[\phi_t(X_k, \tilde{P}_k) \in A \given{\calF_k}]$. Comme $\tilde{P}_k \indep \calF_k$, on a donc $\PP[Z_{k+1} \in A \given{\calF_k}] = \hat{F}(X_k)$ où $\forall x \in \rset^d, \hat{F}(x) = \PP[\phi_t(x, \tilde{P}_1) \in A]$. Ainsi $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $N$ tel que
+		$$
+		\forall (x,p) \in \rset^{2d}, \forall A \in \calB(\rset^{2d}), N((x,p), A) = \PP[\phi_t(x, \tilde{P}_1) \in A] = \int \ind_A(\phi_t(x, p_1)) \nu(dp_1).
+		$$
+		Or
+		$$
+		Q P_t((x,p),A) = \int Q((x,p), dx_1dp_1) P_r((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1).
+		$$
+		Donc $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $QP_t$.
 
-\item Soient $t,s \in \rset_+$, $z \in \rset^{2d}$ et $A \in \calB(\rset^{2d})$. Alors
-  $$
-  P_t P_s (z, A) = \int P_t(z, dz_1) P_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = P_{s+t} = P_{t+s}
-  $$
+		\item Soient $t,s \in \rset_+$, $z \in \rset^{2d}$ et $A \in \calB(\rset^{2d})$. Alors
+		$$
+		P_t P_s (z, A) = \int P_t(z, dz_1) P_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = P_{s+t} = P_{t+s}
+		$$
 
-\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariante). Soit $A \in \calB(\rset^{2d})$, alors
-  $$
-  \widetilde{\pi} Q (A) = \int \pi(dx) \nu(dp) \delta_x(dx_1) \nu(dp_1) \ind_A(x_1, p_1) = \int \pi(dx) \nu(dp_1) \ind_A(x, p_1) = \int \widetilde{\pi}(dxdp_1) \ind_A(x, p_1) = \widetilde{\pi}(A) 
-  $$
+		\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariante). Soit $A \in \calB(\rset^{2d})$, alors
+		$$
+		\widetilde{\pi} Q (A) = \int \pi(dx) \nu(dp) \delta_x(dx_1) \nu(dp_1) \ind_A(x_1, p_1) = \int \pi(dx) \nu(dp_1) \ind_A(x, p_1) = \int \widetilde{\pi}(dxdp_1) \ind_A(x, p_1) = \widetilde{\pi}(A) 
+		$$
 
-  Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$, alors
-  \begin{align*}
-    \widetilde{\pi} P_t (A)
-    &= \int \widetilde{\pi}(dz) P_t(z, A) \\
-    &\propto \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
-    &\overset{(*)}{=} \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy \\
-    &\overset{(**)}{=} \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
-    &= \widetilde{\pi}(A).
-  \end{align*}
-  $(*)$ : en faisant le changement de variable $y = \phi_t(z)$ comme $\phi_t$ est un $\calC^1$ difféomorphisme (proposition \ref{prop:rev}) de jacobien égal à $1$ (proposition \ref{prop:vol}) \\
-  $(**)$ : par la proposition \ref{prop:conservation} {\red par évident a priori}
-\end{enumerate}
+		Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$, alors
+		\begin{align*}
+		\widetilde{\pi} P_t (A)
+		&= \int \widetilde{\pi}(dz) P_t(z, A) \\
+		&\propto \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
+		&\overset{(*)}{=} \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy \\
+		&\overset{(**)}{=} \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
+		&= \widetilde{\pi}(A).
+		\end{align*}
+		$(*)$ : en faisant le changement de variable $y = \phi_t(z)$ comme $\phi_t$ est un $\calC^1$ difféomorphisme (proposition \ref{prop:rev}) de jacobien égal à $1$ (proposition \ref{prop:vol}) \\
+		$(**)$ : par la proposition \ref{prop:conservation} {\red par évident a priori}
+	\end{enumerate}
 \end{proof}
 
 
 \subsection{Cas concret : solution approchée de la dynamique hamiltonienne}
+
 \begin{center}
-\begin{algorithm}[H]
-  \KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
-  $X_0 \leftarrow x \in \xset$ arbitraire\;
-  \Repeat{une condition d'arrêt}{
-    $P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
-    $(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
-    $U_k \leftarrow U(X_k)$\;
-    $K_k \leftarrow \norm{P_k}^2/2$\;
-    $U_{prop} \leftarrow U(X_{prop})$\;
-    $K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
-    \eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
-      $X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
-    }{
-      $X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
-    }
-  }
-  \KwRet{$(X_k)_k$}
-  \caption{Hamiltonian Monte-Carlo}
-  \label{algo:HMC}
-\end{algorithm}
+	\begin{algorithm}[H]
+		\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+		$X_0 \leftarrow x \in \xset$ arbitraire\;
+		\Repeat{une condition d'arrêt}{
+		$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+		$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+		$U_k \leftarrow U(X_k)$\;
+		$K_k \leftarrow \norm{P_k}^2/2$\;
+		$U_{prop} \leftarrow U(X_{prop})$\;
+		$K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+		\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+		$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+		}{
+		$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+		}
+		}
+		\KwRet{$(X_k)_k$}
+		\caption{Hamiltonian Monte-Carlo}
+		\label{algo:HMC}
+	\end{algorithm}
 \end{center}
 
 
