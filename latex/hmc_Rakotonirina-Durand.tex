@@ -85,64 +85,11 @@ On considère $P$ un noyau de Markov sur $\xset \times \calX$.
 
 Les algorithmes MCMC visent à construire, à partir de $\pi$, une chaîne de Markov vérifiant les hypothèses de ce théorème afin d'approcher $\pi f$ par $\frac{1}{n} \sum_{k=0}^{n-1} f(X_k)$.
 
-% \subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
+\subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
 
-% Avant de présenter la méthode HMC, nous définissons ici l'algorithme de Metropolis que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+Avant de présenter la méthode HMC, nous définissons ici un autre algorithme MCMC, l'algorithme de Metropolis, que nous utiliserons comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
 
-% On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ (appelée loi instrumentale) sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$ telle que $\forall x \in \xset, q(x) = q(-x) $. La construction de la chaîne de Markov se fait en proposant un mouvement (dont l'incrément suit $Q$), puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis}).
-
-% \begin{center}
-% \begin{algorithm}[H]
-%   $X_0 \leftarrow x \in \xset$ arbitraire\;
-%   $(U_k)_{k \in \nset} \siid Q$ \;
-%   \Repeat{une condition d'arrêt}{
-%     $Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
-%     $\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-%     $X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
-%     }
-%   \caption{Random Walk Metropolis}
-%   \label{algo:metropolis}
-% \end{algorithm}
-% \end{center}
-
-% Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
-
-% % Une explication intuitive de cet algorithme est de voir que l'on cherche à visiter l'espace $\xset$ sans pour autant aller dans des régions où $h_\pi$ est faible (et donc des régions de probabilité faible) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi si le mouvement proposé est tel que $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$ on accepte le mouvement avec probabilité $1$. Dans le cas contraire on considère qu'il n'est pas très intéressant de bouger. Néanmoins on autorise quand même un mouvement avec une probabilité de $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ qui sera d'autant plus faible que la position proposée est dans une région de probabilité faible.
-
-\subsubsection{Algorithme de Metropolis-Hastings}
-
-L'algorithme HMC est une version améliorée de l'algorithme de Metropolis-Hastings. Nous allons donc d'abord définir ce dernier et nous l'utiliserons plus tard comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
-
-On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un noyau markovien $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$. $Q$ est appelé noyau instrumental. La construction de la chaîne de Markov se fait en proposant un mouvement via $Q$, puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis-hastings}).
-
-\begin{center}
-	\begin{algorithm}[H]
-		\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ noyau markovien simulable}
-		$X_0 \leftarrow x \in \xset$ arbitraire\;
-		\Repeat{une condition d'arrêt}{
-		$Y_{k+1} \sim Q(X_k,\cdot)$ \tcp*{Proposer un mouvement}
-		$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
-		$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
-		}
-		\KwRet{$(X_k)_k$}
-		\caption{Metropolis-Hastings}
-		\label{algo:metropolis-hastings}
-	\end{algorithm}
-\end{center}
-
-Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1})q(Y_{k+1}, X_k) \geq h_\pi(X_k) q(X_k, Y_{k+1})$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})q(Y_{k+1},X_k)}{h_\pi(X_k)q(X_k,Y_{k+1})}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
-
-\begin{Rque}
-	Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
-
-	Le choix de $Q$ est en fait une difficulté de l'algorithme, puisque le mouvement proposé doit permettre l'exploration de tout l'espace (afin de passer régulièrement par toutes les régions fortement chargées par $\pi$). Nous verrons que l'algorithme HMC résout ce problème en proposant le mouvement selon une \emph{dynamique hamiltonienne}.
-\end{Rque}
-
-\begin{Def}
-	On parle de \emph{Random-walk Metropolis} quand $Q$ est le noyau d'une marche aléatoire
-	$$Y_{k+1} \leftarrow X_k + U_{k+1}$$
-	avec $(U_k)_{k \in \nset}$ iid. On supposera que $Q$ admet une densité $q$ par rapport à $\mu$ avec $q(x) = q(-x)$.
-\end{Def}
+On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ (appelée loi instrumentale) sur $(\xset, \calX)$ symétrique par rapport à $0$ ($Q(A) = Q(-A)$. La construction de la chaîne de Markov se fait en proposant un mouvement (dont l'incrément suit $Q$), puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis}).
 
 \begin{center}
 	\begin{algorithm}[H]
@@ -150,15 +97,68 @@ Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins s
 		$X_0 \leftarrow x \in \xset$ arbitraire\;
 		$(U_k)_{k \in \nset} \siid Q$ \;
 		\Repeat{une condition d'arrêt}{
-		$Y_{k+1} \sim X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
-		$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-		$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+			$Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
+			$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
+			$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
 		}
 		\KwRet{$(X_k)_k$}
 		\caption{Random Walk Metropolis}
 		\label{algo:metropolis}
 	\end{algorithm}
 \end{center}
+
+Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1}) \geq h_\pi(X_k)$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})}{h_\pi(X_k)}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
+
+% \subsubsection{Algorithme de Metropolis-Hastings}
+
+% L'algorithme HMC est une version améliorée de l'algorithme de Metropolis-Hastings. Nous allons donc d'abord définir ce dernier et nous l'utiliserons plus tard comme base de comparaison. On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
+
+% On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un noyau markovien $Q$ sur $(\xset, \calX)$ de densité $q$ par rapport à $\mu$. $Q$ est appelé noyau instrumental. La construction de la chaîne de Markov se fait en proposant un mouvement via $Q$, puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis-hastings}).
+
+% \begin{center}
+% 	\begin{algorithm}[H]
+% 		\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ noyau markovien simulable}
+% 		$X_0 \leftarrow x \in \xset$ arbitraire\;
+% 		\Repeat{une condition d'arrêt}{
+% 			$Y_{k+1} \sim Q(X_k,\cdot)$ \tcp*{Proposer un mouvement}
+% 			$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)q(y,x)}{h_\pi(x)q(x,y)}$\;
+% 			$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+% 		}
+% 		\KwRet{$(X_k)_k$}
+% 		\caption{Metropolis-Hastings}
+% 		\label{algo:metropolis-hastings}
+% 	\end{algorithm}
+% \end{center}
+
+% Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins souvent les régions où $h_\pi$ est faible (peu chargées par $\pi$) car ce sont les régions de forte probabilité qui donnent des informations sur la loi $\pi$. Ainsi, si le mouvement proposé vérifie $h_\pi(Y_{k+1})q(Y_{k+1}, X_k) \geq h_\pi(X_k) q(X_k, Y_{k+1})$, on se dirige vers une zone plus chargée par $\pi$, on accepte donc le mouvement. Dans le cas contraire, il est moins intéressant de bouger. On autorise quand même le mouvement avec une probabilité $\frac{h_\pi(Y_{k+1})q(Y_{k+1},X_k)}{h_\pi(X_k)q(X_k,Y_{k+1})}$ d'autant plus faible que la position proposée est dans une région de probabilité faible.
+
+% \begin{Rque}
+% 	Il y a d'autres fonctions de rejet $\alpha$ qui permettent à l'algorithme de fonctionner. De même, le choix du noyau $Q$ est un degré de liberté de l'algorithme.
+
+% 	Le choix de $Q$ est en fait une difficulté de l'algorithme, puisque le mouvement proposé doit permettre l'exploration de tout l'espace (afin de passer régulièrement par toutes les régions fortement chargées par $\pi$). Nous verrons que l'algorithme HMC résout ce problème en proposant le mouvement selon une \emph{dynamique hamiltonienne}.
+% \end{Rque}
+
+% \begin{Def}
+% 	On parle de \emph{Random-walk Metropolis} quand $Q$ est le noyau d'une marche aléatoire
+% 	$$Y_{k+1} \leftarrow X_k + U_{k+1}$$
+% 	avec $(U_k)_{k \in \nset}$ iid. On supposera que $Q$ admet une densité $q$ par rapport à $\mu$ avec $q(x) = q(-x)$.
+% \end{Def}
+
+% \begin{center}
+% 	\begin{algorithm}[H]
+% 		\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
+% 		$X_0 \leftarrow x \in \xset$ arbitraire\;
+% 		$(U_k)_{k \in \nset} \siid Q$ \;
+% 		\Repeat{une condition d'arrêt}{
+% 			$Y_{k+1} \sim X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
+% 			$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
+% 			$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+% 		}
+% 		\KwRet{$(X_k)_k$}
+% 		\caption{Random Walk Metropolis}
+% 		\label{algo:metropolis}
+% 	\end{algorithm}
+% \end{center}
 
 \subsection{Principe du Hamiltonian Monte Carlo}
 
@@ -358,8 +358,8 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 		$(x,p) \leftarrow (x_0,p_0)$\;
 		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
 		\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
-		$x \leftarrow x + \epsilon p$\;
-		$p \leftarrow p - \epsilon \nabla U(x)$\;
+			$x \leftarrow x + \epsilon p$\;
+			$p \leftarrow p - \epsilon \nabla U(x)$\;
 		}
 		$x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
 		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
@@ -380,9 +380,9 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 		\KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
 		$X_0 \leftarrow x \in \xset$ arbitraire\;
 		\Repeat{une condition d'arrêt}{
-		$\tilde{P}_k \siid \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
-		$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
-		$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
+			$\tilde{P}_k \siid \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
+			$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
+			$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
 		}
 		\KwRet{$(X_k)_k$}
 		\caption{Hamiltonian Monte-Carlo, cas idéal}
@@ -459,17 +459,17 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 		\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
 		$X_0 \leftarrow x \in \xset$ arbitraire\;
 		\Repeat{une condition d'arrêt}{
-		$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
-		$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
-		$U_k \leftarrow U(X_k)$\;
-		$K_k \leftarrow \norm{P_k}^2/2$\;
-		$U_{prop} \leftarrow U(X_{prop})$\;
-		$K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
-		\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
-		$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
-		}{
-		$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
-		}
+			$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+			$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+			$U_k \leftarrow U(X_k)$\;
+			$K_k \leftarrow \norm{P_k}^2/2$\;
+			$U_{prop} \leftarrow U(X_{prop})$\;
+			$K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+			\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+				$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+			}{
+				$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+			}
 		}
 		\KwRet{$(X_k)_k$}
 		\caption{Hamiltonian Monte-Carlo}
