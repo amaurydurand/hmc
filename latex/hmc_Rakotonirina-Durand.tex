@@ -387,7 +387,7 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
     }
   $$
 \item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien
-\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $P_t$-invariante. 
+\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QP_t$-invariante. 
   \end{enumerate}
 \end{Prop}
 \begin{proof}
@@ -407,7 +407,12 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
   P_t P_s (z, A) = \int P_t(z, dz_1) P_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = P_{s+t} = P_{t+s}
   $$
 
-\item Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$ alors
+\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariantte). Soit $A \in \calB(\rset^{2d})$, alors
+  $$
+  \widetilde{\pi} Q (A) = \int \pi(dx) \nu(dp) \delta_x(dx_1) \nu(dp_1) \ind_A(x_1, p_1) = \int \pi(dx) \nu(dp_1) \ind_A(x, p_1) = \int \widetilde{\pi}(dxdp_1) \ind_A(x, p_1) = \widetilde{\pi}(A) 
+  $$
+
+  Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$ alors
   \begin{align*}
     \widetilde{\pi} P_t (A)
     &= \int \widetilde{\pi}(dz) P_t(z, A) \\
