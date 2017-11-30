@@ -166,8 +166,8 @@ L'algorithme HMC fait partie des algorithmes MCMC, le but est en effet de constr
 Un système physique de position $x : \rset_+ \to \rset^d$ et de quantité de mouvement $p : \rset_+ \to \rset^d$ (toutes deux fonctions du temps $t$) est caractérisé par des équations de mouvement de type $\forall t \geq 0, \forall i \in \iseg{1,d}$, 
 \begin{equation}\label{eq:hamiltonian-dyn}
   \begin{aligned}
-     x_i'(t) &= \frac{\partial H}{\partial p_i} (q(t), p(t)) \\
-     p_i' (t) &= -\frac{\partial H}{\partial q_i} (q(t), p(t))
+     x_i'(t) &= \frac{\partial H}{\partial p_i} (x(t), p(t)) \\
+     p_i' (t) &= -\frac{\partial H}{\partial x_i} (x(t), p(t))
   \end{aligned}
 \end{equation}
 où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it Hamiltonien} du système.
