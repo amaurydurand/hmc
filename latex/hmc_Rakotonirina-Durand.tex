@@ -79,7 +79,7 @@ On considère $P$ un noyau de Markov sur $\xset \times \calX$.
 % \end{Rque}
 
 \begin{Thm}\label{thm:ergodic}
-	Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ admettant une loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
+	Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ admettant une unique loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
 	$$\frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f$$
 \end{Thm}
 
@@ -236,14 +236,15 @@ Afin de pouvoir modéliser le problème par un HMC, on suppose
 \begin{equation}\label{eq:hyp}
 	\begin{aligned}
 		&\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
-		&\mbox{$\ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$ où $k \geq 1$}\\
-		&\mbox{$h_\nu$ est paire}
+		&\mbox{$\exists k \geq 1, \ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$}\\
+		&\mbox{$h_\nu$ est paire} \\
+                & H : (x,p) \mapsto U(x) + K(p) \text{ avec } U(x) = - T \ln(h_\pi(x)), K(p) = -T \ln(h_\nu(p))
 	\end{aligned}
 	\tag{H}
 \end{equation}
 
 \begin{Rque}
-	La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. La troisième permettra d'avoir une propriété de réversibilité (proposition \ref{prop:rev}.
+	La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. Les deux dernières permetront d'avoir une propriété de réversibilité (proposition \ref{prop:rev}).
 \end{Rque}
 
 Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
@@ -277,25 +278,41 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 	où $\phi_t(z_0)$ est l'unique solution de \eqref{eq:edo} avec condition initiale $z(0) = z_0$.
 \end{Def}
 
-\begin{Pte}
-	Par unicité de la solution de \eqref{eq:edo}, on a
-	$$
-	\forall t, s \in \rset_+, \phi_{t+s} = \phi_t \circ \phi_s.
-	$$
+\begin{Pte}\label{prop:compo}  $\forall t, s \in \rset_+,$
+  $$
+  \phi_{t+s} = \phi_t \circ \phi_s.
+  $$
 \end{Pte}
+\begin{proof}
+  Soient $s \in \rset_+$ et $z_0 \in \rset^{2d}$, notons $f : t \mapsto \phi_{t}(z_0)$, $h : t \mapsto t+s$ et $g : t \mapsto \phi_t \circ \phi_s (z_0)$. Alors $f$ et $g$ sont solutions de \eqref{eq:edo} avec conditions initiales $f(0) = z_0$ et $g(0) = \phi_s(z_0)$. De plus $\forall t \in \rset_+, (f\circ h)'(t) = f'(h(t)) = F(f \circ h(t))$ donc $f \circ h$ est aussi solution de \eqref{eq:edo}. Or $f \circ h (0) = \phi_s(z_0) = g(0)$ donc par unicité de la solution $f \circ h = g$ i.e $\forall t \in \rset_+, \phi_{t+s}(z_0) = \phi_t \circ \phi_s (z_0)$. 
+\end{proof}
 
 \begin{Lem}\label{lem:sol-inverse}
-	Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} = (\bar x, \bar p) : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$ et $\bar H : \fundef{\rset^{2d} & \to & \rset^{2d} \\ (x,p) & \mapsto & H(x,-p)}$. Alors $\bar{z}$ est solution du hamiltonien $\bar H$ sur $\rset_{-}$ (avec d'autres conditions initiales).
+  Soit $z = (x,p)$ une solution de \eqref{eq:edo}. On définit $\bar{z} = (\bar x, \bar p) : \fundef{\rset_{-} & \to & \rset^{2d} \\ t & \mapsto & (x(-t), -p(-t))}$ et $\bar H : \fundef{\rset^{2d} & \to & \rset^{2d} \\ (x,p) & \mapsto & H(x,-p)}$. Alors
+
+  \begin{enumerate}
+  \item $\bar{z}$ est solution du hamiltonien $\bar H$ sur $\rset_{-}$ (avec d'autres conditions initiales).
+  \item Si $\bar{H} = H$ alors $\forall t \in \rset_+$, $\phi_t(\bar{z}(-t)) = \bar{z}(0)$
+  \end{enumerate}
+  
 \end{Lem}
 \begin{proof}
-	D'une part,
-	$$
-	\forall t \in \rset_-, \bar x'(t) = - x'(-t) = - \frac{\partial H}{\partial p}(x(-t),p(-t)) = - \frac{\partial H}{\partial p}(\bar x(t), - \bar p(t)) = \frac{\partial{\bar H}}{\partial p}(\bar x(t), \bar p(t))
-	$$
-	et d'autre part,
-	$$
-	\forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
-	$$
+	%D'une part,
+	%$$
+	%\forall t \in \rset_-, \bar x'(t) = - x'(-t) = - \frac{\partial H}{\partial p}(x(-t),p(-t)) = - \frac{\partial H}{\partial p}(\bar x(t), - \bar p(t)) = \frac{\partial{\bar H}}{\partial p}(\bar x(t), \bar p(t))
+	%$$
+	%et d'autre part,
+	%$$
+	%\forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
+	%$$
+\begin{enumerate}
+\item   Notons $s : z = (x,p) \mapsto (x,-p)$ alors $\forall t \in \rset_-, \bar{z}(t) = s \circ z (-t)$ et $\bar{H} = H \circ s$. De plus $\forall z \in \rset^{2d}, \frac{\partial s}{\partial z}(z) = \begin{bmatrix} I_d & 0_d \\ 0_d & -I_d \end{bmatrix} = S$. Remarquons alors que $S J = - J S$ et $s^{-1} = s$. Ainsi, $\forall y \in \rset^{2d}$, $\nabla \bar{H} (y) = S \nabla H (s(y))$ et $\forall t \in \rset_+$,
+  $$
+  \bar{z}'(t) = - S z'(-t) = - S J \nabla H (z(-t)) = J S \nabla H(z(-t)) =  J \nabla \bar{H} (s^{-1}(z(-t))) = J \nabla \bar{H} (s(z(-t))) = J \nabla \bar{H} (\bar{z}(t))
+  $$
+\item Si $\bar{H} = H$, $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_-$. Notons $f$ l'unique solution de \eqref{eq:edo} sur $\rset$ telle que $f(0) = \bar{z}(-t)$ et $h : u \in \rset \mapsto t + u$. Alors $\forall u \in \rset_+, (f\circ h)'(u) = f(h(u)) = F(f\circ h (u))$ donc $f\circ h$ est solution sur $\rset$. Or $f\circ h (-t) = f(0) = \bar{z}(-t)$ donc par unicité de la solution sur $\rset_-$, $(f \circ h)_{| \rset_-} = \bar{z}$. Cela entraine $f(t) = f \circ h (0) = \bar{z}(0)$. Or par définition de $\phi_t$ et unicité de la solution sur $\rset_+$, on a $f_{|\rset_+} : u \in \rset_+ \mapsto \phi_u(\bar{z}(-t))$ donc pour $u = t$ on obtient $\phi_t(\bar{z}(-t)) = f(t) = \bar{z}(0)$
+\end{enumerate}  
+
 \end{proof}
 
 \begin{Rque}\label{rque:Hbar}
@@ -315,17 +332,16 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 	$$
 	\bar \phi_t : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
 	$$
-	Alors
-	\begin{itemize}
+        \begin{itemize}
 		\item D'une part,
 		$$
-		\bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) = (\bar z(0), - \bar z(0)).
+		\bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) \overset{\text{(lemme \ref{lem:sol-inverse})}}{=} (\bar z(0), - \bar z(0)) = (x_0, p_0).
 		$$
-		Par lemme \ref{lem:sol-inverse} et remarque \ref{rque:Hbar}, $\bar z$ est solution sur $\rset_-$ du hamiltonien avec $\bar z(0) = (x_0,-p_0)$ donc
-		$$
-		\phi_t^{(1)}(\bar z(-t)) = x_0, \phi_t^{(2)}(\bar z(-t)) = -p_0
-		$$
-		ce qui donne que $\bar \phi_t(\phi_t(x_0,p_0)) = (x_0,p_0)$.
+		%Par lemme \ref{lem:sol-inverse} et remarque \ref{rque:Hbar}, $\bar z$ est solution sur $\rset_-$ du hamiltonien avec $\bar z(0) = (x_0,-p_0)$ donc
+		%$$
+		%\phi_t^{(1)}(\bar z(-t)) = x_0, \phi_t^{(2)}(\bar z(-t)) = -p_0
+		%$$
+		%ce qui donne que $\bar \phi_t(\phi_t(x_0,p_0)) = (x_0,p_0)$.
 
 		\item D'autre part,
 		$$
@@ -333,7 +349,7 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 		$$
 		donc
 		$$
-		\phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = (x_0,-p_0).
+		\phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = \bar{z}(0) = (x_0,-p_0).
 		$$
 	\end{itemize}
 	Ceci étant vrai pour tout $(x_0,p_0)$, on a donc $\bar \phi_t = \phi_t^{-1}$.
@@ -352,22 +368,94 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 % Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peut-être simplifiée (2.3 de l'article), éventuellement en quoi elle "préserve le volume"
 
 
+%\begin{center}
+%        \begin{algorithm}[H]
+%        	\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+%        	$(x,p) \leftarrow (x_0,p_0)$\;
+%        	$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+%        	\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
+%        		$x \leftarrow x + \epsilon p$\;
+%        		$p \leftarrow p - \epsilon \nabla U(x)$\;
+%        	}
+%        	$x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
+%        	$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
+%        	\KwRet{$(x,p)$}
+%        	\caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
+%        	\label{algo:leapfrog}
+%        \end{algorithm}
+%\end{center}
+
 \begin{center}
 	\begin{algorithm}[H]
 		\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
-		$(x,p) \leftarrow (x_0,p_0)$\;
-		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
-		\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 1,L-1 \rrbracket$}{
-			$x \leftarrow x + \epsilon p$\;
-			$p \leftarrow p - \epsilon \nabla U(x)$\;
+		\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 0, L-1 \rrbracket$}{
+			$x_{k+1} \leftarrow x_k + \epsilon \nabla K \left( p_k - \frac{\epsilon}{2} \nabla U(x_k) \right)$\;
+			$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
 		}
-		$x \leftarrow x + \epsilon p$ \tcp*{Dernier pas en $x$}
-		$p \leftarrow p - \frac{\epsilon}{2} \nabla U(x)$ \tcp*{Demi-pas en $p$}
-		\KwRet{$(x,p)$}
+		\KwRet{$(x_L,p_L)$}
 		\caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
 		\label{algo:leapfrog}
 	\end{algorithm}
 \end{center}
+
+\begin{Def}[flot approché] Soient $\epsilon > 0$ et $L \in \nset^*$, on définit le flot approché du hamiltonien par $L$ itérations de l'algorithme leapfrog par $\hat{\phi}_L = \hat{\phi}^L$ où 
+  $$
+  \hat{\phi} : \fundef{\rset^{2d} & \to & \rset^{2d} \\
+    z = (x, p) & \mapsto & (\hat{\phi}^{(1)}(z), \hat{\phi}^{(2)}(z))
+    }
+  $$
+  avec
+  \begin{align*}
+    \hat{\phi}^{(1)} : (x,p) & \mapsto x + \epsilon \nabla K \left( p - \frac{\epsilon}{2} \nabla U(x) \right) \\
+    \hat{\phi}^{(2)} : (x,p) & \mapsto p - \frac{\epsilon}{2} \nabla U(x) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,p))
+  \end{align*}
+\end{Def}
+
+\begin{Prop}[réversibilité]\label{prop:rev-leapfrog}
+  Sous les hypothèses \eqref{eq:hyp}, $\hat{\phi}$ est inversible avec $\hat{\phi}^{-1} : (x,p) \mapsto (\hat{\phi}^{(1)}(x,-p), -\hat{\phi}^{(2)}(x,-p))$, ce qui entraîne $\forall L \in \nset^*, \hat{\phi}_L$ est inversible avec $\hat{\phi}_L^{-1} : (x,p) \mapsto (\hat{\phi}_L^{(1)}(x,-p), -\hat{\phi}_L^{(2)}(x,-p))$. 
+\end{Prop}
+\begin{proof}
+  Notons $\bar{\phi} : (x,p) \mapsto (\hat{\phi}^{(1)}(x,-p), -\hat{\phi}^{(2)}(x,-p))$ alors
+  \begin{itemize}
+  \item D'une part,  $\forall x,p \in \rset^d$, 
+    \begin{align*}
+      \hat{\phi}^{(1)} (\bar{\phi}(x,p))
+      &= \hat{\phi}^{(1)}(x,-p) + \epsilon \nabla K \left( -\hat{\phi}^{(2)}(x,-p) - \frac{\epsilon}{2} \nabla U (\hat{\phi}^{(1)}(x,-p)) \right) \\
+      &= x + \epsilon \nabla K \left(-p - \frac{\epsilon}{2} \nabla U(x) \right) + \epsilon \nabla K \left(p + \frac{\epsilon}{2} \nabla U(x) + \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,-p)) - \frac{\epsilon}{2} \nabla U (\hat{\phi}^{(1)}(x,-p)) \right) \\
+      &= x + \epsilon \nabla K \left(-p - \frac{\epsilon}{2} \nabla U(x) \right) + \epsilon \nabla K \left(p + \frac{\epsilon}{2} \nabla U(x)\right) \\
+      &\overset{(*)}{=} x 
+    \end{align*}
+    $(*)$ : car sous \eqref{eq:hyp}, $K$ est paire donc $\nabla K$ est impaire. 
+
+    De plus
+    \begin{align*}
+      \hat{\phi}^{(2)}(\bar{\phi}(x,p))
+      &= -\hat{\phi}^{(2)}(x,-p) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,-p)) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(\bar{\phi}(x,p))) \\
+      &= p + \frac{\epsilon}{2} \nabla U(x) + \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,-p)) - \frac{\epsilon}{2} \nabla U( \hat{\phi}^{(1)}(x,-p)) - \frac{\epsilon}{2} \nabla U(x) \\
+      &= p
+    \end{align*}
+    Donc $\hat{\phi} \circ \bar{\phi} = Id$
+\item D'autre part, $\forall x,p \in \rset^d$, 
+  $$
+  \bar{\phi}^{(1)} (\hat{\phi}(x,p)) = \hat{\phi}^{(1)} (\bar{\phi}(x,-p)) = x 
+  $$
+  et
+  $$
+  \bar{\phi}^{(2)} (\hat{\phi}(x,p)) = - \hat{\phi}^{(1)} (\bar{\phi}(x,-p)) = -(-p) = p
+  $$
+    Donc $\bar{\phi} \circ \hat{\phi} = Id$
+  \end{itemize}
+  Ainsi $\hat{\phi}^{-1} = \bar{\phi}$
+\end{proof}
+
+%\begin{Prop}\label{prop:leapfrog}
+%  Soient $\epsilon > 0, L \in \nset^*$ et $(x_0, p_0) \in \rset^{d} \times \rset^{d}$. Alors les positions et quantité de mouvement obtenues par l'algorithme leapfrog vérifient
+%  \begin{align*}
+%    x_L &= x_0 + \epsilon \sum_{i=0}^{L-1} \nabla K \left( p_i - \frac{\epsilon}{2} \nabla U(x_i) \right) \\
+%    p_L &= p_0 - \frac{\epsilon}{2} \nabla U(x_0) - \epsilon \sum_{i=1}^{L-1} \nabla U(x_i) - \frac{\epsilon}{2} \nabla U(x_L) 
+%  \end{align*}
+%  %et dans le cas particulier où $K : p \mapsto \frac{p^\top p }{2}$
+%\end{Prop}      
 
 \section{Hamiltonian Monte-Carlo}
 
@@ -394,7 +482,7 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 	Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, P_{t+s} = P_t P_s$
 \end{Def}
 
-\begin{Prop}[invariance de la loi]
+\begin{Prop}[invariance de la loi]\label{prop:inv-ideal}
 	On se place sous les hypothèses \eqref{eq:hyp}. Alors
 
 	\begin{enumerate}
@@ -447,12 +535,27 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 		&= \widetilde{\pi}(A).
 		\end{align*}
 		$(*)$ : en faisant le changement de variable $y = \phi_t(z)$ comme $\phi_t$ est un $\calC^1$ difféomorphisme (proposition \ref{prop:rev}) de jacobien égal à $1$ (proposition \ref{prop:vol}) \\
-		$(**)$ : par la proposition \ref{prop:conservation} {\red par évident a priori}
+		$(**)$ : par la proposition \ref{prop:conservation} on sait que $H \circ \phi_t = H$. De plus sous les hypothèses \eqref{eq:hyp}, $\bar{H} = H \circ s = H$ où $s : (x,p) \mapsto (x, -p)$. Ainsi $H \circ \phi_t^{-1} = H \circ s \circ \phi_t \circ s = H \circ \phi_t \circ s = H \circ s = H$ 
 	\end{enumerate}
 \end{proof}
 
 
 \subsection{Cas concret : solution approchée de la dynamique hamiltonienne}
+Dans le cas où l'on n'a pas accès aux solutions exactes de \eqref{eq:edo}, on utilise le flot appoché $\hat{\phi}_L$. La première idée serait de simplement remplacer $\phi_t$ par $g \circ \hat{\phi}_L$ dans l'algorithme \ref{algo:HMC-ideal} où $g : \rset^{2d} \to \rset^{2d}$ est une fonction à déterminer. On obtient alors une chaîne de Markov de noyau $Q\hat{P}_L$ avec $Q$ défini en proposition \ref{prop:inv-ideal} et
+$$
+\hat{P}_L : \fundef{
+  \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
+  (z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
+}
+$$
+$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus $\hat{P}_L$-invariante car on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
+
+\begin{Prop}[symétrie]
+  Sous les hypothèses \eqref{eq:hyp}, en prenant $g = s : (x, p) \mapsto (x,-p)$, alors $\forall L \in \nset^*$, $\hat{P}_L$ est un noyau à densité $\hat{p}_L$ par rapport à la mesure de Lebesgue et $\hat{p}_L$ est symétrique i.e $\forall z,z' \in \rset^{2d}, \hat{p}_L (z, z') = \hat{p}_L (z',z)$. 
+\end{Prop}
+\begin{proof}
+  Il est facile de voir que $\hat{p}_L : (z,z') \mapsto \delta_{s \circ \hat{\phi}_L(z), z'}$. Ainsi $\hat{p}_L(z,z') =  \delta_{s \circ \hat{\phi}_L(z), z'} = \delta_{(s \circ \hat{\phi}_L)^{-1}(z'), z} = \delta_{\hat{\phi}_L(z'), z} = \hat{p}_L(z',z)$ car, d'après la proposition, \ref{prop:rev-leapfrog} $(s\circ \hat{\phi}_L)^{-1} = s \circ \hat{\phi}_L$. 
+\end{proof}
 
 \begin{center}
 	\begin{algorithm}[H]

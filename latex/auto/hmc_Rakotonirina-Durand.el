@@ -14,7 +14,6 @@
     "red")
    (LaTeX-add-labels
     "thm:ergodic"
-    "algo:metropolis-hastings"
     "algo:metropolis"
     "eq:hamiltonian-dyn"
     "rque:edo"
@@ -22,11 +21,15 @@
     "eq:canonical-dist"
     "eq:hyp"
     "prop:conservation"
+    "prop:compo"
     "lem:sol-inverse"
+    "rque:Hbar"
     "prop:rev"
     "prop:vol"
     "algo:leapfrog"
+    "prop:rev-leapfrog"
     "algo:HMC-ideal"
+    "prop:inv-ideal"
     "algo:HMC")
    (LaTeX-add-bibliographies
     "ref"))

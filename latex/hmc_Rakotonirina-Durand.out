@@ -3,7 +3,7 @@
 \BOOKMARK [2][-]{subsection.1.2}{Monte Carlo Markov Chains \(MCMC\)}{section.1}% 3
 \BOOKMARK [3][-]{subsubsection.1.2.1}{Loi invariante et r\351versibilit\351}{subsection.1.2}% 4
 \BOOKMARK [3][-]{subsubsection.1.2.2}{Ergodicit\351}{subsection.1.2}% 5
-\BOOKMARK [3][-]{subsubsection.1.2.3}{Algorithme de Metropolis-Hastings}{subsection.1.2}% 6
+\BOOKMARK [3][-]{subsubsection.1.2.3}{Algorithme de Metropolis \(Random Walk Metropolis\)}{subsection.1.2}% 6
 \BOOKMARK [2][-]{subsection.1.3}{Principe du Hamiltonian Monte Carlo}{section.1}% 7
 \BOOKMARK [3][-]{subsubsection.1.3.1}{Dynamique Hamiltonienne}{subsection.1.3}% 8
 \BOOKMARK [3][-]{subsubsection.1.3.2}{Principe g\351n\351ral}{subsection.1.3}% 9
