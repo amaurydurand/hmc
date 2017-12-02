@@ -13,6 +13,7 @@ function X = HMC(U,dU,dt,L,X0,N)
 	X = zeros(length(X0),N+1);
 	X(:,1) = X0;
 	for k = 1:N % HMC step
+	        %waitbar(k/N)
 		Xk = X(:,k); Pk = stdnormal_rnd(size(Xk)); % at time k
 		[Xp,Pp] = HMC_leapfrog(dU,dt,L(k),Xk,Pk); % proposed
 		% Pp = -Pp; % we don't oppose Pp because K is even

@@ -11,6 +11,7 @@ function X = RWM(h,Delta,X0,N)
 	X = zeros(length(X0),N+1);
 	X(:,1) = X0;
 	for k = 1:N
+	        %waitbar(k/N)
 		Y = X(:,k) + Delta(:,k);
 		hx = h(X(:,k));
 		if rand(1)*hx < min(hx,h(Y))

@@ -1,28 +1,30 @@
 %% Numerical parameters
 
-%n = 1000; % number of kept (plotted) data
+n = 1000; % number of kept (plotted) data
 %n0 = 100; % number of first forgotten data
-n = 100;
+%n = 100;
 n0 = 0;
 N = n+n0-1; % number of simulated data
 
 d = 2; % dimension
 
-%X0 = 8*ones(d,1); % starting point
-X0 = zeros(d,1);
+X0 = [20, 5];
+%X0 = 20*ones(d,1); % starting point
+%X0 = zeros(d,1);
 
 Delta = normrnd(0,1,d,N); % RWM steps
 
 dt = 0.1; % leapfrog step
-%L = 25*ones(1,N); % number of leapfrog steps
-L = ceil(25*rand(1,N));
+L = 25*ones(1,N); % number of leapfrog steps
+#L = ceil(25*rand(1,N));
 
 
 
 %% Aimed density
 	% "g" : gaussian
 	% "gm" : gaussian mixture
-aimed_density = "gm";
+	% "bl" : bayesian lasso (non differentiable)
+aimed_density = "bl";
 switch (aimed_density)
 	case "g" % gaussian density
 		switch (d)
@@ -31,8 +33,8 @@ switch (aimed_density)
 				sig = 0.35;
 			case 2
 				mu = [0;0];
-				sig = [0.4, 0.3 ; 0.3, 0.4];
-				%sig = [1, 0 ; 0, 1];
+				sig = [0.4, 0.2 ; 0.2, 0.4];
+				%sig = 0.3*[1, 0 ; 0, 1];
 		endswitch
 
 		invsig = inv(sig);
@@ -60,6 +62,20 @@ switch (aimed_density)
 
 		b = rand(1,500)<w1;
 		X_th = b .* mvnrnd(mu1,sig1,500)' + (1-b) .* mvnrnd(mu2,sig2,500)';
-
+	
+	case "bl" % bayesian lasso : U(x) = ||Ax - b||_2^2 + lambda ||x||_1
+	        %A = normrnd(0,1,d,d);
+	        %b = normrnd(0,1,d,1);
+		A = [0.5 0.4 ; 0.5 0.4];
+		b = [0.1 ; 0.1];
+		lambd = 2;
+		
+		U = @(x) sum(abs(A*x - b).^2, axis=1) + lambd * sum(abs(x), axis=1);
+		dU = @(x) (A + A.') * x + lambd * sign(x);
+		
+		h = @(x) exp(-U(x));
+		h1 = @(x) exp(-U(x));
+		
+		X_th = zeros(d, n); % exact sample
 	% other densities
 endswitch

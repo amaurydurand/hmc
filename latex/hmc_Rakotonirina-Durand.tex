@@ -311,7 +311,7 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 		  \bar{z}'(t) = - S z'(-t) = - S J \nabla H (z(-t)) = J S \nabla H(z(-t)) =  J \nabla \bar{H} (s^{-1}(z(-t))) = J \nabla \bar{H} (s(z(-t))) = J \nabla \bar{H} (\bar{z}(t)).
 		  $$
 		% \item Si $\bar{H} = H$, $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_-$. Notons $f$ l'unique solution de \eqref{eq:edo} sur $\rset$ telle que $f(0) = \bar{z}(-t)$ et $h : u \in \rset \mapsto t + u$. Alors $\forall u \in \rset_+, (f\circ h)'(u) = f(h(u)) = F(f\circ h (u))$ donc $f\circ h$ est solution sur $\rset$. Or $f\circ h (-t) = f(0) = \bar{z}(-t)$ donc par unicité de la solution sur $\rset_-$, $(f \circ h)_{| \rset_-} = \bar{z}$. Cela entraine $f(t) = f \circ h (0) = \bar{z}(0)$. Or par définition de $\phi_t$ et unicité de la solution sur $\rset_+$, on a $f_{|\rset_+} : u \in \rset_+ \mapsto \phi_u(\bar{z}(-t))$ donc pour $u = t$ on obtient $\phi_t(\bar{z}(-t)) = f(t) = \bar{z}(0)$
-		\item Si $\bar{H} = H$, $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_-$ donc $\bar z(t) = \phi_{-t}(\bar z(0))$ donc $\phi_t(\bar{z}(-t)) = \phi_0(\bar{z}(0)) = \bar{z}(0)$
+		\item Si $\bar{H} = H$, $\bar{z}$ est solution de \eqref{eq:edo} sur $\rset_-$ donc $\forall t \in \rset_+, \bar z(-t) = \phi_{-t}(\bar z(0))$ donc $\phi_t(\bar{z}(-t)) = \phi_0(\bar{z}(0)) = \bar{z}(0)$
 	\end{enumerate}
 \end{proof}
 
