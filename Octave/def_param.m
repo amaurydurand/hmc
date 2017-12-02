@@ -6,9 +6,7 @@ animation = 0;
 
 %n = 1000; % number of kept (plotted) data
 %n0 = 100; % number of first forgotten data
-%n = 100;
-%n0 = 0;
-n = 1000;
+n = 10000;
 n0 = 0;
 N = n+n0-1; % number of simulated data
 
@@ -28,6 +26,7 @@ L = ceil(25*rand(1,N));
 %% Aimed density
 	% "g" : gaussian
 	% "gm" : gaussian mixture
+	% "lasso" : bayesian lasso
 aimed_density = "g";
 switch (aimed_density)
 	case "g" % gaussian density
@@ -37,8 +36,8 @@ switch (aimed_density)
 				sig = 0.35;
 			case 2
 				mu = [0;0];
-				sig = [0.4, 0.3 ; 0.3, 0.4];
-				%sig = [1, 0 ; 0, 1];
+%				sig = [0.4, 0.3 ; 0.3, 0.4];
+				sig = [1, 0 ; 0, 1];
 		endswitch
 
 		invsig = inv(sig);
@@ -67,5 +66,16 @@ switch (aimed_density)
 		b = rand(1,500)<w1;
 		X_th = b .* mvnrnd(mu1,sig1,500)' + (1-b) .* mvnrnd(mu2,sig2,500)';
 
+	case "lasso" % bayesian lasso
+		switch d
+			case 1
+				A = 1; b = 5;
+			case 2
+				A = [1 1;0 1]; b = [5;5];
+		endswitch
+		lambda = 1;
+		
+		%% a terminer
+		
 	% other densities
 endswitch
