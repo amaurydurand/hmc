@@ -1,3 +1,7 @@
+%% Plot parameters
+
+animation = 0;
+
 %% Numerical parameters
 
 n = 1000; % number of kept (plotted) data
@@ -62,7 +66,6 @@ switch (aimed_density)
 
 		b = rand(1,500)<w1;
 		X_th = b .* mvnrnd(mu1,sig1,500)' + (1-b) .* mvnrnd(mu2,sig2,500)';
-	
 	case "bl" % bayesian lasso : U(x) = ||Ax - b||_2^2 + lambda ||x||_1
 	        %A = normrnd(0,1,d,d);
 	        %b = normrnd(0,1,d,1);
@@ -74,8 +77,9 @@ switch (aimed_density)
 		dU = @(x) (A + A.') * x + lambd * sign(x);
 		
 		h = @(x) exp(-U(x));
-		h1 = @(x) exp(-U(x));
+		h1 = @(x) h(x);
 		
-		X_th = zeros(d, n); % exact sample
+		X_th = zeros(d, n); % exact sample : problem cannot
+				% simulate from bayesian lasso
 	% other densities
 endswitch
