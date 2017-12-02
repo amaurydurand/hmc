@@ -1,15 +1,21 @@
+%% Plot parameters
+
+animation = 0;
+
 %% Numerical parameters
 
 %n = 1000; % number of kept (plotted) data
 %n0 = 100; % number of first forgotten data
-n = 100;
+%n = 100;
+%n0 = 0;
+n = 1000;
 n0 = 0;
 N = n+n0-1; % number of simulated data
 
 d = 2; % dimension
 
-%X0 = 8*ones(d,1); % starting point
-X0 = zeros(d,1);
+X0 = 100*ones(d,1); % starting point
+%X0 = zeros(d,1);
 
 Delta = normrnd(0,1,d,N); % RWM steps
 
@@ -22,7 +28,7 @@ L = ceil(25*rand(1,N));
 %% Aimed density
 	% "g" : gaussian
 	% "gm" : gaussian mixture
-aimed_density = "gm";
+aimed_density = "g";
 switch (aimed_density)
 	case "g" % gaussian density
 		switch (d)
