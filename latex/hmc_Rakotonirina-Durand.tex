@@ -556,41 +556,58 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 
 
 \subsection{Cas concret : solution approchée de la dynamique hamiltonienne}
-Dans le cas où l'on n'a pas accès aux solutions exactes de \eqref{eq:edo}, on utilise le flot appoché $\hat{\phi}_L$. La première idée serait de simplement remplacer $\phi_t$ par $g \circ \hat{\phi}_L$ dans l'algorithme \ref{algo:HMC-ideal} où $g : \rset^{2d} \to \rset^{2d}$ est une fonction à déterminer. On obtient alors une chaîne de Markov de noyau $Q\hat{P}_L$ avec $Q$ défini en proposition \ref{prop:inv-ideal} et
+Dans le cas où l'on n'a pas accès aux solutions exactes de \eqref{eq:edo}, on utilise le flot appoché $\hat{\phi}_L$. La première idée serait de simplement remplacer $\phi_t$ par $g \circ \hat{\phi}_L$ dans l'algorithme \ref{algo:HMC-ideal} où $g : \rset^{2d} \to \rset^{2d}$ est une fonction à déterminer. On obtient donc des noyaux $Q$ (défini en proposition \ref{prop:inv-ideal}) et
 $$
 \hat{P}_L : \fundef{
   \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
   (z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
 }
 $$
-$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
+$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car après la discrétisation, on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
 
 \begin{Prop}[réversibilité]
-  Sous les hypothèses \eqref{eq:hyp}, en prenant $g = s : (x, p) \mapsto (x,-p)$, alors pour $L \in \nset^*$, $\tilde \pi$ est $\hat{P}_L$-réversible donc $\hat{P}_L$-invariant. 
+	On se place sous les hypothèses \eqref{eq:hyp} et on considère $g = s : (x, p) \mapsto (x,-p)$. On définit
+	$$
+	\alpha : \fundef{
+	\rset^{2d} \times \rset^{2d} & \to & [0,1] \\
+	(z_0, z_1) & \mapsto & 1 \wedge \exp(\frac{-H(z_1)+H(z_0)}{T})
+	}
+	$$
+	et on note $\hat P_L^\alpha$ le noyau de Metropolis-Hasting associé au noyau instrumental $\hat P_L$ et à la fonction de rejet $\alpha$. Alors $\widetilde \pi$ est $\hat P_L^\alpha$-réversible (et donc $\hat P_L^\alpha$-invariant). 
 \end{Prop}
 \begin{proof}
-	Soit $L \in \nset^*$. Pour $A,B \in \calB(\rset^{2d})$,
-	\begin{align*}
-	\tilde \pi \otimes \hat{P}_L (A \times B)
-		&= \int \ind_A(z) \tilde \pi(dz) \hat P_L(z,B)\\
-		&= \int \ind_A(z) \delta_{s \circ \hat \phi_L(z)}(B) \tilde \pi(dz)\\
-		&= \int \ind_A(z) \ind_B(s \circ \hat \phi_L(z)) \exp \left(-\frac{H(z)}{T} \right) dz
-	\end{align*}
-	Par proposition \ref{prop:rev-leapfrog}, on a $(s\circ \hat{\phi}_L)^{-1} = s \circ \hat{\phi}_L$ et donc $\abs{\det \left( \frac{\partial (s\circ \hat{\phi}_L)}{\partial z}(z) \right)} = 1$. Ainsi, par changement de variable,
+	Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat P_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
 	$$
-	\tilde \pi \otimes \hat{P}_L (A \times B)
+	\hat P_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
+	$$
+	et pour $A,B$ boréliens,
+	$$
+	\widetilde \pi \otimes \hat P_L^\alpha (A \times B)
 	=
-	\int \ind_A(s \circ \hat \phi_L(z)) \ind_B(z) \exp \left(-\frac{H(s \circ \hat \phi_L(z))}{T} \right) dz\\
-	$$
-	Sous les hypothèses \eqref{eq:hyp}, $H \circ s = H$. {\red Il faut aussi avoir que $H \circ \hat \phi_L = H$, ce qui est faux aux dernières nouvelles}.
-	Ainsi,
-	$$
-	\tilde \pi \otimes \hat{P}_L (A \times B)
+	\int \ind_A(z) \hat P_L^\alpha(z,B) e^{-H(z)/T} dz
 	=
-	\int \ind_B(z) \ind_A(s \circ \hat \phi_L(z)) \exp \left(-\frac{H(z)}{T} \right) dz
-	=
-	\tilde \pi \otimes \hat{P}_L (B \times A)
+	\Lambda_1 + \Lambda_2
 	$$
+	où
+	$$
+	\Lambda_1 = \int \ind_A(z) \ind_B(\psi_L(z)) \alpha(z,\psi_L(z)) e^{-H(z)/T} dz
+	$$
+	et
+	$$
+	\Lambda_2 = \int \ind_A(z) \ind_B(z) (1-\alpha(z,\psi_L(z))) e^{-H(z)/T} dz.
+	$$
+	Il suffit, pour avoir la $\hat P_L^\alpha$-réversibilité, que les expressions $\Lambda_1$ et $\Lambda_2$ soient symétriques en $A$ et $B$. C'est le cas pour $\Lambda_2$, reste à étudier $\Lambda_1 = \Lambda_1(A,B)$.
+
+	D'après l'expression définissant $\alpha$, on a $\alpha(z_0,z_1) e^{-H(z_0)/T} = e^{-H(z_0)/T} \wedge e^{-H(z_1)/T}$, donc
+	$$
+	\Lambda_1(A,B) = \int \ind_A(z) \ind_B(\psi_L(z)) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz
+	$$
+	Par proposition \ref{prop:rev-leapfrog}, on a $(\psi_L)^{-1} = \psi_L$ et donc $\abs{\det \left( \frac{\partial \psi_L}{\partial z}(z) \right)} = 1$. Ainsi, en faisant le changement de variable $z \mapsto \psi_L(z)$ et en utilisant $\psi_L \circ \psi_L = \Id$, on obtient
+	$$
+	\Lambda_1(A,B) = \int \ind_A(\psi_L(z)) \ind_B(z) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz = \Lambda_1(B,A)
+	$$
+
+	Ainsi, $\Lambda_1$ et $\Lambda_2$ sont bien symétriques en $A$ et $B$, donc $\widetilde \pi \otimes \hat P_L^\alpha (A \times B) = \widetilde \pi \otimes \hat P_L^\alpha (B \times A)$ : $\widetilde \pi$ est $\hat P_L^\alpha$-réversible.
 \end{proof}
 
 \begin{center}
