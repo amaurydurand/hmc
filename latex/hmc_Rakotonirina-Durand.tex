@@ -563,13 +563,34 @@ $$
   (z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
 }
 $$
-$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus $\hat{P}_L$-invariante car on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
+$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
 
-\begin{Prop}[symétrie]
-  Sous les hypothèses \eqref{eq:hyp}, en prenant $g = s : (x, p) \mapsto (x,-p)$, alors pour $L \in \nset^*$, $\hat{P}_L$ est un noyau à densité $\hat{p}_L$ par rapport à la mesure de Lebesgue et $\hat{p}_L$ est symétrique i.e $\forall z,z' \in \rset^{2d}, \hat{p}_L (z, z') = \hat{p}_L (z',z)$. 
+\begin{Prop}[réversibilité]
+  Sous les hypothèses \eqref{eq:hyp}, en prenant $g = s : (x, p) \mapsto (x,-p)$, alors pour $L \in \nset^*$, $\tilde \pi$ est $\hat{P}_L$-réversible donc $\hat{P}_L$-invariant. 
 \end{Prop}
 \begin{proof}
-  Il est facile de voir que $\hat{p}_L : (z,z') \mapsto \delta_{s \circ \hat{\phi}_L(z), z'}$. Ainsi $\hat{p}_L(z,z') =  \delta_{s \circ \hat{\phi}_L(z), z'} = \delta_{(s \circ \hat{\phi}_L)^{-1}(z'), z} = \delta_{\hat{\phi}_L(z'), z} = \hat{p}_L(z',z)$ car, d'après la proposition, \ref{prop:rev-leapfrog} $(s\circ \hat{\phi}_L)^{-1} = s \circ \hat{\phi}_L$. 
+	Soit $L \in \nset^*$. Pour $A,B \in \calB(\rset^{2d})$,
+	\begin{align*}
+	\tilde \pi \otimes \hat{P}_L (A \times B)
+		&= \int \ind_A(z) \tilde \pi(dz) \hat P_L(z,B)\\
+		&= \int \ind_A(z) \delta_{s \circ \hat \phi_L(z)}(B) \tilde \pi(dz)\\
+		&= \int \ind_A(z) \ind_B(s \circ \hat \phi_L(z)) \exp \left(-\frac{H(z)}{T} \right) dz
+	\end{align*}
+	Par proposition \ref{prop:rev-leapfrog}, on a $(s\circ \hat{\phi}_L)^{-1} = s \circ \hat{\phi}_L$ et donc $\abs{\det \left( \frac{\partial (s\circ \hat{\phi}_L)}{\partial z}(z) \right)} = 1$. Ainsi, par changement de variable,
+	$$
+	\tilde \pi \otimes \hat{P}_L (A \times B)
+	=
+	\int \ind_A(s \circ \hat \phi_L(z)) \ind_B(z) \exp \left(-\frac{H(s \circ \hat \phi_L(z))}{T} \right) dz\\
+	$$
+	Sous les hypothèses \eqref{eq:hyp}, $H \circ s = H$. {\red Il faut aussi avoir que $H \circ \hat \phi_L = H$, ce qui est faux aux dernières nouvelles}.
+	Ainsi,
+	$$
+	\tilde \pi \otimes \hat{P}_L (A \times B)
+	=
+	\int \ind_B(z) \ind_A(s \circ \hat \phi_L(z)) \exp \left(-\frac{H(z)}{T} \right) dz
+	=
+	\tilde \pi \otimes \hat{P}_L (B \times A)
+	$$
 \end{proof}
 
 \begin{center}
