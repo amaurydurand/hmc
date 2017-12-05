@@ -245,6 +245,8 @@ Afin de pouvoir modéliser le problème par un HMC, on suppose
 
 \begin{Rque}
 	La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. Les deux dernières permettront d'avoir une propriété de réversibilité (proposition \ref{prop:rev}).
+
+	$k = 1$ suffit pour tous les résultats énoncés sauf pour la proposition \ref{prop:rever_dicret} où on aura besoin de $k = 2$.
 \end{Rque}
 
 Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
@@ -306,7 +308,11 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 	%\forall t \in \rset_-, \bar p'(t) = p'(-t) = - \frac{\partial H}{\partial x}(x(-t),p(-t)) = - \frac{\partial H}{\partial x}(\bar x(t), - \bar p(t)) = - \frac{\partial{\bar H}}{\partial x}(\bar x(t), \bar p(t))
 	%$$
 	\begin{enumerate}
-		\item   Notons $s : z = (x,p) \mapsto (x,-p)$ alors $\forall t \in \rset_-, \bar{z}(t) = s \circ z (-t)$ et $\bar{H} = H \circ s$. De plus $\forall z \in \rset^{2d}, \frac{\partial s}{\partial z}(z) = \begin{bmatrix} I_d & 0_d \\ 0_d & -I_d \end{bmatrix} = S$. Remarquons alors que $S J = - J S$ et $s^{-1} = s$. Ainsi, $\forall y \in \rset^{2d}, \nabla \bar{H} (y) = S \nabla H (s(y))$ et pour $t \in \rset_+$,
+		\item   Notons $s : z = (x,p) \mapsto (x,-p)$ alors $\forall t \in \rset_-, \bar{z}(t) = s \circ z (-t)$ et $\bar{H} = H \circ s$. De plus
+		\begin{equation}\label{eq:ds_dz}
+		\forall z \in \rset^{2d}, \frac{ds}{dz}(z) = \begin{bmatrix} I_d & 0_d \\ 0_d & -I_d \end{bmatrix} \doteq S.
+		\end{equation}
+		Remarquons alors que $S J = - J S$ et $s^{-1} = s$. Ainsi, $\forall y \in \rset^{2d}, \nabla \bar{H} (y) = S \nabla H (s(y))$ et pour $t \in \rset_+$,
 		  $$
 		  \bar{z}'(t) = - S z'(-t) = - S J \nabla H (z(-t)) = J S \nabla H(z(-t)) =  J \nabla \bar{H} (s^{-1}(z(-t))) = J \nabla \bar{H} (s(z(-t))) = J \nabla \bar{H} (\bar{z}(t)).
 		  $$
@@ -358,15 +364,19 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 
 \begin{Prop}[conservation du volume]\label{prop:vol}
+	La dynamique hamiltonienne conserve le volume, au sens où
 	$$
-	\forall t \in \rset_+, \forall z \in \rset^{2d}, \det \left( \frac{\partial \phi_t}{\partial z}(z) \right) = 1
+	\forall t \in \rset_+, \forall z \in \rset^{2d}, \detjacob{\phi_t}{z} = 1.
 	$$
 \end{Prop}
+\begin{proof}
+On ne donnera pas de preuve détaillée de cette proposition, mais la preuve repose sur le caractère simplectique lié à la remarque \ref{rque:edo}.
+\end{proof}
 
 \subsection{Discrétisation des équations}
 
 % Donner rapidement les résultats déterministes de l'article sur l'hamiltonnien (2.1 et 2.2 de l'article), peut-être qu'on peut se contenter du cas U = -log(h_\pi) et K = \norm{v}/2 (T = 1, m = 1)
-% Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peut-être simplifiée (2.3 de l'article), éventuellement en quoi elle "préserve le volume"
+% Expliquer la méthode du saute-mouton pour simuler la dynamique hamiltonienne, en quoi elle est meilleure, en quoi elle peut-être simplifiée (2.3 de l'article), éventuellement en quoi elle "conserve le volume"
 
 
 %\begin{center}
@@ -399,18 +409,60 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 	\end{algorithm}
 \end{center}
 
-\begin{Def}[flot approché] Soient $\epsilon > 0$ et $L \in \nset^*$, on définit le flot approché du hamiltonien par $L$ itérations de l'algorithme leapfrog par $\hat{\phi}_L = \hat{\phi}^L$ où 
-  $$
-  \hat{\phi} : \fundef{\rset^{2d} & \to & \rset^{2d} \\
-    z = (x, p) & \mapsto & (\hat{\phi}^{(1)}(z), \hat{\phi}^{(2)}(z))
-    }
-  $$
-  avec
-  \begin{align*}
-    \hat{\phi}^{(1)} : (x,p) & \mapsto x + \epsilon \nabla K \left( p - \frac{\epsilon}{2} \nabla U(x) \right) \\
-    \hat{\phi}^{(2)} : (x,p) & \mapsto p - \frac{\epsilon}{2} \nabla U(x) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,p))
-  \end{align*}
+\begin{Def}[flot approché] \label{def:flot_approche}
+	Soient $\epsilon > 0$ et $L \in \nset^*$, on définit le flot approché du hamiltonien par $L$ itérations de l'algorithme leapfrog par $\hat{\phi}_L = \hat{\phi}^L$ où 
+	$$
+	\hat{\phi} : \fundef{\rset^{2d} & \to & \rset^{2d} \\
+	z = (x, p) & \mapsto & (\hat{\phi}^{(1)}(z), \hat{\phi}^{(2)}(z))
+	}
+	$$
+	avec
+	\begin{align*}
+	\hat{\phi}^{(1)} : (x,p) & \mapsto x + \epsilon \nabla K \left( p - \frac{\epsilon}{2} \nabla U(x) \right) \\
+	\hat{\phi}^{(2)} : (x,p) & \mapsto p - \frac{\epsilon}{2} \nabla U(x) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,p))
+	\end{align*}
 \end{Def}
+
+La proposition \ref{prop:vol_discret} est l'analogue de la proposition \ref{prop:vol} mais pour le flot approché.
+
+\begin{Prop}[conservation du volume]\label{prop:vol_discret}	
+	Sous les hypothèses \eqref{eq:hyp} avec $k = 2$ ($U$ et $K$ de classe $\calC^2$), la discrétisation de la dynamique hamiltonienne par l'algorithme leapfrog conserve le volume, au sens où
+	$$
+	\forall z \in \rset^{2d}, \detjacob{\hat \phi}{z} = 1.
+	$$
+\end{Prop}
+\begin{proof}
+	$\hat \phi$ conserve le volume comme composée de cisaillements (qui préservent le volume). Plus précisément, la définition \ref{def:flot_approche} peut s'écrire $\hat \phi= \varphi_p \circ \varphi_x \circ \varphi_p$ où
+	$$
+	\varphi_x : \fundef{
+		\rset^{2d} & \to & \rset^{2d} \\
+		(x,p) & \mapsto & (x + \epsilon \nabla K(p),p)
+	}
+	\text{ et }
+	\varphi_p : \fundef{
+		\rset^{2d} & \to & \rset^{2d} \\
+		(x,p) & \mapsto & (x,p - \frac \epsilon 2 \nabla U(x))
+	}
+	$$
+	$U$ et $K$ étant $calC^2$, on a les jacobiennes
+	$$
+	\frac{d\varphi_x}{dz}(x,p) =
+	\begin{pmatrix}
+	I_d & \epsilon \frac{d\nabla K}{dp}(p) \\
+	0 & I_d
+	\end{pmatrix}
+	\text{ et }
+	\frac{d\varphi_p}{dz}(x,p) =
+	\begin{pmatrix}
+	I_d & 0 \\
+	- \frac \epsilon 2 \frac{d\nabla U}{dx}(x) & I_d
+	\end{pmatrix}
+	$$
+	qui sont bien de déterminant $1$ en tout point ($I_d$ désigne la matrice identité de taille $d$). Ainsi, pour $z \in \rset^{2d}$,
+	$$
+	\detjacob{\hat \phi}{z} = \detjacob{\varphi_p}{\varphi_x(\varphi_p(z))} \detjacob{\varphi_x}{\varphi_p(z)} \detjacob{\varphi_p}{z} = 1.
+	$$
+\end{proof}
 
 \begin{Prop}[réversibilité]\label{prop:rev-leapfrog}
   Sous les hypothèses \eqref{eq:hyp}, $\hat{\phi}$ est inversible avec $\hat{\phi}^{-1} : (x,p) \mapsto (\hat{\phi}^{(1)}(x,-p), -\hat{\phi}^{(2)}(x,-p))$, ce qui entraîne $\forall L \in \nset^*, \hat{\phi}_L$ est inversible avec $\hat{\phi}_L^{-1} : (x,p) \mapsto (\hat{\phi}_L^{(1)}(x,-p), -\hat{\phi}_L^{(2)}(x,-p))$. 
@@ -565,8 +617,8 @@ $$
 $$
 $\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car après la discrétisation, on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
 
-\begin{Prop}[réversibilité]
-	On se place sous les hypothèses \eqref{eq:hyp} et on considère $g = s : (x, p) \mapsto (x,-p)$. On définit
+\begin{Prop}[réversibilité]\label{prop:rever_dicret}
+	Sous les hypothèses \eqref{eq:hyp} avec $k = 2$ ($U$ et $K$ de classe $\calC^2$), on considère $g = s : (x, p) \mapsto (x,-p)$ et on définit
 	$$
 	\alpha : \fundef{
 	\rset^{2d} \times \rset^{2d} & \to & [0,1] \\
@@ -586,25 +638,31 @@ $\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P
 	=
 	\int \ind_A(z) \hat P_L^\alpha(z,B) e^{-H(z)/T} dz
 	=
-	\Lambda_1 + \Lambda_2
+	\Lambda_1(A,B) + \Lambda_2(A,B)
 	$$
 	où
 	$$
-	\Lambda_1 = \int \ind_A(z) \ind_B(\psi_L(z)) \alpha(z,\psi_L(z)) e^{-H(z)/T} dz
+	\Lambda_1(A,B) = \int \ind_A(z) \ind_B(\psi_L(z)) \alpha(z,\psi_L(z)) e^{-H(z)/T} dz
 	$$
 	et
 	$$
-	\Lambda_2 = \int \ind_A(z) \ind_B(z) (1-\alpha(z,\psi_L(z))) e^{-H(z)/T} dz.
+	\Lambda_2(A,B) = \int \ind_A(z) \ind_B(z) (1-\alpha(z,\psi_L(z))) e^{-H(z)/T} dz.
 	$$
-	Il suffit, pour avoir la $\hat P_L^\alpha$-réversibilité, que les expressions $\Lambda_1$ et $\Lambda_2$ soient symétriques en $A$ et $B$. C'est le cas pour $\Lambda_2$, reste à étudier $\Lambda_1 = \Lambda_1(A,B)$.
+	Il suffit, pour avoir la $\hat P_L^\alpha$-réversibilité, que les expressions $\Lambda_1(A,B)$ et $\Lambda_2(A,B)$ soient toutes les deux symétriques en $A$ et $B$. C'est le cas pour $\Lambda_2$, reste à étudier $\Lambda_1$.
 
 	D'après l'expression définissant $\alpha$, on a $\alpha(z_0,z_1) e^{-H(z_0)/T} = e^{-H(z_0)/T} \wedge e^{-H(z_1)/T}$, donc
-	$$
+	\begin{equation}\label{eq:Lambda1}
 	\Lambda_1(A,B) = \int \ind_A(z) \ind_B(\psi_L(z)) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz
+	\end{equation}
+
+	On cherche à faire un changement de variable $z \mapsto \psi_L(z)$. Par proposition \ref{prop:rev-leapfrog}, on a $(\psi_L)^{-1} = \psi_L$. $U$ et $K$ sont de classe $\calC^2$ par hypothèse donc $\hat \phi$ est, par définition \ref{def:flot_approche}, de classe $\calC^1$. Comme $(\psi_L)^{-1} = \psi_L = s \circ \hat \phi^L$, $\psi_L$ est donc un $\calC^1$-difféomorphisme. De plus, $s$ oppose le volume ($\detjacob{s}{z} = -1$ par équation \eqref{eq:ds_dz}) et $\hat \phi$ conserve le volume (par proposition \ref{prop:vol_discret}), donc $\psi_L$ aussi :
 	$$
-	Par proposition \ref{prop:rev-leapfrog}, on a $(\psi_L)^{-1} = \psi_L$ et donc $\abs{\det \left( \frac{\partial \psi_L}{\partial z}(z) \right)} = 1$. Ainsi, en faisant le changement de variable $z \mapsto \psi_L(z)$ et en utilisant $\psi_L \circ \psi_L = \Id$, on obtient
+	\forall z \in \rset^{2d}, \detjacob{\psi_L}{z} = \detjacob{s}{\hat \phi^L(z)} \detjacob{\hat \phi^L}{z} = -1.
 	$$
-	\Lambda_1(A,B) = \int \ind_A(\psi_L(z)) \ind_B(z) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz = \Lambda_1(B,A)
+
+	Ainsi, le changement de variable dans \eqref{eq:Lambda1} donne
+	$$
+	\Lambda_1(A,B) = \int \ind_A(\psi_L(z)) \ind_B(z) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz = \Lambda_1(B,A).
 	$$
 
 	Ainsi, $\Lambda_1$ et $\Lambda_2$ sont bien symétriques en $A$ et $B$, donc $\widetilde \pi \otimes \hat P_L^\alpha (A \times B) = \widetilde \pi \otimes \hat P_L^\alpha (B \times A)$ : $\widetilde \pi$ est $\hat P_L^\alpha$-réversible.
