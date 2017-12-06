@@ -46,8 +46,8 @@ switch (d)
 
 		figure(1); clf;
 		hold on;
-		plot(abs(autocor(X_hmc(1, :))), ";HCM;", "color", "g", "linestyle", "-");
-		plot(abs(autocor(X_rwm(1, :))), ";RWM;", "color", "r", "linestyle", "-");
+		plot(autocor(X_hmc(1, :)), ";HCM;", "color", "g", "linestyle", "-");
+		plot(autocor(X_rwm(1, :)), ";RWM;", "color", "r", "linestyle", "-");
 		hold off;
 		legend();
 		title("absolute value of X's autocorrelation");
@@ -168,7 +168,7 @@ switch (d)
 				  'color', 'g', 'linewidth', lw);
 		    hold off
 		  
-		    pause(0.05);      
+		    pause(0.2);      
 		    %delete(p_rwm_old);
 		    %p_rwm_old = p_rwm;
 		    %delete(p_hmc_old);

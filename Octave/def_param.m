@@ -1,18 +1,18 @@
 %% Plot parameters
 
-animation = 0;
+animation = 1;
 
 %% Numerical parameters
 
 n = 1000; % number of kept (plotted) data
-%n0 = 100; % number of first forgotten data
+%n0 = 5000; % number of first forgotten data
 %n = 100;
 n0 = 0;
 N = n+n0-1; % number of simulated data
 
 d = 2; % dimension
 
-X0 = [20, 5];
+X0 = [20, 10];
 %X0 = 20*ones(d,1); % starting point
 %X0 = zeros(d,1);
 
@@ -20,7 +20,7 @@ Delta = normrnd(0,1,d,N); % RWM steps
 
 dt = 0.1; % leapfrog step
 L = 25*ones(1,N); % number of leapfrog steps
-#L = ceil(25*rand(1,N));
+%L = ceil(25*rand(1,N));
 
 
 
@@ -28,7 +28,7 @@ L = 25*ones(1,N); % number of leapfrog steps
 	% "g" : gaussian
 	% "gm" : gaussian mixture
 	% "bl" : bayesian lasso (non differentiable)
-aimed_density = "bl";
+aimed_density = "g";
 switch (aimed_density)
 	case "g" % gaussian density
 		switch (d)

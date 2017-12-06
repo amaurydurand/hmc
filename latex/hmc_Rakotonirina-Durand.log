@@ -1,10 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.30)  2 DEC 2017 14:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.31)  4 DEC 2017 20:10
 entering extended mode
- restricted \write18 enabled.
- file:line:error style messages enabled.
+ \write18 enabled.
  %&-line parsing enabled.
-**\input hmc_Rakotonirina-Durand.tex
+**hmc_Rakotonirina-Durand.tex
 (./hmc_Rakotonirina-Durand.tex
+LaTeX2e <2016/02/01>
+Babel <3.9q> and hyphenation patterns for 5 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
@@ -1054,25 +1055,25 @@ LaTeX Font Info:    Try loading font information for U+bbm on input line 525.
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [7]
 [8] (./hmc_Rakotonirina-Durand.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 607.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 645.
  [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 607.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 645.
  (./hmc_Rakotonirina-Durand.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 607.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 607.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 645.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 645.
 Package rerunfilecheck Info: File `hmc_Rakotonirina-Durand.out' has not changed
 .
 (rerunfilecheck)             Checksum: A2BCD79E9B7FD614F7C3CDAD10CE8593;1300.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 607.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 645.
  ) 
 Here is how much of TeX's memory you used:
  16984 strings out of 494924
  284275 string characters out of 6179708
- 373317 words of memory out of 5000000
+ 373316 words of memory out of 5000000
  20007 multiletter control sequences out of 15000+600000
  14670 words of font info for 60 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 40i,21n,45p,10432b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,21n,45p,10425b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/amaury/.texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texm
@@ -1086,18 +1087,17 @@ cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr1
 7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmti7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/symbols/msbm7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/st
-maryrd/stmary10.pfb>
-Output written on hmc_Rakotonirina-Durand.pdf (9 pages, 272085 bytes).
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/symbols/msbm7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/stmaryrd/stmary10.pfb>
+Output written on hmc_Rakotonirina-Durand.pdf (9 pages, 268972 bytes).
 PDF statistics:
- 334 PDF objects out of 1000 (max. 8388607)
- 288 compressed objects within 3 object streams
+ 330 PDF objects out of 1000 (max. 8388607)
+ 285 compressed objects within 3 object streams
  78 named destinations out of 1000 (max. 500000)
  129 words of extra memory for PDF output out of 10000 (max. 10000000)
 
