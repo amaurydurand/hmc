@@ -1,0 +1,142 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{init_beamer}
+\usepackage{defs}
+\usepackage{color}
+\newcommand{\red}{\color{red}}
+\definecolor{gray}{rgb}{0.4, 0.4, 0.4}
+
+\title{Introduction aux méthodes de Monte Carlo par dynamique Hamiltonienne}
+\author{Shmuel RAKOTONIRINA-RICQUEBOURG, Amaury DURAND}
+\begin{document}
+\maketitle
+{\tableofcontents[hideallsubsections]}
+
+\section{Introduction}
+
+\subsubsection{Algorithmes MCMC}
+
+% contextualisation : principe des MCMC
+
+\subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
+
+\begin{frame}{Algorithme Random-walk Metropolis}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
+			$X_0 \leftarrow x \in \xset$ arbitraire\;
+			$(U_k)_{k \in \nset} \siid Q$ \;
+			\Repeat{une condition d'arrêt}{
+				$Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
+				$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
+				$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+			}
+			\KwRet{$(X_k)_k$}
+			\caption{Random Walk Metropolis}
+			\label{algo:metropolis}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\section{Dynamique hamiltonienne}
+
+\subsection{Définition}
+
+% définition rapide dynamique hamiltonienne
+
+\begin{frame}{Hypothèses}
+	\begin{equation}\label{eq:hyp}
+		\begin{aligned}
+			&\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
+			&\mbox{$\exists k \geq 1, \ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$}\\
+			&\mbox{$h_\nu$ est paire} \\
+	                & H : (x,p) \mapsto U(x) + K(p) \text{ avec } U(x) = - T \ln(h_\pi(x)), K(p) = -T \ln(h_\nu(p))
+		\end{aligned}
+		\tag{H}
+	\end{equation}
+\end{frame}
+
+\subsection{Propriétés}
+
+% conservation du hamiltonien, définition du flot, propriété de réversibilité du flot, conservation du volume
+
+\subsection{Discrétisation}
+
+% parler d'Euler à l'oral, définition du flot approché, réversibilité du flot, conservation du volume, 
+
+\begin{frame}{Algorithme du leapfrog}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+			\For(\tcp*[h]{Saute-mouton}){$k \in \llbracket 0, L-1 \rrbracket$}{
+				$x_{k+1} \leftarrow x_k + \epsilon \nabla K \left( p_k - \frac{\epsilon}{2} \nabla U(x_k) \right)$\;
+				$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
+			}
+			\KwRet{$(x_L,p_L)$}
+			\caption{Discrétisation de l'évolution par saute-mouton (\emph{leapfrog})}
+			\label{algo:leapfrog}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\section{Hamiltonian Monte-Carlo}
+
+\subsection{Cas idéal}
+
+% utilisation du flot exact, invariance de la loi
+
+\begin{frame}{Algorithme HMC idéal}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
+			$X_0 \leftarrow x \in \xset$ arbitraire\;
+			\Repeat{une condition d'arrêt}{
+				$\tilde{P}_k \sim \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
+				$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
+				$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
+			}
+			\KwRet{$(X_k)_k$}
+			\caption{Hamiltonian Monte-Carlo, cas idéal}
+			\label{algo:HMC-ideal}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\subsection{Cas réel}
+
+% utilisation du flot approché, réversibilité de la loi
+
+\begin{frame}{Algorithme HMC réel}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+			$X_0 \leftarrow x \in \xset$ arbitraire\;
+			\Repeat{une condition d'arrêt}{
+				$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+				$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+				$U_k \leftarrow U(X_k)$\;
+				$K_k \leftarrow \norm{P_k}^2/2$\;
+				$U_{prop} \leftarrow U(X_{prop})$\;
+				$K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+				\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+					$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+				}{
+					$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+				}
+			}
+			\KwRet{$(X_k)_k$}
+			\caption{Hamiltonian Monte-Carlo}
+			\label{algo:HMC}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\section{Simulations}
+
+% résultats des simulations
+
+\pagebreak
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
+
+
