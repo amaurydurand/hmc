@@ -1,13 +1,18 @@
 \begin{thebibliography}{1}
 
-\bibitem{Neal-hmc}
-Neal~Radford M.
-\newblock {MCMC} using {Hamiltonian} dynamics.
-\newblock {\em Handbook of Markov Chain Monte Carlo}, 54:113--162, 2010.
-
 \bibitem{Douc-mc}
-Douc Randal; Moulines Eric; Priouret Pierre;~Soulier Philippe.
+Randal {Douc}, Eric {Moulines}, {Priouret} Pierre, and Philippe {Soulier}.
 \newblock {\em Markov Chains}.
 \newblock 2017.
+
+\bibitem{ergodicity-hmc}
+S.~{Livingstone}, M.~{Betancourt}, S.~{Byrne}, and M.~{Girolami}.
+\newblock {On the Geometric Ergodicity of Hamiltonian Monte Carlo}.
+\newblock {\em ArXiv e-prints}, January 2016.
+
+\bibitem{Neal-hmc}
+Radford~M. {Neal}.
+\newblock {MCMC} using {Hamiltonian} dynamics.
+\newblock {\em Handbook of Markov Chain Monte Carlo}, 54:113--162, 2010.
 
 \end{thebibliography}

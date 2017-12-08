@@ -4,45 +4,45 @@ The top-level auxiliary file: hmc_Rakotonirina-Durand.aux
 The style file: plain.bst
 Database file #1: ref.bib
 Warning--empty publisher in Douc-mc
-You've used 2 entries,
+You've used 3 entries,
             2118 wiz_defined-function locations,
-            510 strings with 4230 characters,
-and the built_in function-call counts, 528 in all, are:
-= -- 50
-> -- 14
+            515 strings with 4414 characters,
+and the built_in function-call counts, 930 in all, are:
+= -- 84
+> -- 53
 < -- 0
-+ -- 6
-- -- 4
-* -- 31
-:= -- 95
-add.period$ -- 6
-call.type$ -- 2
-change.case$ -- 7
++ -- 21
+- -- 18
+* -- 67
+:= -- 170
+add.period$ -- 9
+call.type$ -- 3
+change.case$ -- 17
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 23
-empty$ -- 49
-format.name$ -- 4
-if$ -- 106
+cite$ -- 4
+duplicate$ -- 33
+empty$ -- 66
+format.name$ -- 18
+if$ -- 181
 int.to.chr$ -- 0
-int.to.str$ -- 2
-missing$ -- 3
-newline$ -- 13
-num.names$ -- 4
-pop$ -- 11
+int.to.str$ -- 3
+missing$ -- 4
+newline$ -- 18
+num.names$ -- 6
+pop$ -- 21
 preamble$ -- 1
-purify$ -- 6
+purify$ -- 15
 quote$ -- 0
-skip$ -- 13
+skip$ -- 20
 stack$ -- 0
-substring$ -- 35
-swap$ -- 2
+substring$ -- 40
+swap$ -- 3
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 6
+type$ -- 10
 warning$ -- 1
-while$ -- 6
-width$ -- 3
-write$ -- 22
+while$ -- 8
+width$ -- 4
+write$ -- 32
 (There was 1 warning)

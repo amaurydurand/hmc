@@ -3,6 +3,7 @@
  (lambda ()
    (LaTeX-add-bibitems
     "Neal-hmc"
-    "Douc-mc"))
+    "Douc-mc"
+    "ergodicity-hmc"))
  :bibtex)
 

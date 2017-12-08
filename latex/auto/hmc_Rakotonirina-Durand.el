@@ -9,7 +9,8 @@
     "art10"
     "init"
     "defs"
-    "color")
+    "color"
+    "subcaption")
    (TeX-add-symbols
     "red")
    (LaTeX-add-labels
@@ -23,14 +24,25 @@
     "prop:conservation"
     "prop:compo"
     "lem:sol-inverse"
+    "eq:ds_dz"
     "rque:Hbar"
     "prop:rev"
     "prop:vol"
     "algo:leapfrog"
+    "def:flot_approche"
+    "prop:vol_discret"
     "prop:rev-leapfrog"
     "algo:HMC-ideal"
     "prop:inv-ideal"
-    "algo:HMC")
+    "prop:rever_dicret"
+    "eq:Lambda1"
+    "algo:HMC"
+    "fig:normal"
+    "fig:normal_autocor"
+    "fig:gm"
+    "fig:gm_autocor"
+    "fig:bl"
+    "fig:bl_autocor")
    (LaTeX-add-bibliographies
     "ref"))
  :latex)

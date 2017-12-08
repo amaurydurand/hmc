@@ -5,4 +5,10 @@ TO DO :
 pkg load statistics
 clear all;
 def_param;
-plot_simul;
+run_algo;
+if plots;
+  plot_simul;
+endif
+if animation;
+  anim;
+endif
