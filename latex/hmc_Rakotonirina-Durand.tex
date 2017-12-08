@@ -250,7 +250,7 @@ Afin de pouvoir modéliser le problème par un HMC, on suppose
 \begin{Rque}
 	La première hypothèse de \eqref{eq:hyp} est nécessaire pour écrire les densités sous la forme canonique. La deuxième permet d'avoir des garanties de régularité des solutions de \eqref{eq:hamiltonian-dyn}. Les deux dernières permettront d'avoir une propriété de réversibilité (proposition \ref{prop:rev}).
 
-	$k = 1$ suffit pour tous les résultats énoncés sauf pour la proposition \ref{prop:rever_dicret} où on aura besoin de $k = 2$.
+	$k = 1$ suffit pour tous les résultats énoncés sauf pour la proposition \ref{prop:rever_discret} où on aura besoin de $k = 2$.
 \end{Rque}
 
 Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
@@ -621,7 +621,7 @@ $$
 $$
 $\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car après la discrétisation, on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
 
-\begin{Prop}[réversibilité]\label{prop:rever_dicret}
+\begin{Prop}[réversibilité]\label{prop:rever_discret}
 	Sous les hypothèses \eqref{eq:hyp} avec $k = 2$ ($U$ et $K$ de classe $\calC^2$), on considère $g = s : (x, p) \mapsto (x,-p)$ et on définit
 	$$
 	\alpha : \fundef{

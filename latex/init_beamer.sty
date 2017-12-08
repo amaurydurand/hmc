@@ -43,14 +43,23 @@
 %%%%		For Algorithms
 %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[ruled, vlined, french, algosection]{algorithm2e}
+\usepackage[ruled, vlined, french, onelanguage, algosection, nofillcomment, scleft]{algorithm2e}
 \SetKwBlock{KwInit}{Initialization :}{endInit}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%  		Code			 %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[section]{minted}
-\usemintedstyle{borland}
-\usepackage{color}
-\definecolor{bg}{rgb}{0.95,0.95,0.95}
+% \usepackage[section]{minted}
+% \usemintedstyle{borland}
+% \usepackage{color}
+% \definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%		table of contents						%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\AtBeginSection{
+	\begin{frame}
+		\tableofcontents[currentsection, hideothersubsections]
+	\end{frame}
+}
