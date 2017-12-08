@@ -1,4 +1,4 @@
-filename=hmc_Rakotonirina-Durand
+filename=hmc_beamer_Rakotonirina-Durand
 
 bib:
 	bibtex ${filename}||true
