@@ -4,6 +4,8 @@
 \usepackage{color}
 \newcommand{\red}{\color{red}}
 \definecolor{gray}{rgb}{0.4, 0.4, 0.4}
+\usepackage{sansmathaccent}
+\pdfmapfile{+sansmathaccent.map}
 
 \title[HMC]{Introduction aux méthodes de Monte Carlo par dynamique Hamiltonienne}
 \author{Shmuel RAKOTONIRINA-RICQUEBOURG, Amaury DURAND}
@@ -19,11 +21,21 @@
 
 \section{Introduction}
 
-\subsubsection{Algorithmes MCMC}
+\subsection{Algorithmes MCMC}
 
-% contextualisation : principe des MCMC
+\begin{frame}
+	\frametitle{Principe des MCMC}
+	\begin{itemize}
+		\item Objectif : pour $\pi$ à densité $h_\pi$ simuler $\pi$ ou approcher $\pi f$
+		\item Idée : trouver une chaîne de Markov $X$ admettant $\pi$ comme loi invariante et convergeant vers $\pi$
+	\end{itemize}
+	\begin{Thm}[Théorème ergodique]\label{thm:ergodic}
+		Soit $(X_k)_{k \in \nset}$ une chaîne de Markov de noyau $P$ sur $(\xset, \calX)$ admettant une unique loi invariante $\pi$. Alors pour tout $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$ et pour $\pi$-presque tout $x \in \xset$,
+		$$\frac{1}{n} \sum_{k=0}^{n-1} f(X_k) \xrightarrow[n \to +\infty]{\PP_x\text{-}\ps} \pi f$$
+	\end{Thm}
+\end{frame}
 
-\subsubsection{Algorithme de Metropolis (Random Walk Metropolis)}
+\subsection{Algorithme de Metropolis (Random Walk Metropolis)}
 
 \begin{frame}
   \frametitle{Algorithme Random-walk Metropolis}
@@ -45,44 +57,165 @@
 \end{frame}
 
 \section{Dynamique hamiltonienne}
+
 \subsection{Définition}
- 
+
 % définition rapide dynamique hamiltonienne
+\begin{frame}
+	\frametitle{Dynamique hamiltonienne}
+	\begin{Def}(Dynamique hamiltonienne)
+		Soit $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$. Deux fonctions de position $x : \rset_+ \to \rset^d$ et de quantité de mouvement $p : \rset_+ \to \rset^d$ sont dites solutions du hamiltonien $H$ (ou suivant la dynamique hamiltonienne de $H$) si
+		\begin{equation*}\label{eq:hamiltonian-dyn}
+			\begin{aligned}
+				x'(t) &= \frac{\partial H}{\partial p} (x(t), p(t)) \\
+				p' (t) &= -\frac{\partial H}{\partial x} (x(t), p(t))
+			\end{aligned}
+		\end{equation*}
+	\end{Def}
+	Pour $T>0$, $H$ peut être associée à la densité (sur $\rset^{2d}$)
+	$$
+	h(z) \propto \exp \left( -\frac{H(z)}{T} \right)
+	$$
+\end{frame}
  
 \begin{frame}
-  \frametitle{Hypothèses}
-        \begin{equation}\label{eq:hyp}
-        	\begin{aligned}
-        		&\mbox{$h_\pi$ et $h_\nu$ sont strictement positives sur $\rset^d$} \\
-        		&\mbox{$\exists k \geq 1, \ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$}\\
-        		&\mbox{$h_\nu$ est paire} \\
-                        & H : (x,p) \mapsto U(x) + K(p) \text{ avec } U(x) = - T \ln(h_\pi(x)), K(p) = -T \ln(h_\nu(p))
-        	\end{aligned}
-        	\tag{H}
-        \end{equation}
+	\frametitle{Hamiltonien pour l'algorithme HMC}
+	Pour avoir $X \sim \pi$, on cherche à simuler $(X,P) \sim \widetilde \pi = \pi \otimes \nu$ pour une loi $\nu$ choisie. Dans toute la suite, on fera les hypothèses suivantes :
+	\begin{Hyp}[H]\label{hyp:hyp}
+		\begin{itemize}
+			\item $\pi$ et $\nu$ sont à densité $h_\pi$ et $h_\nu$ strictement positives sur $\rset^d$
+			\item $\exists k \geq 1, \ln(h_\pi)$ et $\ln(h_\nu)$ sont de classe $\calC^k$ sur $\rset^d$
+			\item $h_\nu$ est paire
+			\item $H : (x,p) \mapsto U(x) + K(p)$ avec $U = - T \ln(h_\pi), K = -T \ln(h_\nu)$
+		\end{itemize}
+	\end{Hyp}
+	Ainsi, la densité $h \propto e^{H/T}$ est la densité jointe $h = h_\pi \otimes h_\nu = h_{\widetilde \pi}$.
 \end{frame}
  
 \subsection{Propriétés}
 
-% conservation du hamiltonien, définition du flot, propriété de réversibilité du flot, conservation du volume
+\begin{frame}
+	\frametitle{Flot de l'équation différentielle}
+	En notant $z = (x,p)$, les équations $x' = \frac{\partial H}{\partial p}, p' = -\frac{\partial H}{\partial x}$ se réécrivent $z' = F(z)$ où $F = J \nabla H$ et
+	$J = \begin{bmatrix}
+		0_{d} & I_{d} \\
+		-I_{d} & 0_{d}
+	\end{bmatrix}$.
+	\begin{Prop}[conservation du hamiltonien]
+		Le hamiltonien est conservé le long des trajectoires : si $z' = F(z)$, alors $H \circ z$ est constant.
+	\end{Prop}
+	\begin{Def}[flot hamiltonien]
+		Pour $t \in \rset$, on définit le flot $\phi_t$ de sorte que pour tout $z_0 \in \rset^{2d}$, $t \mapsto \phi_t(z_0)$ soit l'unique solution du hamiltonien avec condition initiale $z(0) = z_0$.
+	\end{Def}
+	\begin{Prop}[conservation du volume]
+		La solution du hamiltonien conserve le volume : $\detjacob{\phi_t}{z} = 1$.
+	\end{Prop}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Réversibilité du flot}
+	\begin{Lem}[réversibilité du temps]
+		Soit $z = (x,p)$ une solution du hamiltonien $H$. On définit $\bar{z} = (\bar x, \bar p)$ par $\bar z(t) = (x(-t), -p(-t))$. Alors
+		\begin{enumerate}
+			\item $\bar{z}$ est solution du hamiltonien $H$ (avec d'autres conditions initiales).
+			\item $\forall t \in \rset_+, \phi_t(\bar{z}(-t)) = \bar{z}(0)$
+		\end{enumerate}
+	\end{Lem}
+	\begin{Prop}[réversibilité du flot]
+		$\phi_t$ est un $\calC^k$-difféomorphisme d'inverse $\phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))$.
+	\end{Prop}
+\end{frame}
+
+\begin{frame}
+	\begin{proof}[Preuve de la réversibilité du temps]
+		On définit la symétrie $s(x,p) = (x,-p)$. Par définition, $\bar{z}(t) = s \circ z (-t)$ et par hypothèse de parité de $h_\nu$, $H = H \circ s$.
+
+		Notons $S \doteq \frac{ds}{dz}(z) = \begin{bmatrix} I_d & 0_d \\ 0_d & -I_d \end{bmatrix}$ (et ce pour tout $z$). Ainsi, $\nabla H = S \nabla H \circ s$. On remarque que $SJ = -JS$ et $s^{-1} = s$.
+
+		$$\bar z'(t) = -Sz'(-t) = -SJ\nabla H(z(-t)) = JS \nabla H(z(-t))$$
+		donc
+		$$\bar z'(t) = J \nabla H (s^{-1}(z(-t))) = J \nabla H(\bar z(t))$$
+	\end{proof}
+\end{frame}
+
+\begin{frame}
+	\begin{proof}[Preuve de la réversibilité du flot]
+		Il suffit de prouver la formule de l'inverse. On pose $\bar \phi_t(x,p) = (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))$. On fixe $z_0 = (x_0,p_0)$ et on note $z$ la solution du hamiltonien avec $z(0) = z_0$.
+		\begin{itemize}
+			\item D'une part,
+			$$
+			\bar \phi_t(\phi_t(x_0,p_0)) = \bar \phi_t(z(t)) = (\phi_t^{(1)}(\bar z(-t)), - \phi_t^{(2)}(\bar z(-t))) = (x_0, p_0)
+			$$
+			car $\bar z(0) = (x_0,-p_0)$.
+
+			\item D'autre part,
+			$$
+			\bar \phi_t(x_0,-p_0) = (\phi_t^{(1)}(x_0, p_0), - \phi_t^{(2)}(x_0, p_0)) = (x(t),-p(t)) = \bar z(-t)
+			$$
+			donc
+			$$
+			\phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = \bar{z}(0) = (x_0,-p_0).
+			$$
+		\end{itemize}
+	\end{proof}
+\end{frame}
  
 \subsection{Discrétisation}
  
-% parler d'Euler à l'oral, définition du flot approché, réversibilité du flot, conservation du volume, 
+% réversibilité du flot
 \begin{frame}
-  \frametitle{Algorithme du leapfrog}
-        \begin{center}
-                \begin{algorithm}[H]
-                	\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
-                	\For(\tcp*[h]{Saute-mouton}){$k \in \iseg{0, L-1}$}{
-                		$x_{k+1} \leftarrow x_k + \epsilon \nabla K \left( p_k - \frac{\epsilon}{2} \nabla U(x_k) \right)$\;
-                		$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
-                	}
-                	\KwRet{$(x_L,p_L)$}
-                	\caption{Discrétisation de l'évolution par saute-mouton ({\it leapfrog})}
-                	\label{algo:leapfrog}
-                \end{algorithm}
-        \end{center}
+	\frametitle{Algorithme du leapfrog}
+	Variante de la méthode d'Euler : on discrétise $x' = \nabla K(p), p' = - \nabla U(x)$ en
+	\begin{enumerate}
+		\item $p_{t+\epsilon/2} = p_t - \frac{\epsilon}{2} \nabla U(x_t)$ (demi-pas en $p$).
+		\item $x_{t+\epsilon} = p_t + \epsilon \nabla K(p_{t+\epsilon/2})$ (pas en $x$).
+		\item $p_{t+\epsilon} = p_{t+\epsilon/2} - \frac{\epsilon}{2} \nabla U(x_{t+\epsilon})$ (demi-pas en $p$).
+	\end{enumerate}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+			\For(\tcp*[h]{Saute-mouton}){$k \in \iseg{0, L-1}$}{
+				$x_{k+1} \leftarrow x_k + \epsilon \nabla K \left( p_k - \frac{\epsilon}{2} \nabla U(x_k) \right)$\;
+				$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
+			}
+			\KwRet{$(x_L,p_L)$}
+			\caption{Discrétisation de l'évolution par saute-mouton ({\it leapfrog})}
+			\label{algo:leapfrog}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Flot approché}
+	\begin{center} % je rappelle l'algorithme pour que le public voit d'où sort la déf
+		\small
+		\begin{algorithm}[H]
+			\KwData{pas $\epsilon$, nombre de pas $L$, état initial $(x_0,p_0)$}
+			\For(\tcp*[h]{Saute-mouton}){$k \in \iseg{0, L-1}$}{
+				$x_{k+1} \leftarrow x_k + \epsilon \nabla K \left( p_k - \frac{\epsilon}{2} \nabla U(x_k) \right)$\;
+				$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
+			}
+			\KwRet{$(x_L,p_L)$}
+			\label{algo:leapfrog}
+		\end{algorithm}
+	\end{center}
+	\begin{Def}[flot approché] \label{def:flot_approche}
+		On fixe $\epsilon > 0$. Pour $L \in \nset^*$, on définit le flot approché du hamiltonien par $L$ itérations de l'algorithme leapfrog par $\hat{\phi}_L = \hat{\phi}^L$ où $\hat \phi$ est défini par
+		\begin{align*}
+		\hat{\phi}^{(1)} : (x,p) & \mapsto x + \epsilon \nabla K \left( p - \frac{\epsilon}{2} \nabla U(x) \right) \\
+		\hat{\phi}^{(2)} : (x,p) & \mapsto p - \frac{\epsilon}{2} \nabla U(x) - \frac{\epsilon}{2} \nabla U(\hat{\phi}^{(1)}(x,p))
+		\end{align*}
+	\end{Def}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Propriétés du flot approché}
+	\begin{Prop}[conservation du volume]
+		La solution approchée du hamiltonien par le leapfrog conserve le volume : $\detjacob{\hat \phi}{z} = 1$.
+	\end{Prop}
+	\begin{Prop}[réversibilité du flot approché]
+		$\hat \phi$ est inversible d'inverse $\phi^{-1} = s \circ \hat \phi \circ s : (x,p) \mapsto (\hat{\phi}^{(1)}(x,-p), -\hat{\phi}^{(2)}(x,-p))$.
+	\end{Prop}
 \end{frame}
  
 \section{Hamiltonian Monte-Carlo}
@@ -116,16 +249,15 @@
 \begin{frame}
   \frametitle{Algorithme HMC réel}
         \begin{center}
+        \small
         	\begin{algorithm}[H]
         		\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
         		$X_0 \leftarrow x \in \xset$ arbitraire\;
         		\Repeat{une condition d'arrêt}{
         			$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
         			$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
-        			$U_k \leftarrow U(X_k)$\;
-        			$K_k \leftarrow \norm{P_k}^2/2$\;
-        			$U_{prop} \leftarrow U(X_{prop})$\;
-        			$K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+        			$U_k \leftarrow U(X_k); K_k \leftarrow \norm{P_k}^2/2$\;
+        			$U_{prop} \leftarrow U(X_{prop}); K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
         			\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
         				$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
         			}{

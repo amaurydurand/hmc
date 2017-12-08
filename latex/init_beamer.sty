@@ -22,6 +22,7 @@
 \newtheorem{Lem}{Lemme}[section]
 \theoremstyle{definition}
 \newtheorem{Def}{Définition}[section]
+\newtheorem{Hyp}{Hypothèses}[section]
 \newtheorem{Ex}{Exemple}[section]
 \newtheorem{Exo}{Exercice}[section]
 \theoremstyle{remark}
@@ -34,7 +35,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{hyperref}
 \hypersetup{
-    colorlinks=true,
+    colorlinks=false, % colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
@@ -56,10 +57,17 @@
 % \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%		table of contents						%%%%%
+%%%%%		Table of Contents						%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \AtBeginSubsection{
 \AtBeginSection{
-        \begin{frame}
-        	\tableofcontents[currentsection, hideothersubsections]
-        \end{frame}
+	\begin{frame}
+		\tableofcontents[currentsection, hideothersubsections]
+	\end{frame}
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%		Theme									%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usetheme{Warsaw}
+
