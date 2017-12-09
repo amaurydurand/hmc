@@ -60,7 +60,6 @@
 
 \subsection{Définition}
 
-% définition rapide dynamique hamiltonienne
 \begin{frame}
 	\frametitle{Dynamique hamiltonienne}
 	\begin{Def}(Dynamique hamiltonienne)
@@ -161,8 +160,7 @@
 \end{frame}
  
 \subsection{Discrétisation}
- 
-% réversibilité du flot
+
 \begin{frame}
 	\frametitle{Algorithme du leapfrog}
 	Variante de la méthode d'Euler : on discrétise $x' = \nabla K(p), p' = - \nabla U(x)$ en
@@ -211,7 +209,7 @@
 \begin{frame}
 	\frametitle{Propriétés du flot approché}
 	\begin{Prop}[conservation du volume]
-		La solution approchée du hamiltonien par le leapfrog conserve le volume : $\detjacob{\hat \phi}{z} = 1$.
+		On suppose $k \geq 2$ ($U$ et $K$ de classe $\calC^2$). La solution approchée du hamiltonien par le leapfrog conserve le volume : $\detjacob{\hat \phi}{z} = 1$.
 	\end{Prop}
 	\begin{Prop}[réversibilité du flot approché]
 		$\hat \phi$ est inversible d'inverse $\phi^{-1} = s \circ \hat \phi \circ s : (x,p) \mapsto (\hat{\phi}^{(1)}(x,-p), -\hat{\phi}^{(2)}(x,-p))$.
@@ -219,55 +217,130 @@
 \end{frame}
  
 \section{Hamiltonian Monte-Carlo}
- 
+
 \subsection{Cas idéal}
  
-% utilisation du flot exact, invariance de la loi
+% invariance de la loi
  
 \begin{frame}
-  \frametitle{Algorithme HMC idéal}
-        \begin{center}
-        	\begin{algorithm}[H]
-        		\KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
-        		$X_0 \leftarrow x \in \xset$ arbitraire\;
-        		\Repeat{une condition d'arrêt}{
-        			$\tilde{P}_k \sim \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
-        			$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
-        			$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
-        		}
-        		\KwRet{$(X_k)_k$}
-        		\caption{Hamiltonian Monte-Carlo, cas idéal}
-        		\label{algo:HMC-ideal}
-        	\end{algorithm}
-        \end{center}
+	\frametitle{Algorithme HMC idéal}
+	\begin{center}
+		\begin{algorithm}[H]
+			\KwData{$h_\pi$ proportionnel à la densité cible, $t$ une durée sur laquelle suivre la dynamique}
+			$X_0 \leftarrow x \in \xset$ arbitraire\;
+			\Repeat{une condition d'arrêt}{
+				$\tilde{P}_k \sim \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{Tirer la quantité de mouvement}
+				$\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
+				$Z_{k+1} = (X_{k+1}, P_{k+1}) \leftarrow \phi_t(\tilde{Z}_k)$ \tcp*{Suivre la dynamique}
+			}
+			\KwRet{$(X_k)_k$}
+			\caption{Hamiltonian Monte-Carlo, cas idéal}
+			\label{algo:HMC-ideal}
+		\end{algorithm}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Invariance de $\widetilde \pi$}
+	\begin{Prop}
+		Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ sur $\rset^{2d}$ avec
+		$$
+		Q((x,p),\cdot) = \delta_x \otimes \nu \text{ et } P_t((x,p),\cdot) = \delta_{\phi_t(z)}.
+		$$
+		De plus, $\widetilde{\pi}$ est $Q$ et $P_t$-invariante. 
+	\end{Prop}
+	\begin{proof}[Preuve de la $P_t$-invariance]
+		\small
+		\begin{align*}
+		\widetilde{\pi} P_t (A)
+		&= \int \widetilde{\pi}(dz) P_t(z, A)
+		= c \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
+		&= c \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy
+		= c \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
+		&= \widetilde{\pi}(A).
+		\end{align*}
+	\end{proof}
 \end{frame}
  
 \subsection{Cas réel}
  
-% utilisation du flot approché, réversibilité de la loi
+% réversibilité de la loi
+
+\begin{frame}
+	\frametitle{Modification du HMC pour la discrétisation}
+	Contrairement à $\phi_t$, $\hat \phi_L$ ne conserve pas le hamiltonien.
+
+	Idée : remplacer $\phi_t$ par $g \circ \hat \phi_L$ pour $g$ une fonction à déterminer, i.e. remplacer $P_t$ par
+	$$
+	\hat{P}_L : \fundef{
+		\rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
+		(z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
+	}
+	$$
+
+	% Problème : $\widetilde \pi$ est $Q$-invariante mais pas $\hat P_L$-invariante.
+
+	\begin{Prop}[réversibilité]\label{prop:rever_discret}
+		On suppose $k \geq 2$ ($U$ et $K$ de classe $\calC^2$). On prend $g = s$ et
+		$$
+		\alpha : (z_0,z_1) \mapsto 1 \wedge \frac{h_{\widetilde \pi}(z_1)}{h_{\widetilde \pi}(z_0)} = 1 \wedge \exp(\frac{-H(z_1)+H(z_0)}{T}).
+		$$
+		Si $\hat P_L^\alpha$ est le noyau de Metropolis-Hasting associé au noyau instrumental $\hat P_L$ et à la fonction de rejet $\alpha$, alors $\widetilde \pi$ est $\hat P_L^\alpha$-réversible (et donc $\hat P_L^\alpha$-invariant).
+	\end{Prop}
+\end{frame}
+
+\begin{frame}
+	\begin{proof}
+		\small
+		Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat P_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
+		$$
+		\hat P_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
+		$$
+		donc
+		$$
+		\widetilde \pi \otimes \hat P_L^\alpha (A \times B)
+		=
+		\Lambda_1(A,B) + \Lambda_2(A,B)
+		$$
+		où
+		$$
+		\Lambda_2(A,B) = \int \ind_A(z) \ind_B(z) (1-\alpha(z,\psi_L(z))) e^{-H(z)/T} dz \text{ est sym\'etrique}
+		$$
+		et
+		$$
+		\begin{aligned}
+		\Lambda_1(A,B)
+		&= \int \ind_A(z) \ind_B(\psi_L(z)) \alpha(z,\psi_L(z)) e^{-H(z)/T} dz\\
+		&= \int \ind_A(z) \ind_B(\psi_L(z)) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz.
+		\end{aligned}
+		$$
+
+		$\psi_L^{-1} = \psi_L$ (réversibilité de $\hat \phi_L$) et $\detjacob{\psi_L}{z} = -1$ (conservation du volume) donc le changement de variable $z \mapsto \psi_L(z)$ donne que $\Lambda_1$ est symétrique.
+	\end{proof}
+\end{frame}
  
 \begin{frame}
   \frametitle{Algorithme HMC réel}
         \begin{center}
         \small
-        	\begin{algorithm}[H]
-        		\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
-        		$X_0 \leftarrow x \in \xset$ arbitraire\;
-        		\Repeat{une condition d'arrêt}{
-        			$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
-        			$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
-        			$U_k \leftarrow U(X_k); K_k \leftarrow \norm{P_k}^2/2$\;
-        			$U_{prop} \leftarrow U(X_{prop}); K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
-        			\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
-        				$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
-        			}{
-        				$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
-        			}
-        		}
-        		\KwRet{$(X_k)_k$}
-        		\caption{Hamiltonian Monte-Carlo}
-        		\label{algo:HMC}
-        	\end{algorithm}
+		\begin{algorithm}[H]
+			\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+			$X_0 \leftarrow x \in \xset$ arbitraire\;
+			\Repeat{une condition d'arrêt}{
+				$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+				$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+				$U_k \leftarrow U(X_k); K_k \leftarrow \norm{P_k}^2/2$\;
+				$U_{prop} \leftarrow U(X_{prop}); K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+				\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+					$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+				}{
+					$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+				}
+			}
+			\KwRet{$(X_k)_k$}
+			\caption{Hamiltonian Monte-Carlo}
+			\label{algo:HMC}
+		\end{algorithm}
         \end{center}
 \end{frame}
  
