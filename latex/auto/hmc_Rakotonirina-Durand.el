@@ -34,7 +34,7 @@
     "prop:rev-leapfrog"
     "algo:HMC-ideal"
     "prop:inv-ideal"
-    "prop:rever_dicret"
+    "prop:rever_discret"
     "eq:Lambda1"
     "algo:HMC"
     "fig:normal"

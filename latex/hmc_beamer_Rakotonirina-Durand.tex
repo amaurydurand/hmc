@@ -6,7 +6,8 @@
 \definecolor{gray}{rgb}{0.4, 0.4, 0.4}
 \usepackage{sansmathaccent}
 \pdfmapfile{+sansmathaccent.map}
-
+\usepackage{movie15}
+\setbeamertemplate{footline}[frame number]
 \title[HMC]{Introduction aux méthodes de Monte Carlo par dynamique Hamiltonienne}
 \author{Shmuel RAKOTONIRINA-RICQUEBOURG, Amaury DURAND}
 
@@ -39,7 +40,8 @@
 
 \begin{frame}
   \frametitle{Algorithme Random-walk Metropolis}
-	\begin{center}
+  \begin{center}
+    {\small 
 		\begin{algorithm}[H]
 			\KwData{$h_\pi$ proportionnel à la densité cible, $Q$ loi simulable}
 			$X_0 \leftarrow x \in \xset$ arbitraire\;
@@ -47,12 +49,13 @@
 			\Repeat{une condition d'arrêt}{
 				$Y_{k+1} \leftarrow X_k + U_{k+1}$ \tcp*{Proposer un mouvement}
 				$\alpha_{k+1} \leftarrow \alpha(X_k, Y_{k+1})$ où $\alpha(x,y) = 1 \wedge \frac{h_{\pi}(y)}{h_\pi(x)}$\;
-				$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{with probability } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter le mouvement}
+				$X_{k+1} \leftarrow \piecewise{ Y_{k+1} & \text{avec probabilité } \alpha_{k+1} \\ X_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{Accepter ou rejeter}
 			}
 			\KwRet{$(X_k)_k$}
 			\caption{Random Walk Metropolis}
 			\label{algo:metropolis}
-		\end{algorithm}
+                      \end{algorithm}
+                      }
 	\end{center}
 \end{frame}
 
@@ -99,13 +102,17 @@
 	$J = \begin{bmatrix}
 		0_{d} & I_{d} \\
 		-I_{d} & 0_{d}
-	\end{bmatrix}$.
-	\begin{Prop}[conservation du hamiltonien]
+              \end{bmatrix}$.
+              \begin{Def}[flot hamiltonien]
+		Pour $t \in \rset$, on définit le flot $\phi_t$ de sorte que pour tout $z_0 \in \rset^{2d}$, $t \mapsto \phi_t(z_0)$ soit l'unique solution du hamiltonien avec condition initiale $z(0) = z_0$.
+              \end{Def}
+\end{frame}
+\begin{frame}            
+  \frametitle{Propriétés des solutions}
+  	\begin{Prop}[conservation du hamiltonien]
 		Le hamiltonien est conservé le long des trajectoires : si $z' = F(z)$, alors $H \circ z$ est constant.
 	\end{Prop}
-	\begin{Def}[flot hamiltonien]
-		Pour $t \in \rset$, on définit le flot $\phi_t$ de sorte que pour tout $z_0 \in \rset^{2d}$, $t \mapsto \phi_t(z_0)$ soit l'unique solution du hamiltonien avec condition initiale $z(0) = z_0$.
-	\end{Def}
+	
 	\begin{Prop}[conservation du volume]
 		La solution du hamiltonien conserve le volume : $\detjacob{\phi_t}{z} = 1$.
 	\end{Prop}
@@ -121,25 +128,25 @@
 		\end{enumerate}
 	\end{Lem}
 	\begin{Prop}[réversibilité du flot]
-		$\phi_t$ est un $\calC^k$-difféomorphisme d'inverse $\phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))$.
+		$\phi_t$ est un $\calC^k$-difféomorphisme d'inverse $\phi_t^{-1}  = s \circ \phi_t \circ s : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))$ avec $s : (x,p) \mapsto (x,-p)$. 
 	\end{Prop}
 \end{frame}
 
 \begin{frame}
-	\begin{proof}[Preuve de la réversibilité du temps]
-		On définit la symétrie $s(x,p) = (x,-p)$. Par définition, $\bar{z}(t) = s \circ z (-t)$ et par hypothèse de parité de $h_\nu$, $H = H \circ s$.
+  \frametitle{Preuve de la réversibilité du temps}
+		Par définition, $\bar{z}(t) = s \circ z (-t)$ et par hypothèse de parité de $h_\nu$, $H = H \circ s$.
 
 		Notons $S \doteq \frac{ds}{dz}(z) = \begin{bmatrix} I_d & 0_d \\ 0_d & -I_d \end{bmatrix}$ (et ce pour tout $z$). Ainsi, $\nabla H = S \nabla H \circ s$. On remarque que $SJ = -JS$ et $s^{-1} = s$.
 
 		$$\bar z'(t) = -Sz'(-t) = -SJ\nabla H(z(-t)) = JS \nabla H(z(-t))$$
 		donc
 		$$\bar z'(t) = J \nabla H (s^{-1}(z(-t))) = J \nabla H(\bar z(t))$$
-	\end{proof}
+                \null\hfill\qedsymbol
 \end{frame}
 
 \begin{frame}
-	\begin{proof}[Preuve de la réversibilité du flot]
-		Il suffit de prouver la formule de l'inverse. On pose $\bar \phi_t(x,p) = (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))$. On fixe $z_0 = (x_0,p_0)$ et on note $z$ la solution du hamiltonien avec $z(0) = z_0$.
+  \frametitle{Preuve de la réversibilité du flot}
+		Il suffit de prouver la formule de l'inverse. On pose $\bar \phi_t = s \circ \phi_t \circ s$. On fixe $z_0 = (x_0,p_0)$ et on note $z$ la solution du hamiltonien avec $z(0) = z_0$.
 		\begin{itemize}
 			\item D'une part,
 			$$
@@ -155,8 +162,8 @@
 			$$
 			\phi_t (\bar \phi_t(x_0,-p_0)) = \phi_t(\bar z(-t)) = \bar{z}(0) = (x_0,-p_0).
 			$$
-		\end{itemize}
-	\end{proof}
+                      \end{itemize}
+                      \null\hfill\qedsymbol
 \end{frame}
  
 \subsection{Discrétisation}
@@ -194,7 +201,7 @@
 				$p_{k+1} \leftarrow p_k - \frac{\epsilon}{2} \nabla U(x_k) - \frac{\epsilon}{2} \nabla U(x_{k+1})$\;
 			}
 			\KwRet{$(x_L,p_L)$}
-			\label{algo:leapfrog}
+                        \caption{Discrétisation de l'évolution par saute-mouton ({\it leapfrog})}
 		\end{algorithm}
 	\end{center}
 	\begin{Def}[flot approché] \label{def:flot_approche}
@@ -243,23 +250,24 @@
 \begin{frame}
 	\frametitle{Invariance de $\widetilde \pi$}
 	\begin{Prop}
-		Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ sur $\rset^{2d}$ avec
+		Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QR_t$ sur $\rset^{2d}$ avec
 		$$
-		Q((x,p),\cdot) = \delta_x \otimes \nu \text{ et } P_t((x,p),\cdot) = \delta_{\phi_t(z)}.
+		Q((x,p),\cdot) = \delta_x \otimes \nu \text{ et } R_t((x,p),\cdot) = \delta_{\phi_t(z)}.
 		$$
-		De plus, $\widetilde{\pi}$ est $Q$ et $P_t$-invariante. 
+		De plus, $\widetilde{\pi}$ est $Q$ et $R_t$-invariante. 
 	\end{Prop}
-	\begin{proof}[Preuve de la $P_t$-invariance]
-		\small
+	{\bf Preuve de la $R_t$-invariance :}
+		{\small
 		\begin{align*}
-		\widetilde{\pi} P_t (A)
-		&= \int \widetilde{\pi}(dz) P_t(z, A)
+		\widetilde{\pi} R_t (A)
+		&= \int \widetilde{\pi}(dz) R_t(z, A)
 		= c \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
 		&= c \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy
 		= c \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
 		&= \widetilde{\pi}(A).
 		\end{align*}
-	\end{proof}
+                }
+	\null\hfill\qedsymbol
 \end{frame}
  
 \subsection{Cas réel}
@@ -270,35 +278,36 @@
 	\frametitle{Modification du HMC pour la discrétisation}
 	Contrairement à $\phi_t$, $\hat \phi_L$ ne conserve pas le hamiltonien.
 
-	Idée : remplacer $\phi_t$ par $g \circ \hat \phi_L$ pour $g$ une fonction à déterminer, i.e. remplacer $P_t$ par
+	Idée : remplacer $\phi_t$ par $g \circ \hat \phi_L$ pour $g$ une fonction à déterminer, i.e. remplacer $R_t$ par
 	$$
-	\hat{P}_L : \fundef{
+	\hat{R}_L : \fundef{
 		\rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
 		(z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
 	}
 	$$
 
-	% Problème : $\widetilde \pi$ est $Q$-invariante mais pas $\hat P_L$-invariante.
-
+	% Problème : $\widetilde \pi$ est $Q$-invariante mais pas $\hat R_L$-invariante.
+        \pause
 	\begin{Prop}[réversibilité]\label{prop:rever_discret}
 		On suppose $k \geq 2$ ($U$ et $K$ de classe $\calC^2$). On prend $g = s$ et
 		$$
 		\alpha : (z_0,z_1) \mapsto 1 \wedge \frac{h_{\widetilde \pi}(z_1)}{h_{\widetilde \pi}(z_0)} = 1 \wedge \exp(\frac{-H(z_1)+H(z_0)}{T}).
 		$$
-		Si $\hat P_L^\alpha$ est le noyau de Metropolis-Hasting associé au noyau instrumental $\hat P_L$ et à la fonction de rejet $\alpha$, alors $\widetilde \pi$ est $\hat P_L^\alpha$-réversible (et donc $\hat P_L^\alpha$-invariant).
+		Si $\hat R_L^\alpha$ est le noyau de Metropolis-Hasting associé au noyau instrumental $\hat R_L$ et à la fonction de rejet $\alpha$, alors $\widetilde \pi$ est $\hat R_L^\alpha$-réversible (et donc $\hat R_L^\alpha$-invariant).
 	\end{Prop}
 \end{frame}
 
 \begin{frame}
-	\begin{proof}
+  \frametitle{Preuve de la réversibilité de la loi cible}
+	
 		\small
-		Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat P_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
+		Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat R_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
 		$$
-		\hat P_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
+		\hat R_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
 		$$
 		donc
 		$$
-		\widetilde \pi \otimes \hat P_L^\alpha (A \times B)
+		\widetilde \pi \otimes \hat R_L^\alpha (A \times B)
 		=
 		\Lambda_1(A,B) + \Lambda_2(A,B)
 		$$
@@ -316,38 +325,129 @@
 		$$
 
 		$\psi_L^{-1} = \psi_L$ (réversibilité de $\hat \phi_L$) et $\detjacob{\psi_L}{z} = -1$ (conservation du volume) donc le changement de variable $z \mapsto \psi_L(z)$ donne que $\Lambda_1$ est symétrique.
-	\end{proof}
+	\null\hfill\qedsymbol
 \end{frame}
  
 \begin{frame}
   \frametitle{Algorithme HMC réel}
-        \begin{center}
-        \small
-		\begin{algorithm}[H]
-			\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
-			$X_0 \leftarrow x \in \xset$ arbitraire\;
-			\Repeat{une condition d'arrêt}{
-				$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
-				$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
-				$U_k \leftarrow U(X_k); K_k \leftarrow \norm{P_k}^2/2$\;
-				$U_{prop} \leftarrow U(X_{prop}); K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
-				\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
-					$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
-				}{
-					$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
-				}
-			}
-			\KwRet{$(X_k)_k$}
-			\caption{Hamiltonian Monte-Carlo}
-			\label{algo:HMC}
-		\end{algorithm}
-        \end{center}
+        %\begin{center}
+        %\small
+	%        \begin{algorithm}[H]
+	%        	\KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+	%        	$X_0 \leftarrow x \in \xset$ arbitraire\;
+	%        	\Repeat{une condition d'arrêt}{
+	%        		$P_k \sim \mathcal N(0,1)$\tcp*{Tirer la quantité de mouvement}
+	%        		$(X_{prop},P_{prop}) \leftarrow \texttt{leapfrog}(X_k,P_k)$\tcp*{Proposer un mouvement}
+	%        		$U_k \leftarrow U(X_k); K_k \leftarrow \norm{P_k}^2/2$\;
+	%        		$U_{prop} \leftarrow U(X_{prop}); K_{prop} \leftarrow \norm{P_{prop}}^2/2$\;
+	%        		\eIf{$\mathcal U([0,1]) < \exp(U_k-U_{prop}+K_k-K_{prop})$}{
+	%        			$X_{k+1} \leftarrow X_{prop}$ \tcp*{Accepter}
+	%        		}{
+	%        			$X_{k+1} \leftarrow X_k$ \tcp*{Rejeter}
+	%        		}
+	%        	}
+	%        	\KwRet{$(X_k)_k$}
+	%        	\caption{Hamiltonian Monte-Carlo}
+	%        	\label{algo:HMC}
+	%        \end{algorithm}
+        %      \end{center}
+  \begin{center}
+    {\small 
+	\begin{algorithm}[H]
+          \KwData{$h_\pi$ proportionnel à la densité cible, $\epsilon$ pas du saute-mouton, $L$ nombre de pas du saute-mouton}
+          $X_0 \leftarrow x \in \xset$ arbitraire\;
+          \Repeat{une condition d'arrêt}{
+            $\tilde{P}_k \sim \mathcal \nu$ et $\tilde{P}_k \indep (Z_0, \cdots, Z_{k})$ \tcp*{\footnotesize  Tirer la quantité de mouvement}
+            $\tilde{Z}_k \leftarrow (X_k, \tilde{P}_k)$ \;
+            $Z_{k+1}^{\rm prop} = (X_{k+1}^{\rm prop}, P_{k+1}^{\rm prop}) \leftarrow s \circ \hat{\phi}_L(\tilde{Z}_k)$ \tcp*{ \footnotesize  Suivre la dynamique approchée} 
+            $\alpha_{k+1} \leftarrow 1 \wedge \exp \left( \frac{- H(Z_{k+1}^{\rm prop}) + H(\tilde{Z}_k) }{T} \right)$ \;
+            
+            $Z_{k+1} \leftarrow \piecewise{ Z_{k+1}^{\rm prop} & \text{avec probabilité } \alpha_{k+1} \\ \tilde{Z}_k & \text{avec probabilité } 1 - \alpha_{k+1}}$ \tcp*{\footnotesize Accepter ou rejeter}
+          }
+          \KwRet{$(X_k)_k$}
+          \caption{Hamiltonian Monte-Carlo, cas concret}
+          \label{algo:HMC}
+	\end{algorithm}
+        }
+\end{center}
+
 \end{frame}
  
 \section{Simulations}
- 
-% résultats des simulations
+\subsection{Loi normale}
+\begin{frame}
+  \frametitle{Loi normale : trajectoires}
+\begin{center}
+    \includemovie[autoplay, poster]{\textwidth}{.9\textheight}{figs/normal.mp4}
+  \end{center}  
+\end{frame}
 
+\begin{frame}
+  \frametitle{Loi normale : autocorrelations}
+\begin{center}
+      \includegraphics[width=.8\textwidth]{figs/normal_autocor.png}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Loi normale : loin du mode}
+\begin{center}
+    \includemovie[autoplay, poster]{\textwidth}{.9\textheight}{figs/normal_far.mp4}
+  \end{center}  
+\end{frame}
+\subsection{Mélange de gaussiennes}
+\begin{frame}
+  \frametitle{Mélange de gaussiennes : trajectoires}
+\begin{center}
+    \includemovie[autoplay, poster]{\textwidth}{.9\textheight}{figs/gm.mp4}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mélange de gaussiennes : autocorrelations}
+\begin{center}
+      \includegraphics[width=.8\textwidth]{figs/gm_autocor.png}
+  \end{center}  
+\end{frame}
+
+\subsection{Bayesian Lasso}
+\begin{frame}
+  \frametitle{Bayesian Lasso}
+\begin{itemize}
+\item $U(x) = \norm{Ax - b}_2^2 + \lambda \norm{x}_1$ non différentiable.
+\item On considère la sous-différentielle $(A + A^\top) x + \lambda \sign(x)$ 
+\end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Bayesian Lasso : trajectoires}
+\begin{center}
+    \includemovie[autoplay, poster]{\textwidth}{.9\textheight}{figs/bl.mp4}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bayesian Lasso : autocorrelations}
+\begin{center}
+      \includegraphics[width=.8\textwidth]{figs/bl_autocor.png}
+  \end{center}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bayesian Lasso : loin du mode}
+\begin{center}
+    \includemovie[autoplay, poster]{\textwidth}{.9\textheight}{figs/bl_far.mp4}
+  \end{center}  
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+  \frametitle{Conclusion}
+  \begin{itemize}
+  \item Le HMC construit une chaîne de Markov de loi invariante la loi cible dans les cas idéal et approché.
+  \item Certaines hypothèses sont nécessaires pour avoir l'invariance (problème dans le Bayesian Lasso).
+  \item Prendre $L$ aléatoire semble améliorer la stationnarité
+  \end{itemize}
+\end{frame}
 \end{document}
 
 

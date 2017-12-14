@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.31)  8 DEC 2017 01:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.30)  14 DEC 2017 16:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1061,9 +1061,18 @@ sed, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.232 \end{enumerate}
-                     ] [4] [5]
-Overfull \hbox (7.0547pt too wide) in paragraph at lines 472--473
+l.232 
+      ] [4]
+Overfull \hbox (18.78116pt too wide) in paragraph at lines 330--331
+[][]\OT1/cmr/bx/n/10 Proposition 2.2 \OT1/cmr/m/n/10 (r^^Seversibilit^^Se)\OT1/
+cmr/bx/n/10 . []\OT1/cmr/m/it/10 On se place sous les hy-poth^^Reses []. Alors 
+pour tout $\OML/cmm/m/it/10 t \OMS/cmsy/m/n/10 2 \U/msb/m/n/10 R[]\OML/cmm/m/it
+/10 ; ^^^[]$ \OT1/cmr/m/it/10 est un $\OMS/cmsy/m/n/10 C[]$\OT1/cmr/m/it/10 -di
+ff^^Seromorphisme
+ []
+
+[5]
+Overfull \hbox (7.0547pt too wide) in paragraph at lines 469--470
 [][]\OT1/cmr/bx/n/10 Proposition 2.5 \OT1/cmr/m/n/10 (r^^Seversibilit^^Se)\OT1/
 cmr/bx/n/10 . []\OT1/cmr/m/it/10 Sous les hy-poth^^Reses [], $[]$ est in-ver-si
 ble avec $[] \OT1/cmr/m/n/10 : (\OML/cmm/m/it/10 x; p\OT1/cmr/m/n/10 ) \OMS/cms
@@ -1074,83 +1083,83 @@ m/m/it/10 p\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 ; \OMS/cmsy/m/n/10 ^^@[]\OT1/cmr/m
  []
 
 [6]
-LaTeX Font Info:    Try loading font information for U+bbm on input line 581.
+LaTeX Font Info:    Try loading font information for U+bbm on input line 578.
  (/usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [7] [8]
-<figs/normal.png, id=276, 1205.50375pt x 832.10875pt>
+<figs/normal.png, id=277, 1205.50375pt x 832.10875pt>
 File: figs/normal.png Graphic file (type png)
  <use figs/normal.png>
-Package pdftex.def Info: figs/normal.png used on input line 737.
+Package pdftex.def Info: figs/normal.png used on input line 734.
 (pdftex.def)             Requested size: 409.72125pt x 282.81166pt.
 
-<figs/normal_far.png, id=277, 1367.1075pt x 908.39375pt>
+<figs/normal_far.png, id=278, 1367.1075pt x 908.39375pt>
 File: figs/normal_far.png Graphic file (type png)
 
 <use figs/normal_far.png>
-Package pdftex.def Info: figs/normal_far.png used on input line 743.
+Package pdftex.def Info: figs/normal_far.png used on input line 740.
 (pdftex.def)             Requested size: 409.72125pt x 272.24301pt.
 
-<figs/normal_autocor.png, id=278, 480.79625pt x 399.4925pt>
+<figs/normal_autocor.png, id=279, 480.79625pt x 399.4925pt>
 File: figs/normal_autocor.png Graphic file (type png)
 
 <use figs/normal_autocor.png>
-Package pdftex.def Info: figs/normal_autocor.png used on input line 751.
+Package pdftex.def Info: figs/normal_autocor.png used on input line 748.
 (pdftex.def)             Requested size: 256.07481pt x 212.77238pt.
- [9] [10 <./figs/normal.png> <./figs/normal_far.png>] <figs/gm.png, id=298, 118
+ [9] [10 <./figs/normal.png> <./figs/normal_far.png>] <figs/gm.png, id=299, 118
 0.41pt x 811.03pt>
 File: figs/gm.png Graphic file (type png)
  <use figs/gm.png>
-Package pdftex.def Info: figs/gm.png used on input line 764.
+Package pdftex.def Info: figs/gm.png used on input line 761.
 (pdftex.def)             Requested size: 409.72125pt x 281.50107pt.
 
-<figs/gm_autocor.png, id=299, 480.79625pt x 402.50375pt>
+<figs/gm_autocor.png, id=300, 480.79625pt x 402.50375pt>
 File: figs/gm_autocor.png Graphic file (type png)
 
 <use figs/gm_autocor.png>
-Package pdftex.def Info: figs/gm_autocor.png used on input line 770.
+Package pdftex.def Info: figs/gm_autocor.png used on input line 767.
 (pdftex.def)             Requested size: 256.07481pt x 214.37619pt.
  [11 <./figs/normal_autocor.png> <./figs/gm.png>]
-<figs/bl.png, id=309, 1207.51125pt x 817.0525pt>
+<figs/bl.png, id=310, 1207.51125pt x 817.0525pt>
 File: figs/bl.png Graphic file (type png)
  <use figs/bl.png>
-Package pdftex.def Info: figs/bl.png used on input line 782.
+Package pdftex.def Info: figs/bl.png used on input line 779.
 (pdftex.def)             Requested size: 409.72125pt x 277.23315pt.
 
-<figs/bl_far.png, id=310, 1197.47375pt x 820.06375pt>
+<figs/bl_far.png, id=311, 1197.47375pt x 820.06375pt>
 File: figs/bl_far.png Graphic file (type png)
  <use figs/bl_far.png>
-Package pdftex.def Info: figs/bl_far.png used on input line 788.
+Package pdftex.def Info: figs/bl_far.png used on input line 785.
 (pdftex.def)             Requested size: 409.72125pt x 280.58234pt.
 
-<figs/bl_autocor.png, id=311, 495.8525pt x 399.4925pt>
+<figs/bl_autocor.png, id=312, 495.8525pt x 399.4925pt>
 File: figs/bl_autocor.png Graphic file (type png)
 
 <use figs/bl_autocor.png>
-Package pdftex.def Info: figs/bl_autocor.png used on input line 796.
+Package pdftex.def Info: figs/bl_autocor.png used on input line 793.
 (pdftex.def)             Requested size: 256.07481pt x 206.31088pt.
  [12 <./figs/gm_autocor.png>] [13 <./figs/bl.png> <./figs/bl_far.png>] (./hmc_R
 akotonirina-Durand.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 808.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 805.
  [14 <./figs/bl_autocor.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 808.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 805.
 
 (./hmc_Rakotonirina-Durand.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 808.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 808.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 805.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 805.
 Package rerunfilecheck Info: File `hmc_Rakotonirina-Durand.out' has not changed
 .
 (rerunfilecheck)             Checksum: 1A954B5F194FAA8C7DCD6FB644CDD584;1583.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 808.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 805.
  ) 
 Here is how much of TeX's memory you used:
  18148 strings out of 494924
- 305178 string characters out of 6179708
+ 305179 string characters out of 6179708
  394075 words of memory out of 5000000
  21124 multiletter control sequences out of 15000+600000
  16957 words of font info for 69 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 42i,21n,45p,10432b,597s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,21n,45p,10432b,587s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/amaury/.texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texm
@@ -1175,10 +1184,10 @@ ti7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/public/stmaryrd/stmary10.pfb>
-Output written on hmc_Rakotonirina-Durand.pdf (14 pages, 3828896 bytes).
+Output written on hmc_Rakotonirina-Durand.pdf (14 pages, 3829527 bytes).
 PDF statistics:
- 440 PDF objects out of 1000 (max. 8388607)
- 373 compressed objects within 4 object streams
+ 441 PDF objects out of 1000 (max. 8388607)
+ 374 compressed objects within 4 object streams
  98 named destinations out of 1000 (max. 500000)
  201 words of extra memory for PDF output out of 10000 (max. 10000000)
 

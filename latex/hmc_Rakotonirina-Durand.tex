@@ -12,12 +12,12 @@
 \maketitle
 
 \begin{abstract}
-Ce rapport présente le travail effectué lors d'un projet du cours d'approfondissements en chaînes de Markov par Eric Moulines dans le cadre du master Mathématiques de l'aléatoires à l'université Paris-Sud. Le contenu exposé ci-dessous repose essentiellement sur \cite{Neal-hmc} et \cite{Douc-mc}. Dans ce rapport, nous présentons l'algorithme Hamiltonian Monte Carlo, un algorithme de type MCMC utilisant une dynamique hamiltonienne pour proposer des mouvements. D'un point de vue théorique, nous nous intéressons à montrer que la loi cible est invariante par le noyau de Markov issu de cet algorithme tout d'abord dans le cas où la dynamique hamiltonienne est simulée de manière exacte puis dans le cas approché. D'un point de vue pratique, nous présentons quelques exemples afin de comparer les performances du Hamiltonian Monte Carlo à celles de l'algorithme classique Random Walk Metropolis. 
+Ce rapport présente le travail effectué lors d'un projet du cours d'approfondissements en chaînes de Markov par Eric Moulines et Randal Douc dans le cadre du master Mathématiques de l'aléatoire à l'université Paris-Sud. Le contenu exposé ci-dessous repose essentiellement sur \cite{Neal-hmc} et \cite{Douc-mc}. Dans ce rapport, nous présentons l'algorithme Hamiltonian Monte Carlo, un algorithme de type MCMC utilisant une dynamique hamiltonienne pour proposer des mouvements. D'un point de vue théorique, nous nous intéressons à montrer que la loi cible est invariante par le noyau de Markov issu de cet algorithme tout d'abord dans le cas où la dynamique hamiltonienne est simulée de manière exacte puis dans le cas approché. D'un point de vue pratique, nous présentons quelques exemples afin de comparer les performances du Hamiltonian Monte Carlo à celles de l'algorithme classique Random Walk Metropolis. 
 \end{abstract}
 
 \tableofcontents
 \section{Introduction}
-Les méthodes de Monte Carlo par dynamique Hamiltonienne, plus communément appelées Hamiltonian Monte Carlo (HMC), font partie d'une grande famille de méthodes de simulation : les méthodes de Monte Carlo, et plus précisemment dans la famille des méthodes de Monte Carlo par chaînes de Markov (ou Monte Carlo Markov Chains). Ces méthodes se placent dans le cadre suivant :
+Les méthodes de Monte Carlo par dynamique Hamiltonienne, plus communément appelées Hamiltonian Monte Carlo (HMC), font partie d'une grande famille de méthodes de simulation : les méthodes de Monte Carlo, et plus précisemment de la famille des méthodes de Monte Carlo par chaînes de Markov (ou Monte Carlo Markov Chains, MCMC). Ces méthodes se placent dans le cadre suivant :
 \begin{Def}[Carde général]
 	Soit $(\xset, \calX)$ un espace mesurable. Soit $\pi$ une loi de probabilité sur cet espace. On suppose que $\pi$ n'est connue qu'à un facteur de proportionnalité près i.e on connait $\lambda \pi$ où $\lambda \in \rset$ une constante. Le but est de pouvoir approcher $\pi f = \EE[f(X)]$ avec $X \sim \pi$ et $f \in \fset_+(\xset, \calX) \cup \fset_b(\xset, \calX)$.
 \end{Def}
@@ -30,7 +30,7 @@ Dans ces deux cas, l'approximation de $\pi f$ repose sur une simulation de varia
 
 \subsection{Monte Carlo Markov Chains (MCMC)}
 
-Les méthode MCMC se basent sur les notions de loi invariante, de réversibilité et d'ergodicité.
+Les méthodes MCMC se basent sur les notions de loi invariante, de réversibilité et d'ergodicité.
 
 \subsubsection{Loi invariante et réversibilité}
 
@@ -93,7 +93,7 @@ Les algorithmes MCMC visent à construire, à partir de $\pi$, une chaîne de Ma
 
 Avant de présenter la méthode HMC, nous définissons ici un autre algorithme MCMC, l'algorithme de Metropolis, que nous utiliserons comme base de comparaison.
 %On se place dans le cas où $\xset = \rset^d$ et $\calX = \calB(\rset^d)$. 
-On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ (appelée loi instrumentale) sur $(\xset, \calX)$ symétrique par rapport à $0$ ($Q(A) = Q(-A)$. La construction de la chaîne de Markov se fait en proposant un mouvement (dont l'incrément suit $Q$), puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis}).
+On suppose que $\pi$ a une densité $h_\pi$ par rapport à une mesure $\mu$. On considère de plus un loi $Q$ (appelée loi instrumentale) sur $(\xset, \calX)$ symétrique par rapport à $0$ ($Q(A) = Q(-A)$). La construction de la chaîne de Markov se fait en proposant un mouvement (dont l'incrément suit $Q$), puis en acceptant ou en rejetant ce mouvement (algorithme \ref{algo:metropolis}).
 
 \begin{center}
 	\begin{algorithm}[H]
@@ -167,8 +167,7 @@ Dans cet algorithme, on cherche à explorer l'espace $\xset$ en visitant moins s
 \subsection{Principe du Hamiltonian Monte Carlo}
 
 On se place dans le cas où $\xset = \rset^d$, $\calX = \calB(\rset^d)$ et $\mu$ est la mesure de Lebesgue. 
-
-L'algorithme HMC fait partie des algorithmes MCMC, le but est en effet de construire une chaîne de Markov de loi invariante la loi à simuler. Il diffère néanmoins de l'algorithme de Metropolis-Hastings notamment par le fait que le mouvement proposé suit une \emph{dynamique hamiltonienne} associée à la loi à simuler.
+L'algorithme HMC fait partie des algorithmes MCMC, le but est en effet de construire une chaîne de Markov de loi invariante la loi à simuler. Il diffère néanmoins de l'algorithme de Metropolis notamment par le fait que le mouvement proposé suit une \emph{dynamique hamiltonienne} associée à la loi à simuler.
 
 \subsubsection{Dynamique Hamiltonienne}
 
@@ -179,9 +178,7 @@ Un système physique de position $x : \rset_+ \to \rset^d$ et de quantité de mo
 		p_i' (t) &= -\frac{\partial H}{\partial x_i} (x(t), p(t))
 	\end{aligned}
 \end{equation}
-où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it hamiltonien} du système.
-
-Le Hamiltonien s'interprète comme une énergie sur $x$ et $p$. En général $H(x,p) = U(x) + K(p)$ où $U$ est l'énergie potentielle et $K$ l'énergie cinétique.
+où $H : \fundef{\rset^d \times \rset^d & \to & \rset \\ (x,p) & \mapsto & H(x,p)}$ s'appelle le {\it hamiltonien} du système, il s'interprète comme une énergie sur $x$ et $p$. En général $H(x,p) = U(x) + K(p)$ où $U$ est l'énergie potentielle et $K$ l'énergie cinétique.
 
 \begin{Rque}\label{rque:edo}
 	Les équations \eqref{eq:hamiltonian-dyn} se réécrivent comme une équation différentielle ordinaire d'ordre 1 :
@@ -220,7 +217,7 @@ Ce qui donne une loi jointe de densité $h_{\widetilde{\pi}}$ telle que $\forall
 où le Hamiltonien est défini par $H : (x,p) \mapsto U(x) + K(p)$.
 
 \begin{Rque}
-	En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à là hauteur de la rampe, \eqref{eq:canonical-dist} donne que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$) est assez grande.
+	En dimension 1, on décrit le glissement sans frottement d'un objet sur une rampe. Comme l'énergie potentielle est proportionnelle à la hauteur de la rampe, \eqref{eq:canonical-dist} montre que les creux de la rampe représentent les régions de forte probabilité. L'objet aura tendance à glisser vers les creux de la rampe, mais peut remonter une pente si sa quantité de mouvement $p$ (et donc son énergie cinétique $K(p)$) est assez grande.
 \end{Rque}
 
 L'algorithme HMC propose ses mouvements selon le principe suivant : 
@@ -231,7 +228,7 @@ L'algorithme HMC propose ses mouvements selon le principe suivant :
 	\item Considérer $Z_{k+1}^{\rm prop}$ l'état de l'objet à la fin de la simulation, et accepter ou rejeter le mouvement selon une fonction de rejet $\alpha$ dépendant de $H$. 
 \end{enumerate}
 
-Il est important de noter que le HMC n'est pas une méthode de Métropolis-Hastings car, bien que le principe soit similaire (proposer un mouvement et le choisir selon une fonction de rejet dépendant de la loi cible), le HMC tire une nouvelle quantité de mouvement à chaque étape.
+Il est important de noter que le HMC n'est pas une méthode de Metropolis car, bien que le principe soit similaire (proposer un mouvement et le choisir selon une fonction de rejet dépendant de la loi cible), le HMC tire une nouvelle quantité de mouvement à chaque étape.
 
 Plusieurs problématiques sont alors soulevées : les questions les plus importantes sont de savoir si la loi $\widetilde{\pi}$ est bien invariante et si l'algorithme converge vers cette loi. Nous ne nous intéresserons ici qu'à la question de l'invariance sans résoudre la question de la convergence. De plus, la forme de loi que l'on considère impose des conditions sur les lois $\pi$ et $\nu$, notamment des conditions de régularité de leurs densités (on doit pouvoir dériver le Hamiltonien). Enfin, comment simuler la dynamique hamiltonienne et quelles sont les différences entre le cadre idéal où le mouvement proposé est exactement celui décrit par les équations \eqref{eq:hamiltonian-dyn} et le cadre pratique où l'on doit discrétiser ces équations ?
 
@@ -253,7 +250,7 @@ Afin de pouvoir modéliser le problème par un HMC, on suppose
 	$k \geq 1$ suffit pour tous les résultats énoncés sauf pour les propositions \ref{prop:vol_discret} \ref{prop:rever_discret} où on aura besoin de $k \geq 2$.
 \end{Rque}
 
-Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Métropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
+Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) où l'on a accès aux solutions de \eqref{eq:edo}, le fait de tirer une quantité de mouvement aléatoire puis de suivre la dynamique hamiltonienne laisse la mesure $\tilde{\pi}$ invariante. Dans le cadre où l'on simule la dynamique en discrétisant les équations \eqref{eq:hamiltonian-dyn}, nous verrons que cela n'est plus le cas mais qu'il est alors possible de rendre $\tilde{\pi}$ invariante en incluant le mouvement proposé dans un cadre Metropolis-Hastings (c'est à dire en acceptant le mouvement selon une fonction de rejet). Pour cela, nous avons besoin de quelques propriétés de la dynamique hamiltonienne énoncées dans la section suivante.
 
 %\subsection{Propriétés de l'algorithme}
 
@@ -268,9 +265,9 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 
 \begin{proof}
 	Remarquons tout d'abord que la matrice $J$ définie dans la remarque \ref{rque:edo} vérifie $\forall u \in \rset^{2d}, \inner{u, Ju} = 0$. Ainsi, si $z$ est solution de \eqref{eq:edo},
-	$$
+	$
 	\forall t \in \rset_+, (H \circ z)'(t) = \inner{\nabla H (z(t)), z'(t)} = \inner{\nabla H (z(t)), J \nabla H(z(t))} = 0.
-	$$
+	$
 \end{proof}
 
 \begin{Def}[flot hamiltonien]
@@ -330,7 +327,7 @@ Nous allons voir que, sous ces hypothèses, dans le cadre idéal (théorique) o�
 \end{Rque}
 
 \begin{Prop}[réversibilité]\label{prop:rev}
-	On se place les hypothèses \eqref{eq:hyp}. Alors pour $t \in \rset_+, \phi_t$ est un $\calC^k$-différomorphisme et
+	On se place sous les hypothèses \eqref{eq:hyp}. Alors pour tout $t \in \rset_+, \phi_t$ est un $\calC^k$-différomorphisme et
 	$$
 	\phi_t^{-1} : (x,p) \mapsto (\phi_t^{(1)}(x, -p), - \phi_t^{(2)}(x, -p))
 	$$
@@ -451,16 +448,16 @@ La proposition \ref{prop:vol_discret} est l'analogue de la proposition \ref{prop
 	$U$ et $K$ étant $calC^2$, on a les jacobiennes
 	$$
 	\frac{d\varphi_x}{dz}(x,p) =
-	\begin{pmatrix}
+	\begin{bmatrix}
 	I_d & \epsilon \frac{d\nabla K}{dp}(p) \\
 	0 & I_d
-	\end{pmatrix}
+	\end{bmatrix}
 	\text{ et }
 	\frac{d\varphi_p}{dz}(x,p) =
-	\begin{pmatrix}
+	\begin{bmatrix}
 	I_d & 0 \\
 	- \frac \epsilon 2 \frac{d\nabla U}{dx}(x) & I_d
-	\end{pmatrix}
+	\end{bmatrix}
 	$$
 	qui sont bien de déterminant $1$ en tout point ($I_d$ désigne la matrice identité de taille $d$). Ainsi, pour $z \in \rset^{2d}$,
 	$$
@@ -544,14 +541,14 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 \end{center}
 
 \begin{Def}[semi-groupe Markovien]
-	Une famille $(P_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, P_{t+s} = P_t P_s$
+	Une famille $(R_t)_{t \in \rset_+}$ de noyaux de Markov est un semi-groupe Markovien si $\forall t,s \in \rset_+, R_{t+s} = R_t R_s$
 \end{Def}
 
 \begin{Prop}[invariance de la loi]\label{prop:inv-ideal}
 	On se place sous les hypothèses \eqref{eq:hyp}. Alors
 
 	\begin{enumerate}
-		\item Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QP_t$ sur $\rset^{2d}$ avec
+		\item Pour $t \in \rset_+$, le processus $(Z_k)_{k \in \nset}$ défini par l'algorithme \ref{algo:HMC-ideal} est une chaîne de Markov homogène de noyau $QR_t$ sur $\rset^{2d}$ avec
 		% $$
 		% Q : \fundef{
 		% \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
@@ -568,10 +565,10 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 		Q((x,p),\cdot) = \delta_x \otimes \nu
 		$$
 		$$
-		P_t((x,p),\cdot) = \delta_{\phi_t(z)}
+		R_t((x,p),\cdot) = \delta_{\phi_t(z)}
 		$$
-		\item $(P_t)_{t \in \rset_+}$ est un semi-groupe Markovien.
-		\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QP_t$-invariante. 
+		\item $(R_t)_{t \in \rset_+}$ est un semi-groupe Markovien.
+		\item Pour tout $t \in \rset_+$, $\widetilde{\pi}$ est $QR_t$-invariante. 
 	\end{enumerate}
 \end{Prop}
 \begin{proof}
@@ -582,24 +579,24 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 		$$
 		Or
 		$$
-		Q P_t((x,p),A) = \int Q((x,p), dx_1dp_1) P_r((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1).
+		Q R_t((x,p),A) = \int Q((x,p), dx_1dp_1) R_t((x_1, p_1), A) = \int \delta_x(dx_1) \nu(dp_1) \ind_A(\phi_t(x_1, p_1)) = \int \ind_A(\phi_t(x,p_1)) \nu(dp_1).
 		$$
-		Donc $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $QP_t$.
+		Donc $(Z_k)_{k \in \nset}$ est une chaîne de Markov homogène de noyau $QR_t$.
 
 		\item Soient $t,s \in \rset_+$, $z \in \rset^{2d}$ et $A \in \calB(\rset^{2d})$. Alors
-		$$
-		P_t P_s (z, A) = \int P_t(z, dz_1) P_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = P_{s+t} = P_{t+s}
-		$$
+                  \begin{multline*}
+                    R_t R_s (z, A) = \int R_t(z, dz_1) R_s(z_1, A) = \int \delta_{\phi_t(z)}(dz_1) \ind_A(\phi_s(z_1)) = \ind_A(\phi_s \circ \phi_t(z)) = \ind_A(\phi_{s+t}(z)) = R_{s+t}(z,A) \\ = R_{t+s}(z,A)
+                  \end{multline*}
 
-		\item Montrons que $\widetilde{\pi}$ est $Q$ et $P_t$ invariante (elle sera donc $QP_t$-invariante). Soit $A \in \calB(\rset^{2d})$, alors
+		\item Montrons que $\widetilde{\pi}$ est $Q$ et $R_t$ invariante (elle sera donc $QR_t$-invariante). Soit $A \in \calB(\rset^{2d})$, alors
 		$$
 		\widetilde{\pi} Q (A) = \int \pi(dx) \nu(dp) \delta_x(dx_1) \nu(dp_1) \ind_A(x_1, p_1) = \int \pi(dx) \nu(dp_1) \ind_A(x, p_1) = \int \widetilde{\pi}(dxdp_1) \ind_A(x, p_1) = \widetilde{\pi}(A) 
 		$$
 
 		Soient $t \in \rset_+$ et $A \in \calB(\rset^{2d})$, alors
 		\begin{align*}
-		\widetilde{\pi} P_t (A)
-		&= \int \widetilde{\pi}(dz) P_t(z, A) \\
+		\widetilde{\pi} R_t (A)
+		&= \int \widetilde{\pi}(dz) R_t(z, A) \\
 		&\propto \int \exp \left(-\frac{H(z)}{T} \right) \ind_A(\phi_t(z)) dz\\
 		&\overset{(*)}{=} \int \exp \left(-\frac{H \circ \phi_t^{-1}(y)}{T} \right) \ind_A(y) dy \\
 		&\overset{(**)}{=} \int \exp \left(-\frac{H(y)}{T} \right) \ind_A(y) dy \\
@@ -614,33 +611,33 @@ Dans le cas idéal où l'on a accès à une solution exacte de la dynamique hami
 \subsection{Cas concret : solution approchée de la dynamique hamiltonienne}
 Dans le cas où l'on n'a pas accès aux solutions exactes de \eqref{eq:edo}, on utilise le flot appoché $\hat{\phi}_L$. La première idée serait de simplement remplacer $\phi_t$ par $g \circ \hat{\phi}_L$ dans l'algorithme \ref{algo:HMC-ideal} où $g : \rset^{2d} \to \rset^{2d}$ est une fonction à déterminer. On obtient donc des noyaux $Q$ (défini en proposition \ref{prop:inv-ideal}) et
 $$
-\hat{P}_L : \fundef{
+\hat{R}_L : \fundef{
   \rset^{2d} \times \calB(\rset^{2d}) & \to & [0,1] \\
   (z, A) & \mapsto & \delta_{g \circ \hat{\phi}_L(z)}(A)
 }
 $$
-$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P}_L$-invariante car après la discrétisation, on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Métropolis.
+$\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{R}_L$-invariante car après la discrétisation, on n'a plus la propriété de conservation du hamiltonien. Néanmoins la proposition suivante montre que pour un bon choix de $g$, il est possible d'utiliser le mouvement proposé dans un algorithme de Metropolis.
 
 \begin{Prop}[réversibilité]\label{prop:rever_discret}
-	Sous les hypothèses \eqref{eq:hyp} avec $k \geq 2$ ($U$ et $K$ de classe $\calC^2$), on considère $g = s : (x, p) \mapsto (x,-p)$ et on définit
+	Sous les hypothèses \eqref{eq:hyp} avec $k \geq 2$ ($U$ et $R$ de classe $\calC^2$), on considère $g = s : (x, p) \mapsto (x,-p)$ et on définit
 	$$
 	\alpha : \fundef{
 	\rset^{2d} \times \rset^{2d} & \to & [0,1] \\
 	(z_0, z_1) & \mapsto & 1 \wedge \exp(\frac{-H(z_1)+H(z_0)}{T})
 	}
 	$$
-	et on note $\hat P_L^\alpha$ le noyau de Metropolis-Hasting associé au noyau instrumental $\hat P_L$ et à la fonction de rejet $\alpha$. Alors $\widetilde \pi$ est $\hat P_L^\alpha$-réversible (et donc $\hat P_L^\alpha$-invariant). 
+	et on note $\hat{R}_L^\alpha$ le noyau de Metropolis-Hasting associé au noyau instrumental $\hat{R}_L$ et à la fonction de rejet $\alpha$. Alors $\widetilde \pi$ est $\hat{R}_L^\alpha$-réversible (et donc $\hat{R}_L^\alpha$-invariant). 
 \end{Prop}
 \begin{proof}
-	Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat P_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
+	Notons $\psi_L = s \circ \hat \phi_L$, de sorte que $\hat{R}_L(z,\cdot) = \delta_{\psi_L(z)}$. Ainsi,
 	$$
-	\hat P_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
+	\hat{R}_L^\alpha(z,A) = \alpha(z,\psi_L(z)) \ind_A(\psi_L(z)) + (1-\alpha(z,\psi_L(z))) \ind_A(z)
 	$$
 	et pour $A,B$ boréliens,
 	$$
-	\widetilde \pi \otimes \hat P_L^\alpha (A \times B)
+	\widetilde \pi \otimes \hat{R}_L^\alpha (A \times B)
 	=
-	\int \ind_A(z) \hat P_L^\alpha(z,B) e^{-H(z)/T} dz
+	\int \ind_A(z) \hat{R}_L^\alpha(z,B) e^{-H(z)/T} dz
 	=
 	\Lambda_1(A,B) + \Lambda_2(A,B)
 	$$
@@ -652,7 +649,7 @@ $\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P
 	$$
 	\Lambda_2(A,B) = \int \ind_A(z) \ind_B(z) (1-\alpha(z,\psi_L(z))) e^{-H(z)/T} dz.
 	$$
-	Il suffit, pour avoir la $\hat P_L^\alpha$-réversibilité, que les expressions $\Lambda_1(A,B)$ et $\Lambda_2(A,B)$ soient toutes les deux symétriques en $A$ et $B$. C'est le cas pour $\Lambda_2$, reste à étudier $\Lambda_1$.
+	Il suffit, pour avoir la $\hat{R}_L^\alpha$-réversibilité, que les expressions $\Lambda_1(A,B)$ et $\Lambda_2(A,B)$ soient toutes les deux symétriques en $A$ et $B$. C'est le cas pour $\Lambda_2$, reste à étudier $\Lambda_1$.
 
 	D'après l'expression définissant $\alpha$, on a $\alpha(z_0,z_1) e^{-H(z_0)/T} = e^{-H(z_0)/T} \wedge e^{-H(z_1)/T}$, donc
 	\begin{equation}\label{eq:Lambda1}
@@ -669,7 +666,7 @@ $\widetilde{\pi}$ est toujours $Q$-invariante mais n'est plus forcément $\hat{P
 	\Lambda_1(A,B) = \int \ind_A(\psi_L(z)) \ind_B(z) \left( e^{-H(z)/T} \wedge e^{-H(\psi_L(z))/T} \right) dz = \Lambda_1(B,A).
 	$$
 
-	Ainsi, $\Lambda_1$ et $\Lambda_2$ sont bien symétriques en $A$ et $B$, donc $\widetilde \pi \otimes \hat P_L^\alpha (A \times B) = \widetilde \pi \otimes \hat P_L^\alpha (B \times A)$ : $\widetilde \pi$ est $\hat P_L^\alpha$-réversible.
+	Ainsi, $\Lambda_1$ et $\Lambda_2$ sont bien symétriques en $A$ et $B$, donc $\widetilde \pi \otimes \hat{R}_L^\alpha (A \times B) = \widetilde \pi \otimes \hat{R}_L^\alpha (B \times A)$ : $\widetilde \pi$ est $\hat{R}_L^\alpha$-réversible.
 \end{proof}
 L'algorithme qui découle de ces propriétés est le suivant :
 
@@ -727,9 +724,9 @@ Pour toutes les simulations, on prend $\epsilon = 0.1$, $L = 25$ ou $L \sim \cal
 \subsection{Test sur une loi normale}
 On considère ici $\pi = \calN\left(\begin{bmatrix} 0 \\ 0 \end{bmatrix}, \begin{bmatrix} 0.4 & 0.2 \\ 0.2 & 0.4  \end{bmatrix} \right)$.
 
-La figure \ref{fig:normal} montre que l'algorithme HMC a bien tendance à suivre une dynamique plus cohérente par rapport à l'énergie potentielle $U$ (et donc la loi $\pi$). La trajectoire obtenue semble mieux rendre compte de la corrélation entre les deux coordonnées. Bien que le HMC avec $L$ constant semble mieux suivre la dynamique, notons que le fait de randomiser $L$ permet un gain en stationnarité. En effet, la figure \ref{fig:normal_autocor} montre que si on prend $L$ constant, les autocorrelations oscillent et restent assez fortes. Cela peut s'expliquer facilement en se rappellant l'interprétation physique du HMC : on simule le mouvement d'un objet sur une surface. Cet objet aura donc tendence à effectuer des allez-retours autour du creux, de plus, comme on tire une nouvelle vitesse à chaque étape, l'objet met du temps à se stabiliser car il a une nouvelle impulsion à chaque étape. Ce comportement est flagrant dans le cas où $X_0$ est pris loin du mode de la distribution, le HMC effectue alors de grandes oscillations autour du creux de l'énergie potentielle. 
+La figure \ref{fig:normal} montre que l'algorithme HMC a bien tendance à suivre une dynamique plus cohérente par rapport à l'énergie potentielle $U$ (et donc la loi $\pi$). La trajectoire obtenue semble mieux rendre compte de la corrélation entre les deux coordonnées. Bien que le HMC avec $L$ constant semble mieux suivre la dynamique, notons que le fait de randomiser $L$ permet un gain en stationnarité. En effet, la figure \ref{fig:normal_autocor} montre que si on prend $L$ constant, les autocorrelations oscillent et restent assez fortes. Cela peut s'expliquer facilement en se rappellant l'interprétation physique du HMC : on simule le mouvement d'un objet sur une surface. Cet objet aura donc tendance à effectuer des allez-retours autour du creux, de plus, comme on tire une nouvelle vitesse à chaque étape, l'objet met du temps à se stabiliser car il a une nouvelle impulsion à chaque étape. Ce comportement est flagrant dans le cas où $X_0$ est pris loin du mode de la distribution, le HMC effectue alors de grandes oscillations autour du creux de l'énergie potentielle. 
 
-Dans le cas où l'on prend $L$ aléatoire, les mouvements sont plus courts et ont tendance à aller moins haut vers les bords, ce qui stabilise l'objet plus rapidement. Le choix de $L$ aléatoire semble donc être important. Notons que le HMC avec $L$ aléatoire fournit une meilleure autocorrelation que le RWM et présente l'avantage de trouver rapidement le mode de la disctribution. En effet, comme on peut le voir sur la figure \ref{fig:normal}, alors que le RWM met du temps à atteindre le mode, le HMC avec $L$ aléatoire l'atteint en très peu d'itérations (environ 3). 
+Dans le cas où l'on prend $L$ aléatoire, les mouvements sont plus courts et ont tendance à aller moins haut vers les bords, ce qui stabilise l'objet plus rapidement. Le choix de $L$ aléatoire semble donc être important. Notons que le HMC avec $L$ aléatoire fournit une meilleure autocorrelation que le RWM et présente l'avantage de trouver rapidement le mode de la distribution. En effet, comme on peut le voir sur la figure \ref{fig:normal}, alors que le RWM met du temps à atteindre le mode, le HMC avec $L$ aléatoire l'atteint en très peu d'itérations (environ 3). 
 
 \begin{figure}[hp]
   \begin{subfigure}{\textwidth}  
@@ -772,7 +769,7 @@ La figure \ref{fig:gm_autocor} montre le même comportement : des oscillations p
 \end{figure}
 
 \subsection{Test sur le bayesian lasso}
-On considère ici $U(x) = \norm{Ax - b}_2^2 + \lambda \norm{x}_1$ qui n'est par différentiable, ainsi au lieu de considérer le gradient de $U$, on considère la sous-différentielle $(A + A^\top) x + \lambda \sign(x)$. Dans les simulations, on prend $A = \begin{bmatrix} 0.5 & 0.4 \\ 0.5 & 0.4 \end{bmatrix}$, $b = \begin{bmatrix} 0.1 \\ 0.1 \end{bmatrix}$ et $\lambda = 2$.
+On considère ici $U(x) = \norm{Ax - b}_2^2 + \lambda \norm{x}_1$ qui n'est pas différentiable, ainsi au lieu de considérer le gradient de $U$, on considère la sous-différentielle $(A + A^\top) x + \lambda \sign(x)$. Dans les simulations, on prend $A = \begin{bmatrix} 0.5 & 0.4 \\ 0.5 & 0.4 \end{bmatrix}$, $b = \begin{bmatrix} 0.1 \\ 0.1 \end{bmatrix}$ et $\lambda = 2$.
 
 D'après la figure \ref{fig:bl}, lorsque $X_0$ est proche du mode, les trois algorithmes semblent se comporter de manière correcte, similaire à la loi normale. Les autocorrelations (figure \ref{fig:bl_autocor}) semblent même être très bonnes pour les deux cas du HMC. Mais ce résultat est à considérer avec précaution. En effet, comme on le voit dans le cas où $X_0$ est loi du mode, dans les deux cas, l'algorithme HMC fait peu de mouvements (i.e il rejette très souvent le mouvement proposé). Ainsi il se peut que les bons résultats obtenus pour l'autocorrelation viennent du fait que l'algorithme reste souvent à la même position. 
 
@@ -798,9 +795,9 @@ D'après la figure \ref{fig:bl}, lorsque $X_0$ est proche du mode, les trois alg
 \end{figure}
 
 \section{Conclusion}
-L'idée de base du Hamiltonian Monte Carlo est assez intuitive : plutôt que de considérer des mouvements de marche aléatoire (Random-walk Metropolis), il serait plus intéressant de proposer des mouvements qui prennent compte de la forme de la densité à simuler. Nous avons vus que l'algorithme proposé permet bien de générer une chaîne de Markov pour laquelle la loi cible est invariante à la fois dans le cas où l'on simule exactement la dynamique hamiltonienne et dans le cas où celle-ci est approchée (et où l'on insère alors le mouvement dans une stratégie Metropolis).
+L'idée de base du Hamiltonian Monte Carlo est assez intuitive : plutôt que de considérer des mouvements de marche aléatoire (Random-walk Metropolis), il serait plus intéressant de proposer des mouvements qui prennent compte de la forme de la densité à simuler. Nous avons vu que l'algorithme proposé permet bien de générer une chaîne de Markov pour laquelle la loi cible est invariante à la fois dans le cas où l'on simule exactement la dynamique hamiltonienne et dans le cas où celle-ci est approchée (et où l'on insère alors le mouvement dans une stratégie Metropolis).
 
-En pratique, nous avons vu que l'algorithme HMC tend à donner de meilleurs résultat que le RMW surtout lorsque la durée de la simulation {\it leapfrog} $L$ est tiré aléatoirement à chaque itération. Le paramètre $L$ semble influencer grandement les performances de l'algorithme. Neal \cite{Neal-hmc} mentionne le fait que choisir $L$ aléatoire permet d'éviter des effets de cycles dans le mouvement. Cette observation fait l'objet d'un contre exemple dans \cite{ergodicity-hmc} où les auteurs fournissent des hypothèses nécessaires sur la loi de $L$ afin d'obtenir l'ergodicité géométrique de l'algorithme HMC. Enfin, nous avons pu voir que l'importance des hypothèses \eqref{eq:hyp} dans le cas du bayésian lasso où l'énergie potentielle n'est pas différentiable. La dynamique hamiltonienne n'étant pas bien simulée, l'algorithme HMC a tendance à refuser très souvent le mouvement. 
+En pratique, nous avons vu que l'algorithme HMC tend à donner de meilleurs résultat que le RMW surtout lorsque la durée de la simulation {\it leapfrog} $L$ est tiré aléatoirement à chaque itération. Le paramètre $L$ semble influencer grandement les performances de l'algorithme. Neal \cite{Neal-hmc} mentionne le fait que choisir $L$ aléatoire permet d'éviter des effets de cycles dans le mouvement. Cette observation fait l'objet d'un contre exemple dans \cite{ergodicity-hmc} où les auteurs fournissent des hypothèses nécessaires sur la loi de $L$ afin d'obtenir l'ergodicité géométrique de l'algorithme HMC. Enfin, nous avons pu voir l'importance des hypothèses \eqref{eq:hyp} dans le cas du bayésian lasso où l'énergie potentielle n'est pas différentiable. La dynamique hamiltonienne n'étant pas bien simulée, l'algorithme HMC a tendance à refuser très souvent le mouvement. 
 
 \pagebreak
 \bibliographystyle{plain}
